@@ -241,7 +241,7 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <div class="flex flex-col gap-32 md:gap-40" data-skew>
+        <div class="flex flex-col gap-32 md:gap-40">
           {projects.map((project, i) => (
             <a
               href={project.link}
@@ -1031,11 +1031,9 @@ const steps = [
         if (!img || !container) return;
 
         let scrollPos = 0;
-        let prevScrollPos = 0;
         let scrollRaf: number | null = null;
         let hovering = false;
         let currentStop = 0;
-        let stopTarget = 0;
         const stops = [0, 0.25, 0.5, 0.75, 1];
         const pauseDuration = 90; // ~1.5s pause at each stop
         const initialDelay = 90; // ~1.5s delay before first move
@@ -1066,7 +1064,7 @@ const steps = [
               return;
             }
 
-            stopTarget = stops[currentStop] * maxScroll;
+            const stopTarget = stops[currentStop] * maxScroll;
 
             if (isPaused) {
               pauseCounter++;
@@ -1090,7 +1088,6 @@ const steps = [
             scrollPos += (0 - scrollPos) * 0.05;
             if (Math.abs(scrollPos) < 0.5) {
               scrollPos = 0;
-              prevScrollPos = 0;
               img.style.transform = '';
               currentStop = 0;
               isPaused = false;
@@ -1100,15 +1097,7 @@ const steps = [
             }
           }
 
-          // Motion blur based on scroll velocity
-          const velocity = Math.abs(scrollPos - prevScrollPos);
-          const blur = Math.min(velocity * 0.4, 6);
-          prevScrollPos = scrollPos;
-
           img.style.transform = `translateY(${-scrollPos}px)`;
-          if (blur > 0.3) {
-            img.style.filter = `blur(${blur}px)`;
-          }
 
           scrollRaf = requestAnimationFrame(animateScroll);
         }
@@ -1197,7 +1186,7 @@ const steps = [
         function animate() {
           currentX += (targetX - currentX) * 0.08;
           currentY += (targetY - currentY) * 0.08;
-          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+          el.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
           if (!isHovering && Math.abs(targetX - currentX) < 0.01 && Math.abs(targetY - currentY) < 0.01) {
             el.style.transform = '';
             rafId = null;

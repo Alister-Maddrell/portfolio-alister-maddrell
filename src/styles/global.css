@@ -705,7 +705,9 @@ body {
   position: relative;
   display: block;
   text-decoration: none;
-  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+  contain: layout style;
 }
 
 /* Oversized index number behind card */
@@ -790,16 +792,6 @@ body {
     0 2px 4px hsl(0deg 0% 0% / 0.04),
     0 4px 8px hsl(0deg 0% 0% / 0.04),
     0 8px 16px hsl(0deg 0% 0% / 0.04);
-  transition: box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.project-card-v:hover .project-image {
-  box-shadow:
-    0 2px 4px hsl(0deg 0% 0% / 0.04),
-    0 4px 8px hsl(0deg 0% 0% / 0.04),
-    0 8px 16px hsl(0deg 0% 0% / 0.04),
-    0 16px 32px hsl(0deg 0% 0% / 0.04),
-    0 24px 48px hsl(0deg 0% 0% / 0.03);
 }
 
 [data-theme="dark"] .project-card-v .project-image {
@@ -807,14 +799,6 @@ body {
     0 1px 2px hsl(0deg 0% 0% / 0.2),
     0 2px 4px hsl(0deg 0% 0% / 0.15),
     0 4px 8px hsl(0deg 0% 0% / 0.1);
-}
-
-[data-theme="dark"] .project-card-v:hover .project-image {
-  box-shadow:
-    0 2px 4px hsl(0deg 0% 0% / 0.2),
-    0 4px 8px hsl(0deg 0% 0% / 0.15),
-    0 8px 16px hsl(0deg 0% 0% / 0.1),
-    0 16px 32px hsl(0deg 0% 0% / 0.1);
 }
 
 .project-card-v .project-image-inner {
@@ -826,7 +810,7 @@ body {
   min-height: 100%;
   object-fit: cover;
   object-position: top;
-  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 /* Floating UI elements */
@@ -839,6 +823,7 @@ body {
   font-family: var(--font-heading);
   letter-spacing: 0.04em;
   transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
 }
 
 .project-card-v:hover .floating-ui {
@@ -874,7 +859,6 @@ body {
 /* Pill/tag style */
 .floating-ui--pill {
   background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
   color: #fff;
   font-size: 0.625rem;
   font-weight: 600;
