@@ -1021,24 +1021,49 @@ const steps = [
         const floats = container.querySelectorAll('[data-float-depth]');
         if (!floats.length) return;
 
+        let targetX = 0, targetY = 0;
+        const currentPositions = Array.from(floats, () => ({ x: 0, y: 0 }));
+        let isHovering = false;
+        let rafId: number | null = null;
+
+        function animateFloats() {
+          floats.forEach((el, i) => {
+            const depth = parseFloat((el as HTMLElement).dataset.floatDepth || '0.04');
+            const goalX = isHovering ? targetX * depth * 600 : 0;
+            const goalY = isHovering ? targetY * depth * 600 : 0;
+            currentPositions[i].x += (goalX - currentPositions[i].x) * 0.08;
+            currentPositions[i].y += (goalY - currentPositions[i].y) * 0.08;
+            (el as HTMLElement).style.transform = `translate(${currentPositions[i].x}px, ${currentPositions[i].y}px)`;
+          });
+
+          if (!isHovering) {
+            const settled = currentPositions.every(p => Math.abs(p.x) < 0.1 && Math.abs(p.y) < 0.1);
+            if (settled) {
+              floats.forEach((el) => { (el as HTMLElement).style.transform = ''; });
+              rafId = null;
+              return;
+            }
+          }
+          rafId = requestAnimationFrame(animateFloats);
+        }
+
+        container.addEventListener('mouseenter', () => {
+          isHovering = true;
+          if (!rafId) rafId = requestAnimationFrame(animateFloats);
+        });
+
         container.addEventListener('mousemove', (e: Event) => {
           const me = e as MouseEvent;
           const rect = (container as HTMLElement).getBoundingClientRect();
-          const x = (me.clientX - rect.left - rect.width / 2) / rect.width;
-          const y = (me.clientY - rect.top - rect.height / 2) / rect.height;
-
-          floats.forEach((el) => {
-            const depth = parseFloat((el as HTMLElement).dataset.floatDepth || '0.04');
-            const moveX = x * depth * 800;
-            const moveY = y * depth * 800;
-            (el as HTMLElement).style.transform = `translate(${moveX}px, ${moveY}px)`;
-          });
+          targetX = (me.clientX - rect.left - rect.width / 2) / rect.width;
+          targetY = (me.clientY - rect.top - rect.height / 2) / rect.height;
         });
 
         container.addEventListener('mouseleave', () => {
-          floats.forEach((el) => {
-            (el as HTMLElement).style.transform = '';
-          });
+          isHovering = false;
+          targetX = 0;
+          targetY = 0;
+          if (!rafId) rafId = requestAnimationFrame(animateFloats);
         });
       });
     }

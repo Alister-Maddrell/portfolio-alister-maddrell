@@ -818,17 +818,21 @@ body {
 }
 
 .project-card-v .project-image-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 200%;
+  height: auto;
+  min-height: 100%;
   object-fit: cover;
   object-position: top;
   filter: grayscale(50%) brightness(0.97);
-  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), object-position 3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-card-v:hover .project-image-inner {
   filter: grayscale(0%) brightness(1);
-  object-position: bottom;
+  transform: translateY(-25%);
 }
 
 /* Floating UI elements */
@@ -837,17 +841,14 @@ body {
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   white-space: nowrap;
   font-family: var(--font-heading);
   letter-spacing: 0.04em;
-  will-change: transform;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-card-v:hover .floating-ui {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .project-card-v:hover .floating-ui:nth-child(3) { transition-delay: 0.05s; }
