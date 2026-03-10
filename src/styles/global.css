@@ -706,6 +706,35 @@ body {
   overflow: hidden;
   border-radius: 20px;
   transform-style: preserve-3d;
+  text-decoration: none;
+}
+
+.project-card-bg {
+  position: absolute;
+  inset: -20px;
+  background: var(--card-color);
+  opacity: 0.12;
+  border-radius: 28px;
+  z-index: -1;
+  filter: blur(30px);
+  transition: opacity 0.5s ease;
+}
+
+.project-card-v:hover .project-card-bg {
+  opacity: 0.22;
+}
+
+.project-info-mobile {
+  display: none;
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+  .project-info-desktop {
+    display: none;
+  }
+  .project-info-mobile {
+    display: block;
+  }
 }
 
 .project-card-v .project-image {

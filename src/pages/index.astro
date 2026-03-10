@@ -9,6 +9,7 @@ const projects = [
     tags: ['Google Maps', 'FAQ Accordion', 'Contact Form', 'SEO'],
     thumbnail: '/thumbnails/hartley.png',
     link: 'https://demo-hartley-plumbing.vercel.app',
+    color: '#2563eb',
   },
   {
     name: 'Kin & Grain Café',
@@ -16,6 +17,7 @@ const projects = [
     tags: ['Email Newsletter', 'Tabbed Menu', 'Event Listings', 'Catering Form'],
     thumbnail: '/thumbnails/cafe.png',
     link: 'https://demo-kin-grain-cafe.vercel.app',
+    color: '#c2884e',
   },
   {
     name: 'Apex Performance Studio',
@@ -23,6 +25,7 @@ const projects = [
     tags: ['Pricing Table', 'Multi-Step Form', 'Class Timetable', 'Before/After'],
     thumbnail: '/thumbnails/fitness.png',
     link: 'https://demo-apex-fitness.vercel.app',
+    color: '#dc2626',
   },
   {
     name: 'Whitfield & Associates',
@@ -30,6 +33,7 @@ const projects = [
     tags: ['Blog with Filters', 'Booking Form', 'Scroll Animations', 'Client Logos'],
     thumbnail: '/thumbnails/accounting.png',
     link: 'https://demo-whitfield-accounting.vercel.app',
+    color: '#1e3a5f',
   },
   {
     name: 'LUMA Hair & Beauty',
@@ -37,6 +41,7 @@ const projects = [
     tags: ['Booking Flow', 'Service Pricing', 'Before/After Slider', 'Team Carousel'],
     thumbnail: '/thumbnails/hair.png',
     link: 'https://demo-luma-hair-beauty.vercel.app',
+    color: '#a855f7',
   },
 ];
 
@@ -213,11 +218,17 @@ const steps = [
 
         <div class="flex flex-col gap-24 md:gap-32" data-skew>
           {projects.map((project, i) => (
-            <article
-              class="project-card project-card-v group"
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-card project-card-v group block"
               data-reveal="scale"
               data-tilt
+              data-cursor-hover
+              style={`--card-color: ${project.color};`}
             >
+              <div class="project-card-bg"></div>
               <div class="project-image">
                 <img
                   src={project.thumbnail}
@@ -226,7 +237,7 @@ const steps = [
                   loading="lazy"
                 />
                 <div class="project-overlay"></div>
-                <div class="project-info">
+                <div class="project-info project-info-desktop">
                   <div class="flex flex-wrap gap-2 mb-3">
                     {project.tags.map((tag) => (
                       <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-3 py-1 text-white/70 rounded-full" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(4px);">
@@ -239,24 +250,30 @@ const steps = [
                   </p>
                 </div>
               </div>
-              <div class="flex items-center justify-between mt-5 md:mt-7">
-                <div>
+              <div class="mt-5 md:mt-7">
+                <div class="flex items-center justify-between">
                   <h3 class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
                     {project.name}
                   </h3>
+                  <span class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink group-hover:text-accent tracking-wide">
+                    View Site
+                    <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
+                  </span>
                 </div>
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink hover:text-accent tracking-wide"
-                  data-cursor-hover
-                >
-                  View Site
-                  <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
-                </a>
+                <div class="project-info-mobile">
+                  <div class="flex flex-wrap gap-2 mb-2 mt-3">
+                    {project.tags.map((tag) => (
+                      <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-2.5 py-0.5 text-muted rounded-full border border-current/10" style={`background: color-mix(in srgb, ${project.color} 10%, transparent);`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <p class="font-body text-muted text-sm leading-relaxed">
+                    {project.description}
+                  </p>
+                </div>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       </div>
