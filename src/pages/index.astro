@@ -775,7 +775,8 @@ const steps = [
     );
     if (typewriterEl) typeObs.observe(typewriterEl);
 
-    // ── Manifesto word-by-word scroll reveal ──
+    // ── Manifesto word-by-word scroll reveal (setup) ──
+    const manifestoData: { el: Element; wordSpans: NodeListOf<Element>; totalWords: number }[] = [];
     document.querySelectorAll('[data-manifesto]').forEach((el) => {
       const text = el.textContent?.trim() || '';
       el.innerHTML = '';
@@ -787,48 +788,13 @@ const steps = [
         el.appendChild(span);
         if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
       });
-
-      const wordSpans = el.querySelectorAll('.manifesto-word');
-      const totalWords = wordSpans.length;
-
-      function updateManifesto() {
-        const rect = el.getBoundingClientRect();
-        const viewH = window.innerHeight;
-        const start = viewH * 0.85;
-        const end = viewH * 0.15;
-        const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
-        const litCount = Math.floor(progress * totalWords);
-        wordSpans.forEach((w, i) => {
-          w.classList.toggle('lit', i < litCount);
-        });
-      }
-      window.addEventListener('scroll', updateManifesto, { passive: true });
-      updateManifesto();
+      manifestoData.push({ el, wordSpans: el.querySelectorAll('.manifesto-word'), totalWords: words.length });
     });
 
-    // ── Process step scroll-based highlighting ──
+    // ── Process steps (setup) ──
     const processSteps = document.querySelectorAll('.process-step');
-    function updateProcessHighlight() {
-      const viewCenter = window.innerHeight * 0.5;
-      let closestStep: Element | null = null;
-      let closestDist = Infinity;
-      processSteps.forEach((step) => {
-        const rect = step.getBoundingClientRect();
-        const stepCenter = rect.top + rect.height / 2;
-        const dist = Math.abs(stepCenter - viewCenter);
-        if (dist < closestDist && rect.top < window.innerHeight && rect.bottom > 0) {
-          closestDist = dist;
-          closestStep = step;
-        }
-      });
-      processSteps.forEach((step) => step.classList.toggle('active', step === closestStep));
-    }
-    if (processSteps.length > 0) {
-      window.addEventListener('scroll', updateProcessHighlight, { passive: true });
-      updateProcessHighlight();
-    }
 
-    // ── Scroll progress + nav rail ──
+    // ── Nav / scroll progress (setup) ──
     const scrollProgress = document.getElementById('scroll-progress');
     const navTop = document.getElementById('nav-top');
     const sections = document.querySelectorAll('section[id]');
@@ -836,11 +802,26 @@ const steps = [
     const navMobileLinks = document.querySelectorAll('.nav-mobile-link[data-nav-section]');
     const navRailProgress = document.getElementById('nav-rail-progress');
 
-    window.addEventListener('scroll', () => {
-      // Scroll progress bar
+    // ── Skew (setup) ──
+    let lastScrollY = window.scrollY;
+    let scrollVelocity = 0;
+    let velocityTarget = 0;
+    const skewElements = document.querySelectorAll('[data-skew]');
+
+    // ── Parallax (setup) ──
+    const hasPointer = window.matchMedia('(pointer: fine)').matches;
+    const parallaxElements = hasPointer ? document.querySelectorAll('[data-parallax]') : [];
+
+    // ── Unified scroll handler (one rAF per frame) ──
+    let scrollTicking = false;
+
+    function onScrollFrame() {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const viewH = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight - viewH;
       const scrollPct = docHeight > 0 ? scrollTop / docHeight : 0;
+
+      // Scroll progress bar
       if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
 
       // Nav top frosted glass
@@ -858,56 +839,79 @@ const steps = [
           currentSection = section.id;
         }
       });
-
-      // Update nav rail active states
       navNodes.forEach((node) => {
         const section = (node as HTMLElement).dataset.navSection;
         node.classList.toggle('active', section === currentSection);
       });
-
-      // Update mobile nav active states
       navMobileLinks.forEach((link) => {
         const section = (link as HTMLElement).dataset.navSection;
         link.classList.toggle('active', section === currentSection);
       });
-    });
 
-    // ── Scroll velocity tracking for text skew ──
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
-    let velocityTarget = 0;
-
-    window.addEventListener('scroll', () => {
-      velocityTarget = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
-    });
-
-    const skewElements = document.querySelectorAll('[data-skew]');
-    function updateSkew() {
-      scrollVelocity += (velocityTarget - scrollVelocity) * 0.1;
-      velocityTarget *= 0.95;
-      const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
-      skewElements.forEach((el) => {
-        (el as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
+      // Manifesto word-by-word reveal
+      manifestoData.forEach(({ el, wordSpans, totalWords }) => {
+        const rect = el.getBoundingClientRect();
+        const start = viewH * 0.85;
+        const end = viewH * 0.15;
+        const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+        const litCount = Math.floor(progress * totalWords);
+        wordSpans.forEach((w, i) => {
+          w.classList.toggle('lit', i < litCount);
+        });
       });
-      requestAnimationFrame(updateSkew);
-    }
-    if (skewElements.length > 0) requestAnimationFrame(updateSkew);
 
-    // ── Parallax depth layers ──
-    if (window.matchMedia('(pointer: fine)').matches) {
-      const parallaxElements = document.querySelectorAll('[data-parallax]');
-      window.addEventListener('scroll', () => {
+      // Process step highlighting
+      if (processSteps.length > 0) {
+        const viewCenter = viewH * 0.5;
+        let closestStep: Element | null = null;
+        let closestDist = Infinity;
+        processSteps.forEach((step) => {
+          const rect = step.getBoundingClientRect();
+          const stepCenter = rect.top + rect.height / 2;
+          const dist = Math.abs(stepCenter - viewCenter);
+          if (dist < closestDist && rect.top < viewH && rect.bottom > 0) {
+            closestDist = dist;
+            closestStep = step;
+          }
+        });
+        processSteps.forEach((step) => step.classList.toggle('active', step === closestStep));
+      }
+
+      // Scroll velocity for skew
+      velocityTarget = scrollTop - lastScrollY;
+      lastScrollY = scrollTop;
+      scrollVelocity += (velocityTarget - scrollVelocity) * 0.1;
+      if (skewElements.length > 0) {
+        const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
+        skewElements.forEach((el) => {
+          (el as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
+        });
+      }
+
+      // Parallax depth layers
+      if (hasPointer) {
         parallaxElements.forEach((el) => {
           const htmlEl = el as HTMLElement;
           if (htmlEl.id === 'hero-name') return;
           const speed = parseFloat(htmlEl.dataset.parallax || '0');
           const rect = el.getBoundingClientRect();
-          const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * speed;
+          const offset = (rect.top + rect.height / 2 - viewH / 2) * speed;
           htmlEl.style.transform = `translateY(${offset}px)`;
         });
-      });
+      }
+
+      scrollTicking = false;
     }
+
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(onScrollFrame);
+      }
+    }, { passive: true });
+
+    // Run once on load
+    onScrollFrame();
 
     // ── Mobile menu ──
     const menuToggle = document.getElementById('menu-toggle');
