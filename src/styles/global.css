@@ -743,9 +743,9 @@ body {
 .project-color-block {
   position: absolute;
   top: 12px;
-  right: -12px;
+  right: 12px;
   bottom: calc(38% - 12px);
-  left: 12px;
+  left: -12px;
   background: var(--card-color);
   border-radius: 16px;
   opacity: 0.15;
@@ -755,7 +755,7 @@ body {
 
 .project-card-v:hover .project-color-block {
   opacity: 0.25;
-  transform: translate(4px, 4px);
+  transform: translate(-4px, 4px);
 }
 
 [data-theme="dark"] .project-color-block {
@@ -769,8 +769,8 @@ body {
 @media (max-width: 768px) {
   .project-color-block {
     top: 8px;
-    right: -8px;
-    left: 8px;
+    right: 8px;
+    left: -8px;
   }
 
   .project-index {
