@@ -1,0 +1,1025 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+
+const projects = [
+  {
+    name: 'Hartley & Co Plumbing',
+    description: 'Professional plumbing website with emergency contact features and service area mapping',
+    tags: ['Google Maps', 'FAQ Accordion', 'Contact Form', 'SEO'],
+    gradient: 'linear-gradient(135deg, #1E3A5F 0%, #2A5F8F 50%, #1A2F4D 100%)',
+    link: '#',
+  },
+  {
+    name: 'Kin & Grain Café',
+    description: 'Warm editorial-style cafe site with full menu, events, and email capture',
+    tags: ['Email Newsletter', 'Tabbed Menu', 'Event Listings', 'Catering Form'],
+    gradient: 'linear-gradient(135deg, #C4704B 0%, #D4916B 50%, #A85A3A 100%)',
+    link: '#',
+  },
+  {
+    name: 'Apex Performance Studio',
+    description: 'Bold dark-themed fitness site with membership pricing and class timetable',
+    tags: ['Pricing Table', 'Multi-Step Form', 'Class Timetable', 'Before/After'],
+    gradient: 'linear-gradient(135deg, #FF6B2C 0%, #FF8F5C 50%, #E05A1A 100%)',
+    link: '#',
+  },
+  {
+    name: 'Whitfield & Associates',
+    description: 'Minimal professional services site with insights blog and consultation booking',
+    tags: ['Blog with Filters', 'Booking Form', 'Scroll Animations', 'Client Logos'],
+    gradient: 'linear-gradient(135deg, #1B2B4B 0%, #2C4066 50%, #141F38 100%)',
+    link: '#',
+  },
+  {
+    name: 'LUMA Hair & Beauty',
+    description: 'Luxury salon site with full service menu, booking flow, and transformation gallery',
+    tags: ['Booking Flow', 'Service Pricing', 'Before/After Slider', 'Team Carousel'],
+    gradient: 'linear-gradient(135deg, #C4828A 0%, #D4A2AA 50%, #A86870 100%)',
+    link: '#',
+  },
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Discovery',
+    description: 'I research your business, your competitors, and your customers. Then I build a free mockup so you can see what\'s possible before committing.',
+  },
+  {
+    number: '02',
+    title: 'Design & Build',
+    description: 'Every site is custom-designed from scratch. Fast-loading, mobile-first, and optimised for Google search from day one.',
+  },
+  {
+    number: '03',
+    title: 'Launch',
+    description: 'I handle hosting, domain setup, and deployment. Your site goes live on a fast, reliable platform with zero downtime.',
+  },
+  {
+    number: '04',
+    title: 'Support',
+    description: 'Monthly performance reports, quick updates when you need them, and ongoing hosting management. You focus on your business.',
+  },
+];
+---
+
+<Layout
+  title="Alister Maddrell — Web Designer & Developer, Sydney"
+  description="I design and build fast, modern websites for local businesses across Sydney. Custom-built, SEO-optimised, and designed to convert."
+>
+  <!-- Loader -->
+  <div id="loader"><span>AM</span></div>
+
+  <!-- Scroll progress -->
+  <div id="scroll-progress"></div>
+
+  <!-- Theme transition overlay -->
+  <div id="theme-transition"></div>
+
+  <!-- Grain overlay -->
+  <svg id="grain" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-filter)" />
+  </svg>
+
+  <!-- Custom cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-circle"></div>
+
+  <!-- Cursor trail dots -->
+  <div id="cursor-trail"></div>
+
+  <!-- Navigation — floating capsule on scroll -->
+  <nav id="nav" class="fixed top-0 left-0 right-0 z-[100] px-6 md:px-10 py-5">
+    <div class="container-main flex items-center justify-center">
+      <div id="nav-inner" class="flex items-center gap-10">
+        <a href="#hero" class="nav-logo font-heading text-sm font-bold tracking-[0.15em] uppercase text-ink" data-cursor-hover data-magnetic>AM</a>
+        <div class="hidden md:flex items-center gap-10">
+          <a href="#work" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Work</a>
+          <a href="#process" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Process</a>
+          <a href="#about" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>About</a>
+          <a href="#contact" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Contact</a>
+          <button id="theme-toggle" class="w-8 h-8 flex items-center justify-center text-muted hover:text-ink" data-cursor-hover data-magnetic aria-label="Toggle theme">
+            <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 md:hidden ml-auto">
+        <button id="theme-toggle-mobile" class="w-8 h-8 flex items-center justify-center text-muted" data-cursor-hover aria-label="Toggle theme">
+          <svg class="icon-moon-m" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun-m" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button id="menu-toggle" class="flex flex-col gap-[5px] p-2 -mr-2" data-cursor-hover aria-label="Menu">
+          <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-1"></span>
+          <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-2"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="fixed inset-0 z-[99] bg-ink opacity-0 invisible flex items-center justify-center">
+    <div class="flex flex-col items-center gap-8">
+      <a href="#work" class="menu-link font-heading text-3xl font-light text-surface tracking-wide" data-cursor-hover>Work</a>
+      <a href="#process" class="menu-link font-heading text-3xl font-light text-surface tracking-wide" data-cursor-hover>Process</a>
+      <a href="#about" class="menu-link font-heading text-3xl font-light text-surface tracking-wide" data-cursor-hover>About</a>
+      <a href="#contact" class="menu-link font-heading text-3xl font-light text-surface tracking-wide" data-cursor-hover>Contact</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- ─── HERO ─── -->
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10">
+      <div class="hero-orb"></div>
+      <div class="container-main w-full pt-24">
+        <h1 id="hero-name" class="hero-name text-ink">
+          Alister Maddrell
+        </h1>
+        <div id="hero-subtitle" class="mt-6 md:mt-10 opacity-0" style="transition: opacity 0.8s ease;">
+          <p class="font-heading text-muted text-lg md:text-xl font-medium tracking-wide max-w-xl">
+            Every pixel <span class="text-accent">earns its place.</span>
+          </p>
+          <p class="font-body text-sm mt-3 tracking-[0.15em] uppercase" style="color: var(--color-muted); opacity: 0.6;">
+            Web Designer & Developer · Sydney
+          </p>
+        </div>
+      </div>
+      <div class="scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+        <span class="font-body text-[0.6875rem] tracking-[0.2em] uppercase text-muted">Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ─── INTRO ─── -->
+    <section id="intro" class="px-6 md:px-10 py-28 md:py-40">
+      <div class="container-main">
+        <div class="section-divider mb-12" data-reveal></div>
+        <div class="word-reveal-wrapper" data-reveal>
+          <p class="font-heading text-2xl md:text-[2.25rem] md:leading-[1.35] font-medium text-ink max-w-[800px]" data-word-reveal>
+            I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.
+          </p>
+        </div>
+        <p class="font-heading text-2xl md:text-[2.25rem] md:leading-[1.35] font-medium max-w-[800px] mt-2" data-reveal style="transition-delay: 0.1s; color: var(--color-muted); opacity: 0.4;">
+          No templates. No WordPress. Just clean, high-performance code.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── WORK ─── -->
+    <section id="work" class="py-28 md:py-0">
+      <!-- Horizontal scroll wrapper (tall on desktop for scroll space) -->
+      <div id="work-scroll-wrapper" class="relative">
+        <div id="work-sticky" class="md:sticky md:top-0 md:h-screen md:flex md:flex-col md:justify-center md:overflow-hidden">
+          <div class="container-main px-6 md:px-10 mb-16 md:mb-10">
+            <div class="flex items-center gap-6" data-reveal>
+              <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
+                Selected Work
+              </h2>
+              <div class="flex-1 h-px" style="background: var(--color-line);"></div>
+              <span class="font-heading text-sm font-medium counter-value" data-counter="5" style="color: var(--color-muted); opacity: 0.4;">0</span>
+            </div>
+          </div>
+          <div id="work-track" class="flex flex-col md:flex-row gap-20 md:gap-10 px-6 md:px-0 md:pl-[7.5%]" data-skew>
+            {projects.map((project, i) => (
+              <article
+                class="project-card group rounded-lg overflow-hidden"
+                style={`background: var(--color-surface-alt);`}
+                data-reveal
+                data-tilt
+              >
+                <div class="project-preview rounded-t-lg">
+                  <div
+                    class="project-preview-inner flex items-end p-6 md:p-10"
+                    style={`background: ${project.gradient};`}
+                  >
+                    <span class="font-heading text-white/15 text-2xl md:text-4xl font-bold tracking-tight leading-tight">
+                      {project.name}
+                    </span>
+                  </div>
+                </div>
+                <div class="p-5 md:p-7">
+                  <div class="flex items-baseline gap-3 mb-2">
+                    <span class="font-heading text-xs font-bold tracking-widest" style="color: var(--color-muted); opacity: 0.35;">{String(i + 1).padStart(2, '0')}</span>
+                    <h3 class="font-heading text-lg md:text-xl font-bold text-ink tracking-tight" data-scramble>
+                      {project.name}
+                    </h3>
+                  </div>
+                  <p class="font-body text-muted text-sm leading-relaxed max-w-md">
+                    {project.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2 mt-4">
+                    {project.tags.map((tag) => (
+                      <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-3 py-1.5 text-muted rounded-full" style={`border: 1px solid var(--color-line);`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <a
+                    href={project.link}
+                    class="link-hover inline-flex items-center gap-2 mt-5 font-heading text-sm font-semibold text-ink hover:text-accent tracking-wide"
+                    data-cursor-hover
+                  >
+                    View Live Site
+                    <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PROCESS ─── -->
+    <section id="process" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
+      <div class="container-main">
+        <div class="flex items-center gap-6 mb-20 md:mb-28" data-reveal>
+          <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
+            How I Work
+          </h2>
+          <div class="flex-1 h-px" style="background: var(--color-line);"></div>
+        </div>
+        <div class="flex flex-col gap-0">
+          {steps.map((step, i) => (
+            <div
+              class="process-step group grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4 md:gap-12 py-10 md:py-14"
+              style={`border-bottom: 1px solid var(--color-line); ${i === 0 ? 'border-top: 1px solid var(--color-line);' : ''}`}
+              data-reveal
+            >
+              <span class="step-number" data-parallax="0.02">{step.number}</span>
+              <div class="max-w-lg">
+                <h3 class="font-heading text-lg md:text-xl font-bold text-ink tracking-tight">
+                  {step.title}
+                </h3>
+                <p class="font-body text-muted text-sm md:text-[0.9375rem] leading-relaxed mt-3">
+                  {step.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ABOUT ─── -->
+    <section id="about" class="px-6 md:px-10 py-28 md:py-40">
+      <div class="container-main">
+        <div class="flex items-center gap-6 mb-20 md:mb-28" data-reveal>
+          <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
+            About
+          </h2>
+          <div class="flex-1 h-px" style="background: var(--color-line);"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-12 md:gap-20 items-start">
+          <div id="monogram-wrapper" data-reveal>
+            <!-- Animated SVG monogram — draws itself on scroll -->
+            <svg
+              id="monogram-svg"
+              viewBox="0 0 140 70"
+              class="w-28 h-14 md:w-40 md:h-20"
+              fill="none"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M 8 62 L 32 8 L 56 62" class="monogram-path" pathLength="1" />
+              <path d="M 20 42 L 44 42" class="monogram-path" pathLength="1" />
+              <path d="M 74 62 L 74 8 L 100 38 L 126 8 L 126 62" class="monogram-path" pathLength="1" />
+            </svg>
+          </div>
+          <div class="max-w-lg" data-reveal style="transition-delay: 0.1s;">
+            <p class="font-heading text-xl md:text-2xl font-medium text-ink leading-snug">
+              I'm Alister — a web designer based in Sydney, building modern, high-performance websites for local businesses.
+            </p>
+            <p class="font-body text-muted text-[0.9375rem] leading-relaxed mt-5">
+              I believe great design should be invisible. The best websites don't feel designed — they just work.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CONTACT ─── -->
+    <section id="contact" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
+      <div class="container-main max-w-[700px]">
+        <h2 class="font-heading text-3xl md:text-5xl font-bold text-ink tracking-tight" data-reveal>
+          Let's Work Together
+        </h2>
+        <p class="font-body text-muted text-[0.9375rem] md:text-base mt-4 leading-relaxed max-w-md" data-reveal style="transition-delay: 0.1s;">
+          Got a business that needs a better online presence? I'd love to hear from you. I'll respond within 24 hours.
+        </p>
+
+        <form
+          id="contact-form"
+          action="https://formspree.io/f/placeholder"
+          method="POST"
+          class="mt-12 md:mt-16 flex flex-col gap-8"
+          data-reveal
+          style="transition-delay: 0.15s;"
+        >
+          <div>
+            <label for="name" class="sr-only">Name</label>
+            <input type="text" id="name" name="name" placeholder="Name *" required class="form-input" />
+          </div>
+          <div>
+            <label for="email" class="sr-only">Email</label>
+            <input type="email" id="email" name="email" placeholder="Email *" required class="form-input" />
+          </div>
+          <div>
+            <label for="business" class="sr-only">Business Name</label>
+            <input type="text" id="business" name="business" placeholder="Business Name (optional)" class="form-input" />
+          </div>
+          <div>
+            <label for="message" class="sr-only">Message</label>
+            <textarea id="message" name="message" placeholder="Tell me about your project *" required rows="4" class="form-input resize-none"></textarea>
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="accent-btn bg-accent text-white font-heading text-sm font-semibold tracking-[0.1em] uppercase px-10 py-4 rounded-full"
+              data-cursor-hover
+              data-magnetic
+            >
+              Send Message
+            </button>
+          </div>
+          <div id="form-success" class="hidden font-body text-accent text-sm">
+            Thank you! I'll be in touch soon.
+          </div>
+          <div id="form-error" class="hidden font-body text-red-500 text-sm">
+            Something went wrong. Please try emailing me directly.
+          </div>
+        </form>
+
+        <div class="mt-16 pt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8" style="border-top: 1px solid var(--color-line); transition-delay: 0.2s;" data-reveal>
+          <a
+            href="mailto:alistermaddrell@gmail.com"
+            class="link-hover font-body text-sm text-ink hover:text-accent"
+            data-cursor-hover
+          >
+            alistermaddrell@gmail.com
+          </a>
+          <span class="font-body text-sm text-muted">Sydney, Australia</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="px-6 md:px-10 py-8" style="border-top: 1px solid var(--color-line);">
+    <div class="container-main flex items-center justify-between">
+      <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
+      <div class="flex items-center gap-6">
+        <span class="font-body text-xs text-muted hidden sm:inline flex items-center gap-2">
+          <span class="live-dot"></span>
+          <span id="sydney-time"></span>
+          Sydney
+        </span>
+        <a
+          href="#hero"
+          class="link-hover font-body text-xs text-muted hover:text-ink"
+          data-cursor-hover
+        >
+          Back to top &uarr;
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── SCRIPTS ─── -->
+  <script>
+    import Lenis from 'lenis';
+
+    // ── Lenis smooth scroll ──
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Handle anchor clicks for Lenis
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = (anchor as HTMLAnchorElement).getAttribute('href');
+        if (!href) return;
+        const target = document.querySelector(href);
+        if (target) {
+          lenis.scrollTo(target as HTMLElement, { offset: 0 });
+          const mobileMenu = document.getElementById('mobile-menu');
+          if (mobileMenu?.classList.contains('open')) {
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+          }
+        }
+      });
+    });
+
+    // ── Loader ──
+    const loader = document.getElementById('loader');
+    const heroName = document.getElementById('hero-name');
+    const heroSubtitle = document.getElementById('hero-subtitle');
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        loader?.classList.add('done');
+        setTimeout(() => {
+          if (loader) loader.style.display = 'none';
+          splitAndAnimateHero();
+        }, 800);
+      }, 400);
+    });
+
+    // ── Text split animation ──
+    function splitAndAnimateHero() {
+      if (!heroName) return;
+      const text = heroName.textContent?.trim() || '';
+      heroName.innerHTML = '';
+
+      let charIndex = 0;
+      text.split(' ').forEach((word, wordIdx) => {
+        if (wordIdx > 0) {
+          const space = document.createElement('span');
+          space.innerHTML = '&nbsp;';
+          space.classList.add('char');
+          space.style.animationDelay = `${charIndex * 0.04}s`;
+          heroName.appendChild(space);
+          charIndex++;
+        }
+        const wordSpan = document.createElement('span');
+        wordSpan.style.display = 'inline-block';
+        wordSpan.style.whiteSpace = 'nowrap';
+        word.split('').forEach((char) => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.classList.add('char');
+          span.style.animationDelay = `${charIndex * 0.04}s`;
+          wordSpan.appendChild(span);
+          charIndex++;
+        });
+        heroName.appendChild(wordSpan);
+      });
+
+      setTimeout(() => {
+        if (heroSubtitle) heroSubtitle.style.opacity = '1';
+      }, charIndex * 40 + 400);
+    }
+
+    // ── Scroll-triggered reveals ──
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('[data-reveal]').forEach((el) => {
+      revealObserver.observe(el);
+    });
+
+    // ── Section divider — animate width/color AFTER reveal fade-in completes ──
+    document.querySelectorAll('.section-divider[data-reveal]').forEach((el) => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((m) => {
+          if ((m.target as HTMLElement).classList.contains('revealed')) {
+            // Wait for the opacity/transform transition to finish (800ms), then animate width
+            setTimeout(() => {
+              (el as HTMLElement).style.transition = 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.6s ease';
+              (el as HTMLElement).style.width = '96px';
+              (el as HTMLElement).style.backgroundColor = 'var(--color-accent)';
+            }, 600);
+            observer.disconnect();
+          }
+        });
+      });
+      observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // ── SVG Monogram — draw AFTER parent [data-reveal] finishes fading in ──
+    const monogramWrapper = document.getElementById('monogram-wrapper');
+    const monogramSvg = document.getElementById('monogram-svg');
+    if (monogramWrapper && monogramSvg) {
+      const monoMutation = new MutationObserver((mutations) => {
+        mutations.forEach((m) => {
+          if ((m.target as HTMLElement).classList.contains('revealed')) {
+            // Wait for parent fade-in to complete before triggering draw
+            setTimeout(() => {
+              monogramSvg.classList.add('monogram-drawn');
+            }, 500);
+            monoMutation.disconnect();
+          }
+        });
+      });
+      monoMutation.observe(monogramWrapper, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // ── Staggered word reveal on intro paragraph ──
+    document.querySelectorAll('[data-word-reveal]').forEach((el) => {
+      const text = el.textContent?.trim() || '';
+      el.innerHTML = '';
+      const words = text.split(/\s+/);
+      words.forEach((word, i) => {
+        const span = document.createElement('span');
+        span.textContent = word;
+        span.classList.add('word-reveal');
+        span.style.transitionDelay = `${i * 0.04}s`;
+        el.appendChild(span);
+        if (i < words.length - 1) {
+          el.appendChild(document.createTextNode(' '));
+        }
+      });
+    });
+
+    // ── Scroll progress bar ──
+    const scrollProgress = document.getElementById('scroll-progress');
+
+    // ── Nav scroll state ──
+    const nav = document.getElementById('nav');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // ── Scroll velocity tracking for text skew ──
+    let lastScrollY = window.scrollY;
+    let scrollVelocity = 0;
+    let velocityTarget = 0;
+
+    window.addEventListener('scroll', () => {
+      // Scroll progress
+      if (scrollProgress) {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        scrollProgress.style.width = `${docHeight > 0 ? (scrollTop / docHeight) * 100 : 0}%`;
+      }
+
+      // Nav background
+      if (window.scrollY > 80) {
+        nav?.classList.add('scrolled');
+      } else {
+        nav?.classList.remove('scrolled');
+      }
+
+      // Active section
+      let currentSection = '';
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 200 && rect.bottom >= 200) {
+          currentSection = section.id;
+        }
+      });
+
+      navLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href === `#${currentSection}`) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+
+      // Scroll velocity for skew
+      velocityTarget = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+    });
+
+    // ── Scroll velocity skew (smooth) ──
+    const skewElements = document.querySelectorAll('[data-skew]');
+    function updateSkew() {
+      scrollVelocity += (velocityTarget - scrollVelocity) * 0.1;
+      velocityTarget *= 0.95; // decay
+      const skewVal = Math.max(-4, Math.min(4, scrollVelocity * 0.15));
+      skewElements.forEach((el) => {
+        (el as HTMLElement).style.transform = (el as HTMLElement).style.transform
+          ? (el as HTMLElement).style.transform.replace(/skewY\([^)]*\)/, `skewY(${skewVal}deg)`)
+          : `skewY(${skewVal}deg)`;
+      });
+      requestAnimationFrame(updateSkew);
+    }
+    if (skewElements.length > 0) requestAnimationFrame(updateSkew);
+
+    // ── Parallax depth layers (skip elements with char animation) ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      const parallaxElements = document.querySelectorAll('[data-parallax]');
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        parallaxElements.forEach((el) => {
+          // Skip hero name — it gets its transform from char animation
+          if ((el as HTMLElement).id === 'hero-name') return;
+          const speed = parseFloat((el as HTMLElement).dataset.parallax || '0');
+          const rect = el.getBoundingClientRect();
+          const elementCenter = rect.top + rect.height / 2;
+          const viewCenter = window.innerHeight / 2;
+          const offset = (elementCenter - viewCenter) * speed;
+          (el as HTMLElement).style.transform = `translateY(${offset}px)`;
+        });
+      });
+    }
+
+    // ── Horizontal scroll gallery (desktop only) ──
+    const workWrapper = document.getElementById('work-scroll-wrapper');
+    const workTrack = document.getElementById('work-track');
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+
+    if (isDesktop && workWrapper && workTrack) {
+      const calcHorizontalScroll = () => {
+        const trackWidth = workTrack.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        const scrollDistance = trackWidth - viewportWidth + 100;
+        workWrapper.style.height = `${scrollDistance + window.innerHeight}px`;
+        return scrollDistance;
+      };
+
+      let totalScrollDist = calcHorizontalScroll();
+      window.addEventListener('resize', () => {
+        totalScrollDist = calcHorizontalScroll();
+      });
+
+      window.addEventListener('scroll', () => {
+        const rect = workWrapper.getBoundingClientRect();
+        const wrapperTop = -rect.top;
+        const scrollRange = workWrapper.offsetHeight - window.innerHeight;
+        if (scrollRange <= 0) return;
+        const progress = Math.max(0, Math.min(1, wrapperTop / scrollRange));
+        const skewVal = Math.max(-4, Math.min(4, scrollVelocity * 0.15));
+        workTrack.style.transform = `translateX(${-progress * totalScrollDist}px) skewY(${skewVal}deg)`;
+      });
+    } else if (workWrapper) {
+      workWrapper.style.height = 'auto';
+    }
+
+    // ── Mobile menu ──
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuLine1 = document.getElementById('menu-line-1');
+    const menuLine2 = document.getElementById('menu-line-2');
+
+    menuToggle?.addEventListener('click', () => {
+      const isOpen = mobileMenu?.classList.contains('open');
+      if (isOpen) {
+        mobileMenu?.classList.remove('open');
+        document.body.style.overflow = '';
+        if (menuLine1) menuLine1.style.transform = '';
+        if (menuLine2) menuLine2.style.transform = '';
+      } else {
+        mobileMenu?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        if (menuLine1) menuLine1.style.transform = 'translateY(3.25px) rotate(45deg)';
+        if (menuLine2) menuLine2.style.transform = 'translateY(-3.25px) rotate(-45deg)';
+      }
+    });
+
+    // ── Custom cursor ──
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorCircle = document.getElementById('cursor-circle');
+
+    if (window.matchMedia('(pointer: fine)').matches && cursorDot && cursorCircle) {
+      let mouseX = -100;
+      let mouseY = -100;
+      let circleX = -100;
+      let circleY = -100;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      });
+
+      function animateCircle() {
+        circleX += (mouseX - circleX) * 0.12;
+        circleY += (mouseY - circleY) * 0.12;
+        cursorCircle.style.transform = `translate(${circleX}px, ${circleY}px)`;
+        requestAnimationFrame(animateCircle);
+      }
+      animateCircle();
+
+      document.querySelectorAll('a, button, [data-cursor-hover]').forEach((el) => {
+        el.addEventListener('mouseenter', () => cursorCircle.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursorCircle.classList.remove('hover'));
+      });
+
+      document.addEventListener('mouseleave', () => {
+        cursorDot.style.opacity = '0';
+        cursorCircle.style.opacity = '0';
+      });
+      document.addEventListener('mouseenter', () => {
+        cursorDot.style.opacity = '1';
+        cursorCircle.style.opacity = '0.4';
+      });
+
+      // ── Cursor trail (comet effect) ──
+      const trailContainer = document.getElementById('cursor-trail');
+      if (trailContainer) {
+        const TRAIL_COUNT = 8;
+        const trailDots: HTMLElement[] = [];
+        for (let i = 0; i < TRAIL_COUNT; i++) {
+          const dot = document.createElement('div');
+          dot.classList.add('cursor-trail-dot');
+          dot.style.width = `${4 - i * 0.4}px`;
+          dot.style.height = `${4 - i * 0.4}px`;
+          trailContainer.appendChild(dot);
+          trailDots.push(dot);
+        }
+
+        const trailPositions = Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }));
+
+        function animateTrail() {
+          trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
+          trailPositions[0].y += (mouseY - trailPositions[0].y) * 0.3;
+
+          for (let i = 1; i < TRAIL_COUNT; i++) {
+            trailPositions[i].x += (trailPositions[i - 1].x - trailPositions[i].x) * 0.25;
+            trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
+          }
+
+          trailDots.forEach((dot, i) => {
+            dot.style.transform = `translate(${trailPositions[i].x - 2}px, ${trailPositions[i].y - 2}px)`;
+            dot.style.opacity = `${0.3 - i * 0.035}`;
+          });
+
+          requestAnimationFrame(animateTrail);
+        }
+        animateTrail();
+
+        document.addEventListener('mouseleave', () => {
+          trailDots.forEach((dot) => { dot.style.opacity = '0'; });
+        });
+      }
+    }
+
+    // ── 3D tilt on project cards (RAF-based) ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-tilt]').forEach((card) => {
+        const el = card as HTMLElement;
+        let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+        let rafId: number | null = null;
+        let isHovering = false;
+
+        function animate() {
+          const dx = targetX - currentX;
+          const dy = targetY - currentY;
+          currentX += dx * 0.08;
+          currentY += dy * 0.08;
+          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+
+          if (!isHovering && Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
+            currentX = 0;
+            currentY = 0;
+            el.style.transform = '';
+            rafId = null;
+            return;
+          }
+          rafId = requestAnimationFrame(animate);
+        }
+
+        function startLoop() {
+          if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+
+        el.addEventListener('mouseenter', () => { isHovering = true; startLoop(); });
+        el.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = el.getBoundingClientRect();
+          const cx = rect.width / 2, cy = rect.height / 2;
+          targetX = ((e.clientY - rect.top - cy) / cy) * -3;
+          targetY = ((e.clientX - rect.left - cx) / cx) * 3;
+        });
+        el.addEventListener('mouseleave', () => { isHovering = false; targetX = 0; targetY = 0; startLoop(); });
+      });
+    }
+
+    // ── Magnetic effect ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-magnetic]').forEach((el) => {
+        const element = el as HTMLElement;
+        element.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = element.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          element.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+        });
+        element.addEventListener('mouseleave', () => { element.style.transform = ''; });
+      });
+    }
+
+    // ── Text scramble on project name hover ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-scramble]').forEach((el) => {
+        const element = el as HTMLElement;
+        const originalText = element.textContent?.trim() || '';
+        let intervalId: number | null = null;
+
+        element.addEventListener('mouseenter', () => {
+          if (intervalId) clearInterval(intervalId);
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&0123456789';
+          let step = 0;
+          const totalSteps = 14;
+
+          intervalId = window.setInterval(() => {
+            step++;
+            let result = '';
+            for (let i = 0; i < originalText.length; i++) {
+              if (originalText[i] === ' ' || originalText[i] === '&') {
+                result += originalText[i];
+              } else if (step / totalSteps > i / originalText.length) {
+                result += originalText[i];
+              } else {
+                result += chars[Math.floor(Math.random() * chars.length)];
+              }
+            }
+            element.textContent = result;
+            if (step >= totalSteps) {
+              clearInterval(intervalId!);
+              intervalId = null;
+              element.textContent = originalText;
+            }
+          }, 40);
+        });
+
+        element.addEventListener('mouseleave', () => {
+          if (intervalId) { clearInterval(intervalId); intervalId = null; }
+          element.textContent = originalText;
+        });
+      });
+    }
+
+    // ── Scroll-triggered counter ──
+    document.querySelectorAll('[data-counter]').forEach((el) => {
+      const target = parseInt((el as HTMLElement).dataset.counter || '0', 10);
+      let hasAnimated = false;
+
+      const counterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasAnimated) {
+              hasAnimated = true;
+              let current = 0;
+              const duration = 1200;
+              const startTime = performance.now();
+
+              function tick(now: number) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+                current = Math.round(eased * target);
+                el.textContent = String(current).padStart(2, '0');
+                if (progress < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+              counterObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      counterObserver.observe(el);
+    });
+
+    // ── Dark mode toggle with organic blob transition ──
+    function toggleTheme(button: HTMLElement) {
+      const overlay = document.getElementById('theme-transition');
+      if (!overlay) return;
+
+      const rect = button.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const maxRadius = Math.ceil(Math.sqrt(
+        Math.max(x, window.innerWidth - x) ** 2 +
+        Math.max(y, window.innerHeight - y) ** 2
+      ));
+
+      const isDark = document.documentElement.dataset.theme === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      const newBg = newTheme === 'dark' ? '#0A0A0A' : '#FAFAFA';
+
+      overlay.style.backgroundColor = newBg;
+      overlay.style.transition = 'none';
+      overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+      overlay.offsetHeight; // force reflow
+
+      // Organic blob transition using ellipse + keyframe animation
+      const duration = 900;
+      const startTime = performance.now();
+
+      function animateBlob(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease in-out with organic wobble
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+        const radius = eased * maxRadius;
+        // Create organic blob shape using ellipse with shifting radii
+        const wobble1 = Math.sin(progress * Math.PI * 3) * radius * 0.08;
+        const wobble2 = Math.cos(progress * Math.PI * 2) * radius * 0.06;
+        const rx = radius + wobble1;
+        const ry = radius + wobble2;
+
+        overlay.style.clipPath = `ellipse(${rx}px ${ry}px at ${x}px ${y}px)`;
+
+        if (progress < 1) {
+          requestAnimationFrame(animateBlob);
+        } else {
+          // Clean up
+          overlay.style.clipPath = 'circle(0px at 50% 50%)';
+        }
+      }
+
+      requestAnimationFrame(animateBlob);
+
+      // Swap theme at ~40% through animation
+      setTimeout(() => {
+        document.documentElement.dataset.theme = newTheme;
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+      }, duration * 0.4);
+    }
+
+    function updateThemeIcons(theme: string) {
+      const isDark = theme === 'dark';
+      const moon = document.getElementById('icon-moon');
+      const sun = document.getElementById('icon-sun');
+      if (moon) moon.style.display = isDark ? 'none' : 'block';
+      if (sun) sun.style.display = isDark ? 'block' : 'none';
+      document.querySelectorAll('.icon-moon-m').forEach(el => (el as HTMLElement).style.display = isDark ? 'none' : 'block');
+      document.querySelectorAll('.icon-sun-m').forEach(el => (el as HTMLElement).style.display = isDark ? 'block' : 'none');
+    }
+
+    // Init icons based on current theme
+    updateThemeIcons(document.documentElement.dataset.theme || 'light');
+
+    // Desktop toggle
+    document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
+      toggleTheme(e.currentTarget as HTMLElement);
+    });
+
+    // Mobile toggle
+    document.getElementById('theme-toggle-mobile')?.addEventListener('click', (e) => {
+      toggleTheme(e.currentTarget as HTMLElement);
+    });
+
+    // ── Live Sydney time ──
+    function updateSydneyTime() {
+      const el = document.getElementById('sydney-time');
+      if (!el) return;
+      const now = new Date();
+      const sydneyTime = now.toLocaleTimeString('en-AU', {
+        timeZone: 'Australia/Sydney',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      el.textContent = sydneyTime + ' ';
+    }
+    updateSydneyTime();
+    setInterval(updateSydneyTime, 30000);
+
+    // ── Contact form ──
+    const contactForm = document.getElementById('contact-form') as HTMLFormElement | null;
+    const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+
+    contactForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formSuccess?.classList.add('hidden');
+      formError?.classList.add('hidden');
+
+      const formData = new FormData(contactForm);
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' },
+        });
+
+        if (response.ok) {
+          formSuccess?.classList.remove('hidden');
+          contactForm.reset();
+        } else {
+          formError?.classList.remove('hidden');
+        }
+      } catch {
+        formError?.classList.remove('hidden');
+      }
+    });
+  </script>
+</Layout>
