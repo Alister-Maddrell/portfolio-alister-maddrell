@@ -1045,7 +1045,6 @@ const steps = [
           const maxScroll = img.offsetHeight - container.offsetHeight;
           if (maxScroll <= 0) { scrollRaf = null; return; }
 
-          img.style.filter = hovering ? 'grayscale(0%) brightness(1)' : 'grayscale(50%) brightness(0.97)';
 
           if (hovering) {
             // Initial delay before starting to scroll
@@ -1085,7 +1084,6 @@ const steps = [
               scrollPos = 0;
               prevScrollPos = 0;
               img.style.transform = '';
-              img.style.filter = '';
               currentStop = 0;
               isPaused = false;
               pauseCounter = 0;
@@ -1101,7 +1099,7 @@ const steps = [
 
           img.style.transform = `translateY(${-scrollPos}px)`;
           if (blur > 0.3) {
-            img.style.filter = `grayscale(0%) brightness(1) blur(${blur}px)`;
+            img.style.filter = `blur(${blur}px)`;
           }
 
           scrollRaf = requestAnimationFrame(animateScroll);

@@ -826,7 +826,6 @@ body {
   min-height: 100%;
   object-fit: cover;
   object-position: top;
-  filter: grayscale(50%) brightness(0.97);
   transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1490,9 +1489,6 @@ body {
     transform: none;
   }
 
-  .project-card-v .project-image-inner {
-    filter: grayscale(0%);
-  }
 
   .project-details {
     opacity: 1;
