@@ -1023,10 +1023,14 @@ const steps = [
         if (!img || !container) return;
 
         let scrollPos = 0;
-        let scrollTarget = 0;
         let scrollRaf: number | null = null;
         let hovering = false;
-        const speed = 0.4; // pixels per frame
+        let currentStop = 0;
+        let stopTarget = 0;
+        const stops = [0, 0.25, 0.5, 0.75, 1]; // section stops as % of max scroll
+        const pauseDuration = 60; // frames to pause at each stop (~1s)
+        let pauseCounter = 0;
+        let isPaused = false;
 
         function ensureImageLoaded(cb: () => void) {
           if (img.naturalHeight > 0) { cb(); return; }
@@ -1037,32 +1041,53 @@ const steps = [
           const maxScroll = img.offsetHeight - container.offsetHeight;
           if (maxScroll <= 0) { scrollRaf = null; return; }
 
-          scrollTarget = hovering ? maxScroll : 0;
+          img.style.filter = hovering ? 'grayscale(0%) brightness(1)' : 'grayscale(50%) brightness(0.97)';
 
           if (hovering) {
-            scrollPos = Math.min(scrollPos + speed, scrollTarget);
+            stopTarget = stops[currentStop] * maxScroll;
+
+            if (isPaused) {
+              pauseCounter++;
+              if (pauseCounter >= pauseDuration) {
+                isPaused = false;
+                pauseCounter = 0;
+                if (currentStop < stops.length - 1) currentStop++;
+              }
+            } else {
+              // Smooth ease toward current stop
+              scrollPos += (stopTarget - scrollPos) * 0.06;
+
+              if (Math.abs(scrollPos - stopTarget) < 1) {
+                scrollPos = stopTarget;
+                if (currentStop < stops.length - 1) {
+                  isPaused = true;
+                  pauseCounter = 0;
+                }
+              }
+            }
           } else {
-            scrollPos += (scrollTarget - scrollPos) * 0.05;
+            // Ease back to top
+            scrollPos += (0 - scrollPos) * 0.06;
+            if (Math.abs(scrollPos) < 0.5) {
+              scrollPos = 0;
+              img.style.transform = '';
+              currentStop = 0;
+              isPaused = false;
+              pauseCounter = 0;
+              scrollRaf = null;
+              return;
+            }
           }
 
           img.style.transform = `translateY(${-scrollPos}px)`;
-          img.style.filter = hovering ? 'grayscale(0%) brightness(1)' : 'grayscale(50%) brightness(0.97)';
-
-          const done = hovering
-            ? scrollPos >= scrollTarget - 0.5
-            : Math.abs(scrollPos - scrollTarget) < 0.5;
-
-          if (done && !hovering) {
-            scrollPos = 0;
-            img.style.transform = '';
-            scrollRaf = null;
-            return;
-          }
           scrollRaf = requestAnimationFrame(animateScroll);
         }
 
         card.addEventListener('mouseenter', () => {
           hovering = true;
+          currentStop = 1; // start moving to first section
+          isPaused = false;
+          pauseCounter = 0;
           ensureImageLoaded(() => {
             if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
           });
@@ -1070,6 +1095,7 @@ const steps = [
 
         card.addEventListener('mouseleave', () => {
           hovering = false;
+          currentStop = 0;
           if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
         });
       });
