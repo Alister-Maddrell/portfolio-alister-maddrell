@@ -827,12 +827,7 @@ body {
   object-fit: cover;
   object-position: top;
   filter: grayscale(50%) brightness(0.97);
-  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.project-card-v:hover .project-image-inner {
-  filter: grayscale(0%) brightness(1);
-  transform: translateY(-25%);
+  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Floating UI elements */

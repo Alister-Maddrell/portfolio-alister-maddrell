@@ -11,9 +11,9 @@ const projects = [
     link: 'https://demo-hartley-plumbing.vercel.app',
     color: '#2563eb',
     floats: [
-      { text: '24/7 Emergency', style: 'badge', pos: 'top: 8%; right: 4%;', depth: 0.04 },
-      { text: 'Call Now →', style: 'cta', pos: 'bottom: 18%; right: 6%;', depth: 0.06 },
-      { text: '★ 4.9', style: 'pill', pos: 'top: 16%; left: 4%;', depth: 0.03 },
+      { text: 'Interactive Service Map', style: 'badge', pos: 'top: 10%; right: 5%;', depth: 0.04 },
+      { text: 'Emergency Contact Flow', style: 'cta', pos: 'bottom: 22%; left: 5%;', depth: 0.05 },
+      { text: 'Live FAQ Accordion', style: 'pill', pos: 'top: 65%; left: 5%;', depth: 0.03 },
     ],
   },
   {
@@ -24,9 +24,9 @@ const projects = [
     link: 'https://demo-kin-grain-cafe.vercel.app',
     color: '#b45309',
     floats: [
-      { text: 'Book a Table', style: 'cta', pos: 'bottom: 16%; left: 6%;', depth: 0.05 },
-      { text: 'Open 7am–4pm', style: 'pill', pos: 'top: 10%; right: 4%;', depth: 0.03 },
-      { text: 'View Menu', style: 'badge', pos: 'bottom: 35%; right: 4%;', depth: 0.06 },
+      { text: 'Tabbed Menu System', style: 'badge', pos: 'top: 10%; left: 5%;', depth: 0.04 },
+      { text: 'Event Listings & RSVP', style: 'cta', pos: 'bottom: 22%; right: 5%;', depth: 0.05 },
+      { text: 'Newsletter Capture', style: 'pill', pos: 'top: 60%; right: 5%;', depth: 0.03 },
     ],
   },
   {
@@ -37,9 +37,9 @@ const projects = [
     link: 'https://demo-apex-fitness.vercel.app',
     color: '#dc2626',
     floats: [
-      { text: 'Join Now', style: 'cta', pos: 'bottom: 20%; right: 5%;', depth: 0.06 },
-      { text: '$49/wk', style: 'badge', pos: 'top: 12%; left: 4%;', depth: 0.04 },
-      { text: 'Free Trial', style: 'pill', pos: 'top: 8%; right: 4%;', depth: 0.03 },
+      { text: 'Multi-Step Sign Up', style: 'cta', pos: 'top: 10%; right: 5%;', depth: 0.05 },
+      { text: 'Before / After Slider', style: 'badge', pos: 'bottom: 22%; left: 5%;', depth: 0.04 },
+      { text: 'Class Timetable', style: 'pill', pos: 'top: 60%; left: 5%;', depth: 0.03 },
     ],
   },
   {
@@ -50,9 +50,9 @@ const projects = [
     link: 'https://demo-whitfield-accounting.vercel.app',
     color: '#1e3a5f',
     floats: [
-      { text: 'Book Consultation', style: 'cta', pos: 'bottom: 18%; left: 5%;', depth: 0.05 },
-      { text: 'Est. 1987', style: 'pill', pos: 'top: 10%; left: 4%;', depth: 0.03 },
-      { text: 'Read Insights →', style: 'badge', pos: 'bottom: 40%; right: 4%;', depth: 0.06 },
+      { text: 'Filterable Blog', style: 'badge', pos: 'top: 10%; left: 5%;', depth: 0.04 },
+      { text: 'Consultation Booking', style: 'cta', pos: 'bottom: 22%; right: 5%;', depth: 0.05 },
+      { text: 'Scroll Animations', style: 'pill', pos: 'top: 60%; right: 5%;', depth: 0.03 },
     ],
   },
   {
@@ -63,9 +63,9 @@ const projects = [
     link: 'https://demo-luma-hair-beauty.vercel.app',
     color: '#7c3aed',
     floats: [
-      { text: 'Book Now', style: 'cta', pos: 'bottom: 16%; right: 6%;', depth: 0.06 },
-      { text: 'From $85', style: 'badge', pos: 'top: 12%; right: 4%;', depth: 0.04 },
-      { text: '★ 5.0', style: 'pill', pos: 'top: 10%; left: 4%;', depth: 0.03 },
+      { text: 'Step-by-Step Booking', style: 'cta', pos: 'top: 10%; right: 5%;', depth: 0.05 },
+      { text: 'Transformation Gallery', style: 'badge', pos: 'bottom: 22%; left: 5%;', depth: 0.04 },
+      { text: 'Team Carousel', style: 'pill', pos: 'top: 60%; left: 5%;', depth: 0.03 },
     ],
   },
 ];
@@ -1013,6 +1013,66 @@ const steps = [
           (navRailNodes as HTMLElement).style.transform = `translateY(${clamped}px)`;
         });
       }
+    }
+
+    // ── Smooth image scroll on project card hover ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('.project-card-v').forEach((card) => {
+        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const container = card.querySelector('.project-image') as HTMLElement;
+        if (!img || !container) return;
+
+        let scrollPos = 0;
+        let scrollTarget = 0;
+        let scrollRaf: number | null = null;
+        let hovering = false;
+        const speed = 0.4; // pixels per frame
+
+        function ensureImageLoaded(cb: () => void) {
+          if (img.naturalHeight > 0) { cb(); return; }
+          img.addEventListener('load', cb, { once: true });
+        }
+
+        function animateScroll() {
+          const maxScroll = img.offsetHeight - container.offsetHeight;
+          if (maxScroll <= 0) { scrollRaf = null; return; }
+
+          scrollTarget = hovering ? maxScroll : 0;
+
+          if (hovering) {
+            scrollPos = Math.min(scrollPos + speed, scrollTarget);
+          } else {
+            scrollPos += (scrollTarget - scrollPos) * 0.05;
+          }
+
+          img.style.transform = `translateY(${-scrollPos}px)`;
+          img.style.filter = hovering ? 'grayscale(0%) brightness(1)' : 'grayscale(50%) brightness(0.97)';
+
+          const done = hovering
+            ? scrollPos >= scrollTarget - 0.5
+            : Math.abs(scrollPos - scrollTarget) < 0.5;
+
+          if (done && !hovering) {
+            scrollPos = 0;
+            img.style.transform = '';
+            scrollRaf = null;
+            return;
+          }
+          scrollRaf = requestAnimationFrame(animateScroll);
+        }
+
+        card.addEventListener('mouseenter', () => {
+          hovering = true;
+          ensureImageLoaded(() => {
+            if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          hovering = false;
+          if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+        });
+      });
     }
 
     // ── Floating UI parallax on project cards ──
