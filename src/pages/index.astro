@@ -228,8 +228,8 @@ const steps = [
               data-cursor-hover
               style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
-              <div class="project-card-layer"></div>
-              <div class="project-card-layer project-card-layer--2"></div>
+              <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div class="project-accent-bar"></div>
               <div class="project-image">
                 <img
                   src={project.thumbnail}

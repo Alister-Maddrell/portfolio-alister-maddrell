@@ -708,52 +708,70 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Stacked card layers behind image */
-.project-card-layer {
+/* Oversized index number behind card */
+.project-index {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  padding-bottom: 62.5%; /* match 16/10 aspect ratio */
-  border-radius: 16px;
-  border: 1px solid var(--card-color);
-  opacity: 0.25;
-  transform: rotate(-2deg) translate(-6px, 8px);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+  top: -0.35em;
+  right: -0.05em;
+  font-family: var(--font-heading);
+  font-size: clamp(8rem, 18vw, 14rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--card-color);
+  opacity: 0.06;
   z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(0);
 }
 
-.project-card-layer--2 {
+.project-card-v:hover .project-index {
   opacity: 0.12;
-  border-width: 1px;
-  transform: rotate(-4deg) translate(-12px, 14px);
+  transform: translateY(-4px);
 }
 
-.project-card-v:hover .project-card-layer {
-  opacity: 0.35;
-  transform: rotate(-3deg) translate(-8px, 10px);
+[data-theme="dark"] .project-index {
+  opacity: 0.1;
 }
 
-.project-card-v:hover .project-card-layer--2 {
-  opacity: 0.18;
-  transform: rotate(-5.5deg) translate(-16px, 18px);
+[data-theme="dark"] .project-card-v:hover .project-index {
+  opacity: 0.2;
 }
 
-[data-theme="dark"] .project-card-layer {
-  opacity: 0.35;
+/* Vertical accent bar */
+.project-accent-bar {
+  position: absolute;
+  left: -16px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--card-color);
+  border-radius: 2px;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-[data-theme="dark"] .project-card-layer--2 {
-  opacity: 0.18;
+.project-card-v:hover .project-accent-bar {
+  opacity: 0.6;
+  transform: scaleY(1);
 }
 
-[data-theme="dark"] .project-card-v:hover .project-card-layer {
-  opacity: 0.5;
+[data-theme="dark"] .project-card-v:hover .project-accent-bar {
+  opacity: 0.8;
 }
 
-[data-theme="dark"] .project-card-v:hover .project-card-layer--2 {
-  opacity: 0.3;
+@media (max-width: 768px) {
+  .project-accent-bar {
+    display: none;
+  }
+
+  .project-index {
+    font-size: clamp(6rem, 25vw, 10rem);
+    right: -0.02em;
+  }
 }
 
 .project-card-v .project-image {
