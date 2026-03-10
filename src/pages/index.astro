@@ -231,19 +231,10 @@ const steps = [
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" aria-hidden="true"></div>
               <div class="project-image">
-                <div class="project-iframe-wrap">
-                  <iframe
-                    data-src={project.link}
-                    title={`${project.name} live preview`}
-                    loading="lazy"
-                    sandbox="allow-scripts allow-same-origin"
-                    class="project-iframe"
-                  ></iframe>
-                </div>
                 <img
                   src={project.thumbnail}
                   alt={`${project.name} website screenshot`}
-                  class="project-image-fallback"
+                  class="project-image-inner w-full h-full object-cover object-top"
                   loading="lazy"
                 />
               </div>
@@ -987,47 +978,6 @@ const steps = [
           (navRailNodes as HTMLElement).style.transform = `translateY(${clamped}px)`;
         });
       }
-    }
-
-    // ── Live iframe previews ──
-    if (window.matchMedia('(pointer: fine)').matches) {
-      const iframeObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const iframe = entry.target as HTMLIFrameElement;
-            const src = iframe.dataset.src;
-            if (src && !iframe.src) {
-              iframe.src = src;
-              iframe.addEventListener('load', () => {
-                const fallback = iframe.closest('.project-image')?.querySelector('.project-image-fallback');
-                if (fallback) fallback.classList.add('hidden');
-              });
-            }
-            iframeObserver.unobserve(iframe);
-          }
-        });
-      }, { rootMargin: '200px' });
-
-      document.querySelectorAll('.project-iframe').forEach((iframe) => {
-        // Calculate scale based on container width
-        const container = iframe.closest('.project-image');
-        if (container) {
-          const scale = container.clientWidth / 1440;
-          (iframe as HTMLElement).style.setProperty('--iframe-scale', String(scale));
-        }
-        iframeObserver.observe(iframe);
-      });
-
-      // Recalculate scale on resize
-      window.addEventListener('resize', () => {
-        document.querySelectorAll('.project-iframe').forEach((iframe) => {
-          const container = iframe.closest('.project-image');
-          if (container) {
-            const scale = container.clientWidth / 1440;
-            (iframe as HTMLElement).style.setProperty('--iframe-scale', String(scale));
-          }
-        });
-      });
     }
 
     // ── 3D tilt on project cards ──

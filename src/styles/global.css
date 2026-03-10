@@ -817,58 +817,16 @@ body {
     0 16px 32px hsl(0deg 0% 0% / 0.1);
 }
 
-/* iframe wrapper — renders site at 1440px and scales to fit */
-.project-iframe-wrap {
+.project-card-v .project-image-inner {
   width: 100%;
   height: 100%;
-  position: relative;
-  overflow: hidden;
+  filter: grayscale(50%) brightness(0.97);
+  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.project-iframe {
-  width: 1440px;
-  height: 900px;
-  border: none;
-  pointer-events: none;
-  transform-origin: top left;
-  transform: scale(var(--iframe-scale, 0.5));
-  transition: transform 3s cubic-bezier(0.22, 1, 0.36, 1);
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* On hover, slide the iframe up to simulate scrolling */
-.project-card-v:hover .project-iframe {
-  transform: scale(var(--iframe-scale, 0.5)) translateY(-30%);
-}
-
-/* Static fallback — shown on mobile / when iframe hasn't loaded */
-.project-image-fallback {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  transition: opacity 0.5s ease;
-}
-
-.project-iframe-wrap + .project-image-fallback {
-  z-index: 1;
-}
-
-/* Once iframe loads, hide fallback */
-.project-image-fallback.hidden {
-  opacity: 0;
-  z-index: -1;
-}
-
-/* Mobile: keep static images, no iframes */
-@media (pointer: coarse) {
-  .project-iframe-wrap { display: none; }
-  .project-image-fallback { position: relative; }
-  .project-image-fallback.hidden { opacity: 1; z-index: auto; }
+.project-card-v:hover .project-image-inner {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.03);
 }
 
 /* Project details — always visible below image */
