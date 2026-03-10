@@ -874,6 +874,7 @@ body {
 /* Project details — always visible below image */
 .project-details {
   padding: 1.5rem 0.25rem 0;
+  will-change: transform;
 }
 
 .project-tag {

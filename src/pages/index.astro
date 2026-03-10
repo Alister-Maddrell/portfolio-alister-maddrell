@@ -255,7 +255,7 @@ const steps = [
             >
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" aria-hidden="true"></div>
-              <div class="project-image" data-parallax-container>
+              <div class="project-image" data-parallax-container data-skew>
                 <img
                   src={project.thumbnail}
                   alt={`${project.name} website screenshot`}
@@ -273,7 +273,7 @@ const steps = [
                   </span>
                 ))}
               </div>
-              <div class="project-details" data-reveal>
+              <div class="project-details" data-reveal data-skew>
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
                     {project.name}
@@ -882,10 +882,18 @@ const steps = [
       lastScrollY = scrollTop;
       scrollVelocity += (velocityTarget - scrollVelocity) * 0.1;
       if (skewElements.length > 0) {
-        const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
-        skewElements.forEach((el) => {
-          (el as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
-        });
+        const absVel = Math.abs(scrollVelocity);
+        if (absVel > 0.05) {
+          const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
+          skewElements.forEach((el) => {
+            (el as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
+          });
+        } else if (absVel > 0) {
+          scrollVelocity = 0;
+          skewElements.forEach((el) => {
+            (el as HTMLElement).style.transform = '';
+          });
+        }
       }
 
       // Parallax depth layers
