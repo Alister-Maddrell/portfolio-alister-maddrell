@@ -1104,86 +1104,175 @@ body {
 /* ─── Contact section — interactive reveal ─── */
 
 /* Big prompt typewriter */
-.contact-prompt {
-  font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-  font-weight: 700;
-  color: var(--color-ink);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+/* ─── Contact section — marquee + split ─── */
+
+.contact-section {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Marquee band */
+.contact-marquee {
+  padding: 3rem 0;
+  overflow: hidden;
   opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.contact-prompt.revealed {
+.contact-marquee.revealed {
   opacity: 1;
+  transform: scale(1);
 }
 
-.contact-prompt .accent {
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+  padding: 0.5rem 0;
+}
+
+.marquee-text {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-ink);
+  padding: 0 1rem;
+  flex-shrink: 0;
+  transition: color 0.4s ease, -webkit-text-stroke-color 0.4s ease;
+  user-select: none;
+}
+
+.marquee-track:hover .marquee-text {
   color: var(--color-accent);
+  -webkit-text-stroke-color: var(--color-accent);
 }
 
-/* Draw-in line that expands across the section */
-.contact-draw-line {
+.marquee-dot {
+  width: clamp(8px, 1.5vw, 14px);
+  height: clamp(8px, 1.5vw, 14px);
+  background: var(--color-accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: 0 1.5rem;
+}
+
+[data-theme="dark"] .marquee-text {
+  -webkit-text-stroke-color: var(--color-ink);
+}
+
+/* Divider that draws in from center */
+.contact-divider {
   width: 0;
   height: 1px;
-  background: var(--color-accent);
-  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-  margin: 2.5rem 0;
+  background: var(--color-line);
+  margin: 0 auto;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
 }
 
-.contact-draw-line.drawn {
+.contact-divider.drawn {
   width: 100%;
 }
 
-/* Form card — slides up with glass border */
-.contact-form-card {
-  position: relative;
-  border: 1px solid var(--color-line);
-  border-radius: 16px;
-  padding: 2.5rem;
-  background: var(--color-surface);
+/* Split content area */
+.contact-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+
+/* Left side — CTA + details */
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   opacity: 0;
-  transform: translateY(60px) scale(0.96);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  overflow: hidden;
+  transform: translateX(-60px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
 }
 
-.contact-form-card.revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* Animated border glow on the card */
-.contact-form-card::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  border-radius: 17px;
-  background: conic-gradient(from var(--contact-angle, 0deg), var(--color-accent), transparent 40%, transparent 60%, var(--color-accent));
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.contact-form-card:focus-within::before {
-  opacity: 0.5;
-}
-
-/* Field rows that slide in staggered */
-.contact-field {
-  position: relative;
-  margin-bottom: 1.5rem;
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.contact-field.revealed {
+.contact-left.revealed {
   opacity: 1;
   transform: translateX(0);
+}
+
+.contact-cta {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  font-weight: 800;
+  color: var(--color-ink);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.contact-cta-accent {
+  color: var(--color-accent);
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.contact-detail-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+a.contact-detail-link {
+  cursor: pointer;
+}
+
+a.contact-detail-link:hover .contact-detail-value {
+  color: var(--color-accent);
+}
+
+.contact-detail-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.contact-detail-value {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  transition: color 0.3s ease;
+}
+
+/* Right side — form */
+.contact-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+}
+
+.contact-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.contact-field {
+  position: relative;
+  margin-bottom: 2rem;
 }
 
 .contact-field label {
@@ -1227,22 +1316,7 @@ body {
   opacity: 0.4;
 }
 
-/* Animated underline that draws in on focus */
-.contact-field .field-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--color-accent);
-  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.contact-field:focus-within .field-line {
-  width: 100%;
-}
-
-/* Submit — expanding arrow button */
+/* Submit button */
 .contact-send {
   display: inline-flex;
   align-items: center;
@@ -1261,14 +1335,7 @@ body {
   position: relative;
   overflow: hidden;
   transition: color 0.4s ease, border-color 0.4s ease;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.contact-send.revealed {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s ease, border-color 0.4s ease;
+  margin-top: 0.5rem;
 }
 
 .contact-send::before {
@@ -1292,67 +1359,47 @@ body {
   border-color: var(--color-accent);
 }
 
-.contact-send span {
+.contact-send-text,
+.contact-send-arrow {
   position: relative;
   z-index: 1;
 }
 
-.contact-send .send-arrow {
-  position: relative;
-  z-index: 1;
+.contact-send-arrow {
+  display: flex;
   transition: transform 0.3s ease;
 }
 
-.contact-send:hover .send-arrow {
+.contact-send:hover .contact-send-arrow {
   transform: translateX(6px);
 }
 
-/* Info row at bottom */
-.contact-info-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-top: 2.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--color-line);
-}
+/* Mobile: stack vertically */
+@media (max-width: 768px) {
+  .contact-split {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 3rem 1.5rem 4rem;
+  }
 
-.contact-info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  font-family: var(--font-body);
-  font-size: 0.8125rem;
-  color: var(--color-muted);
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.5s ease, transform 0.5s ease, color 0.3s ease;
-  text-decoration: none;
-}
+  .contact-left {
+    transform: translateY(40px);
+  }
 
-.contact-info-item.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
+  .contact-left.revealed {
+    transform: translateY(0);
+  }
 
-.contact-info-item:hover {
-  color: var(--color-accent);
-}
+  .contact-right {
+    transform: translateY(40px);
+  }
 
-.contact-info-item svg {
-  flex-shrink: 0;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
+  .contact-right.revealed {
+    transform: translateY(0);
+  }
 
-.contact-info-item:hover svg {
-  opacity: 1;
-}
-
-@media (max-width: 640px) {
-  .contact-form-card {
-    padding: 1.5rem;
-    border-radius: 12px;
+  .marquee-text {
+    -webkit-text-stroke-width: 1px;
   }
 }
 

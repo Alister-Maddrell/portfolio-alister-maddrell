@@ -422,52 +422,73 @@ const steps = [
     </section>
 
     <!-- ─── CONTACT ─── -->
-    <section id="contact" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
-      <div class="container-main">
-        <!-- Big typewriter prompt -->
-        <p class="contact-prompt" data-contact-prompt>
-          Got a project in mind? <span class="accent">Let's talk.</span>
-        </p>
+    <section id="contact" class="contact-section">
+      <!-- Velocity-reactive marquee band -->
+      <div class="contact-marquee" data-contact-marquee>
+        <div class="marquee-track" data-marquee-track="left">
+          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+        </div>
+        <div class="marquee-track" data-marquee-track="right">
+          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-dot" aria-hidden="true"></span>
+        </div>
+      </div>
 
-        <!-- Draw-in line -->
-        <div class="contact-draw-line" data-contact-line></div>
+      <!-- Divider -->
+      <div class="contact-divider" data-contact-divider></div>
 
-        <!-- Form card -->
-        <div class="contact-form-card" data-contact-card>
+      <!-- Split content -->
+      <div class="contact-split">
+        <div class="contact-left" data-contact-left>
+          <p class="contact-cta">
+            Got a project?<br />
+            <span class="contact-cta-accent">Let's make it real.</span>
+          </p>
+          <div class="contact-details">
+            <a href="mailto:alistermaddrell@gmail.com" class="contact-detail-link" data-cursor-hover>
+              <span class="contact-detail-label">Email</span>
+              <span class="contact-detail-value">alistermaddrell@gmail.com</span>
+            </a>
+            <div class="contact-detail-link">
+              <span class="contact-detail-label">Location</span>
+              <span class="contact-detail-value">Sydney, Australia</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-right" data-contact-right>
           <form id="contact-form" action="https://formspree.io/f/placeholder" method="POST">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
-              <div class="contact-field" data-contact-field>
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name" required />
-                <div class="field-line"></div>
-              </div>
-              <div class="contact-field" data-contact-field>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="your@email.com" required />
-                <div class="field-line"></div>
-              </div>
-              <div class="contact-field" data-contact-field>
-                <label for="business">Business</label>
-                <input type="text" id="business" name="business" placeholder="Company name (optional)" />
-                <div class="field-line"></div>
-              </div>
-              <div class="contact-field" data-contact-field>
-                <label for="budget">Budget</label>
-                <input type="text" id="budget" name="budget" placeholder="e.g. $2k — $5k" />
-                <div class="field-line"></div>
-              </div>
+            <div class="contact-field" data-contact-field>
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="contact-field" data-contact-field>
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
             </div>
             <div class="contact-field" data-contact-field>
               <label for="message">Message</label>
-              <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="3" class="resize-none"></textarea>
-              <div class="field-line"></div>
+              <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="4" class="resize-none"></textarea>
             </div>
-            <div class="mt-8">
-              <button type="submit" class="contact-send" data-contact-send data-cursor-hover>
-                <span>Send Message</span>
-                <span class="send-arrow">&rarr;</span>
-              </button>
-            </div>
+            <button type="submit" class="contact-send" data-cursor-hover>
+              <span class="contact-send-text">Send Message</span>
+              <span class="contact-send-arrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </button>
           </form>
 
           <div id="form-success" class="hidden py-12 text-center">
@@ -476,18 +497,6 @@ const steps = [
           </div>
           <div id="form-error" class="hidden font-body text-red-500 text-sm mt-4">
             Something went wrong. Please try emailing me directly.
-          </div>
-        </div>
-
-        <!-- Info row -->
-        <div class="contact-info-row">
-          <a href="mailto:alistermaddrell@gmail.com" class="contact-info-item" data-contact-info data-cursor-hover>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            alistermaddrell@gmail.com
-          </a>
-          <div class="contact-info-item" data-contact-info>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            Sydney, Australia
           </div>
         </div>
       </div>
@@ -1282,82 +1291,84 @@ const steps = [
       });
     }
 
-    // ── Contact section scroll animations ──
-    // Prompt typewriter
-    const contactPrompt = document.querySelector('[data-contact-prompt]') as HTMLElement;
-    if (contactPrompt) {
-      const promptText = contactPrompt.innerHTML;
-      contactPrompt.innerHTML = '';
-      contactPrompt.style.opacity = '1';
-      let promptStarted = false;
+    // ── Contact section — velocity-reactive marquee ──
+    const marqueeSection = document.querySelector('[data-contact-marquee]');
+    const leftTrack = document.querySelector('[data-marquee-track="left"]') as HTMLElement;
+    const rightTrack = document.querySelector('[data-marquee-track="right"]') as HTMLElement;
 
-      const promptObs = new IntersectionObserver((entries) => {
+    if (leftTrack && rightTrack) {
+      let leftPos = 0;
+      let rightPos = 0;
+      const baseSpeed = 0.8;
+      let marqueeActive = false;
+      let lenisVelocity = 0;
+
+      // Tap into Lenis scroll velocity
+      lenis.on('scroll', (e: { velocity: number }) => {
+        lenisVelocity = e.velocity;
+      });
+
+      // Get the width of one full repeat unit (half the track since we duplicated content)
+      function getResetWidth(track: HTMLElement) {
+        return track.scrollWidth / 2;
+      }
+
+      function animateMarquee() {
+        if (!marqueeActive) return;
+
+        const speedMultiplier = 1 + Math.abs(lenisVelocity) * 0.15;
+        const speed = baseSpeed * speedMultiplier;
+
+        const leftReset = getResetWidth(leftTrack);
+        const rightReset = getResetWidth(rightTrack);
+
+        // Left track moves left, right track moves right
+        leftPos -= speed;
+        rightPos += speed;
+
+        if (Math.abs(leftPos) >= leftReset) leftPos = 0;
+        if (rightPos >= rightReset) rightPos = 0;
+
+        leftTrack.style.transform = `translateX(${leftPos}px)`;
+        rightTrack.style.transform = `translateX(${rightPos - rightReset}px)`;
+
+        requestAnimationFrame(animateMarquee);
+      }
+
+      // Start marquee when section enters viewport
+      const marqueeObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !promptStarted) {
-            promptStarted = true;
-            // Strip HTML to get plain text, then type it back with HTML
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = promptText;
-            const plainText = tempDiv.textContent || '';
-            let idx = 0;
-            const cursor = document.createElement('span');
-            cursor.classList.add('typewriter-cursor');
-
-            function typePrompt() {
-              if (idx >= plainText.length) {
-                contactPrompt.innerHTML = promptText;
-                contactPrompt.classList.add('revealed');
-                // Trigger the line draw
-                setTimeout(() => {
-                  document.querySelector('[data-contact-line]')?.classList.add('drawn');
-                }, 200);
-                // Trigger the card
-                setTimeout(() => {
-                  document.querySelector('[data-contact-card]')?.classList.add('revealed');
-                }, 600);
-                // Trigger fields staggered
-                setTimeout(() => {
-                  document.querySelectorAll('[data-contact-field]').forEach((f, i) => {
-                    setTimeout(() => f.classList.add('revealed'), i * 100);
-                  });
-                }, 900);
-                // Trigger send button
-                setTimeout(() => {
-                  document.querySelector('[data-contact-send]')?.classList.add('revealed');
-                }, 1400);
-                // Trigger info items
-                setTimeout(() => {
-                  document.querySelectorAll('[data-contact-info]').forEach((item, i) => {
-                    setTimeout(() => item.classList.add('revealed'), i * 150);
-                  });
-                }, 1600);
-                return;
-              }
-              contactPrompt.textContent = plainText.slice(0, idx + 1);
-              contactPrompt.appendChild(cursor);
-              idx++;
-              const ch = plainText[idx - 1];
-              const delay = ch === '?' ? 200 : ch === ' ' ? 40 : 30;
-              setTimeout(typePrompt, delay);
+          if (entry.isIntersecting) {
+            if (!marqueeActive) {
+              marqueeActive = true;
+              requestAnimationFrame(animateMarquee);
             }
-            typePrompt();
-            promptObs.unobserve(entry.target);
+            marqueeSection?.classList.add('revealed');
+          } else {
+            marqueeActive = false;
           }
         });
-      }, { threshold: 0.3 });
-      promptObs.observe(contactPrompt);
+      }, { threshold: 0.1 });
+      if (marqueeSection) marqueeObs.observe(marqueeSection);
     }
 
-    // Rotating conic gradient on form card
-    const contactCard = document.querySelector('[data-contact-card]') as HTMLElement;
-    if (contactCard) {
-      let angle = 0;
-      function rotateGradient() {
-        angle = (angle + 0.5) % 360;
-        contactCard.style.setProperty('--contact-angle', `${angle}deg`);
-        requestAnimationFrame(rotateGradient);
-      }
-      rotateGradient();
+    // Contact split reveal
+    const contactDivider = document.querySelector('[data-contact-divider]');
+    const contactLeft = document.querySelector('[data-contact-left]');
+    const contactRight = document.querySelector('[data-contact-right]');
+
+    if (contactDivider) {
+      const splitObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            contactDivider.classList.add('drawn');
+            setTimeout(() => contactLeft?.classList.add('revealed'), 300);
+            setTimeout(() => contactRight?.classList.add('revealed'), 500);
+            splitObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      splitObs.observe(contactDivider);
     }
 
     // ── Contact form submit ──
