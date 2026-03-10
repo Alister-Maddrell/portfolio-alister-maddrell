@@ -9,6 +9,7 @@ const projects = [
     tags: ['Google Maps', 'FAQ Accordion', 'Contact Form', 'SEO'],
     thumbnail: '/thumbnails/hartley.png',
     link: 'https://demo-hartley-plumbing.vercel.app',
+    color: '#2563eb',
   },
   {
     name: 'Kin & Grain Café',
@@ -16,6 +17,7 @@ const projects = [
     tags: ['Email Newsletter', 'Tabbed Menu', 'Event Listings', 'Catering Form'],
     thumbnail: '/thumbnails/cafe.png',
     link: 'https://demo-kin-grain-cafe.vercel.app',
+    color: '#b45309',
   },
   {
     name: 'Apex Performance Studio',
@@ -23,6 +25,7 @@ const projects = [
     tags: ['Pricing Table', 'Multi-Step Form', 'Class Timetable', 'Before/After'],
     thumbnail: '/thumbnails/fitness.png',
     link: 'https://demo-apex-fitness.vercel.app',
+    color: '#dc2626',
   },
   {
     name: 'Whitfield & Associates',
@@ -30,6 +33,7 @@ const projects = [
     tags: ['Blog with Filters', 'Booking Form', 'Scroll Animations', 'Client Logos'],
     thumbnail: '/thumbnails/accounting.png',
     link: 'https://demo-whitfield-accounting.vercel.app',
+    color: '#1e3a5f',
   },
   {
     name: 'LUMA Hair & Beauty',
@@ -37,6 +41,7 @@ const projects = [
     tags: ['Booking Flow', 'Service Pricing', 'Before/After Slider', 'Team Carousel'],
     thumbnail: '/thumbnails/hair.png',
     link: 'https://demo-luma-hair-beauty.vercel.app',
+    color: '#7c3aed',
   },
 ];
 
@@ -211,13 +216,20 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <div class="flex flex-col gap-24 md:gap-32" data-skew>
+        <div class="flex flex-col gap-32 md:gap-40" data-skew>
           {projects.map((project, i) => (
-            <article
-              class="project-card project-card-v group"
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-card project-card-v group block"
               data-reveal="scale"
               data-tilt
+              data-cursor-hover
+              style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
+              <div class="project-card-layer"></div>
+              <div class="project-card-layer project-card-layer--2"></div>
               <div class="project-image">
                 <img
                   src={project.thumbnail}
@@ -225,38 +237,29 @@ const steps = [
                   class="project-image-inner w-full h-full object-cover object-top"
                   loading="lazy"
                 />
-                <div class="project-overlay"></div>
-                <div class="project-info">
-                  <div class="flex flex-wrap gap-2 mb-3">
-                    {project.tags.map((tag) => (
-                      <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-3 py-1 text-white/70 rounded-full" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(4px);">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <p class="font-body text-white/80 text-sm leading-relaxed max-w-md">
-                    {project.description}
-                  </p>
-                </div>
               </div>
-              <div class="flex items-center justify-between mt-5 md:mt-7">
-                <div>
+              <div class="project-details" data-reveal>
+                <div class="flex items-center justify-between mb-4">
                   <h3 class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
                     {project.name}
                   </h3>
+                  <span class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink group-hover:text-accent tracking-wide transition-colors">
+                    View Site
+                    <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
+                  </span>
                 </div>
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink hover:text-accent tracking-wide"
-                  data-cursor-hover
-                >
-                  View Site
-                  <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
-                </a>
+                <p class="font-body text-muted text-sm md:text-[0.9375rem] leading-relaxed mb-4 max-w-lg">
+                  {project.description}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span class="project-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       </div>
