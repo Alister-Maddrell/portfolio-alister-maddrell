@@ -1192,10 +1192,14 @@ const steps = [
         let isHovering = false;
 
         function animate() {
-          currentX += (targetX - currentX) * 0.08;
-          currentY += (targetY - currentY) * 0.08;
-          el.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-          if (!isHovering && Math.abs(targetX - currentX) < 0.01 && Math.abs(targetY - currentY) < 0.01) {
+          const dx = targetX - currentX;
+          const dy = targetY - currentY;
+          currentX += dx * 0.08;
+          currentY += dy * 0.08;
+          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+          if (!isHovering && Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
+            currentX = 0;
+            currentY = 0;
             el.style.transform = '';
             rafId = null;
             return;
@@ -1207,8 +1211,9 @@ const steps = [
         el.addEventListener('mouseenter', () => { isHovering = true; startLoop(); });
         el.addEventListener('mousemove', (e: MouseEvent) => {
           const rect = el.getBoundingClientRect();
-          targetX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -2;
-          targetY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 2;
+          const cx = rect.width / 2, cy = rect.height / 2;
+          targetX = ((e.clientY - rect.top - cy) / cy) * -3;
+          targetY = ((e.clientX - rect.left - cx) / cx) * 3;
         });
         el.addEventListener('mouseleave', () => { isHovering = false; targetX = 0; targetY = 0; startLoop(); });
       });

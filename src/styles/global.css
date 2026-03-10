@@ -705,14 +705,8 @@ body {
   position: relative;
   display: block;
   text-decoration: none;
-  perspective: 1000px;
   will-change: transform;
   contain: layout style;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.project-card-v:hover {
-  transform: skewY(-1.5deg);
 }
 
 /* Oversized index number behind card */
