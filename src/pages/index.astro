@@ -10,6 +10,11 @@ const projects = [
     thumbnail: '/thumbnails/hartley.png',
     link: 'https://demo-hartley-plumbing.vercel.app',
     color: '#2563eb',
+    floats: [
+      { text: '24/7 Emergency', style: 'badge', pos: 'top: 8%; right: -4%;', depth: 0.04 },
+      { text: 'Call Now →', style: 'cta', pos: 'bottom: 18%; right: 6%;', depth: 0.06 },
+      { text: '★ 4.9', style: 'pill', pos: 'top: 14%; left: -3%;', depth: 0.03 },
+    ],
   },
   {
     name: 'Kin & Grain Café',
@@ -18,6 +23,11 @@ const projects = [
     thumbnail: '/thumbnails/cafe.png',
     link: 'https://demo-kin-grain-cafe.vercel.app',
     color: '#b45309',
+    floats: [
+      { text: 'Book a Table', style: 'cta', pos: 'bottom: 16%; left: 6%;', depth: 0.05 },
+      { text: 'Open 7am–4pm', style: 'pill', pos: 'top: 10%; right: -3%;', depth: 0.03 },
+      { text: 'View Menu', style: 'badge', pos: 'top: 55%; right: -5%;', depth: 0.06 },
+    ],
   },
   {
     name: 'Apex Performance Studio',
@@ -26,6 +36,11 @@ const projects = [
     thumbnail: '/thumbnails/fitness.png',
     link: 'https://demo-apex-fitness.vercel.app',
     color: '#dc2626',
+    floats: [
+      { text: 'Join Now', style: 'cta', pos: 'bottom: 20%; right: 5%;', depth: 0.06 },
+      { text: '$49/wk', style: 'badge', pos: 'top: 12%; left: -4%;', depth: 0.04 },
+      { text: 'Free Trial', style: 'pill', pos: 'top: 8%; right: -3%;', depth: 0.03 },
+    ],
   },
   {
     name: 'Whitfield & Associates',
@@ -34,6 +49,11 @@ const projects = [
     thumbnail: '/thumbnails/accounting.png',
     link: 'https://demo-whitfield-accounting.vercel.app',
     color: '#1e3a5f',
+    floats: [
+      { text: 'Book Consultation', style: 'cta', pos: 'bottom: 18%; left: 5%;', depth: 0.05 },
+      { text: 'Est. 1987', style: 'pill', pos: 'top: 10%; left: -4%;', depth: 0.03 },
+      { text: 'Read Insights →', style: 'badge', pos: 'top: 50%; right: -5%;', depth: 0.06 },
+    ],
   },
   {
     name: 'LUMA Hair & Beauty',
@@ -42,6 +62,11 @@ const projects = [
     thumbnail: '/thumbnails/hair.png',
     link: 'https://demo-luma-hair-beauty.vercel.app',
     color: '#7c3aed',
+    floats: [
+      { text: 'Book Now', style: 'cta', pos: 'bottom: 16%; right: 6%;', depth: 0.06 },
+      { text: 'From $85', style: 'badge', pos: 'top: 12%; right: -4%;', depth: 0.04 },
+      { text: '★ 5.0', style: 'pill', pos: 'top: 8%; left: -3%;', depth: 0.03 },
+    ],
   },
 ];
 
@@ -230,13 +255,23 @@ const steps = [
             >
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" aria-hidden="true"></div>
-              <div class="project-image">
+              <div class="project-image" data-parallax-container>
                 <img
                   src={project.thumbnail}
                   alt={`${project.name} website screenshot`}
-                  class="project-image-inner w-full h-full object-cover object-top"
+                  class="project-image-inner"
                   loading="lazy"
                 />
+                {project.floats.map((f) => (
+                  <span
+                    class={`floating-ui floating-ui--${f.style}`}
+                    style={`${f.pos} --depth: ${f.depth};`}
+                    data-float-depth={f.depth}
+                    aria-hidden="true"
+                  >
+                    {f.text}
+                  </span>
+                ))}
               </div>
               <div class="project-details" data-reveal>
                 <div class="flex items-center justify-between mb-4">
@@ -978,6 +1013,34 @@ const steps = [
           (navRailNodes as HTMLElement).style.transform = `translateY(${clamped}px)`;
         });
       }
+    }
+
+    // ── Floating UI parallax on project cards ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-parallax-container]').forEach((container) => {
+        const floats = container.querySelectorAll('[data-float-depth]');
+        if (!floats.length) return;
+
+        container.addEventListener('mousemove', (e: Event) => {
+          const me = e as MouseEvent;
+          const rect = (container as HTMLElement).getBoundingClientRect();
+          const x = (me.clientX - rect.left - rect.width / 2) / rect.width;
+          const y = (me.clientY - rect.top - rect.height / 2) / rect.height;
+
+          floats.forEach((el) => {
+            const depth = parseFloat((el as HTMLElement).dataset.floatDepth || '0.04');
+            const moveX = x * depth * 800;
+            const moveY = y * depth * 800;
+            (el as HTMLElement).style.transform = `translate(${moveX}px, ${moveY}px)`;
+          });
+        });
+
+        container.addEventListener('mouseleave', () => {
+          floats.forEach((el) => {
+            (el as HTMLElement).style.transform = '';
+          });
+        });
+      });
     }
 
     // ── 3D tilt on project cards ──

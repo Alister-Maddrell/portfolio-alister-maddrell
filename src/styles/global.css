@@ -819,14 +819,77 @@ body {
 
 .project-card-v .project-image-inner {
   width: 100%;
-  height: 100%;
+  height: 200%;
+  object-fit: cover;
+  object-position: top;
   filter: grayscale(50%) brightness(0.97);
-  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), object-position 3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-card-v:hover .project-image-inner {
   filter: grayscale(0%) brightness(1);
-  transform: scale(1.03);
+  object-position: bottom;
+}
+
+/* Floating UI elements */
+.floating-ui {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+  will-change: transform;
+}
+
+.project-card-v:hover .floating-ui {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card-v:hover .floating-ui:nth-child(3) { transition-delay: 0.05s; }
+.project-card-v:hover .floating-ui:nth-child(4) { transition-delay: 0.1s; }
+.project-card-v:hover .floating-ui:nth-child(5) { transition-delay: 0.15s; }
+
+/* Badge style */
+.floating-ui--badge {
+  background: var(--card-color);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* CTA button style */
+.floating-ui--cta {
+  background: #fff;
+  color: var(--card-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Pill/tag style */
+.floating-ui--pill {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+  .floating-ui { display: none; }
 }
 
 /* Project details — always visible below image */
