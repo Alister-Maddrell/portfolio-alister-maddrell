@@ -708,31 +708,52 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Colored panel behind entire card */
+/* Stacked card layers behind image */
 .project-card-layer {
   position: absolute;
-  inset: -8px;
-  border-radius: 24px;
-  background: var(--card-color);
-  opacity: 0.07;
-  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  padding-bottom: 62.5%; /* match 16/10 aspect ratio */
+  border-radius: 16px;
+  border: 1px solid var(--card-color);
+  opacity: 0.25;
+  transform: rotate(-2deg) translate(-6px, 8px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
   z-index: -1;
 }
 
 .project-card-layer--2 {
-  display: none;
+  opacity: 0.12;
+  border-width: 1px;
+  transform: rotate(-4deg) translate(-12px, 14px);
 }
 
 .project-card-v:hover .project-card-layer {
-  opacity: 0.13;
+  opacity: 0.35;
+  transform: rotate(-3deg) translate(-8px, 10px);
+}
+
+.project-card-v:hover .project-card-layer--2 {
+  opacity: 0.18;
+  transform: rotate(-5.5deg) translate(-16px, 18px);
 }
 
 [data-theme="dark"] .project-card-layer {
-  opacity: 0.12;
+  opacity: 0.35;
+}
+
+[data-theme="dark"] .project-card-layer--2 {
+  opacity: 0.18;
 }
 
 [data-theme="dark"] .project-card-v:hover .project-card-layer {
-  opacity: 0.2;
+  opacity: 0.5;
+}
+
+[data-theme="dark"] .project-card-v:hover .project-card-layer--2 {
+  opacity: 0.3;
 }
 
 .project-card-v .project-image {
