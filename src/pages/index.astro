@@ -62,6 +62,7 @@ const steps = [
     description: 'Monthly performance reports, quick updates when you need them, and ongoing hosting management. You focus on your business.',
   },
 ];
+
 ---
 
 <Layout
@@ -89,44 +90,75 @@ const steps = [
   <!-- Custom cursor -->
   <div id="cursor-dot"></div>
   <div id="cursor-circle"></div>
-
-  <!-- Cursor trail dots -->
   <div id="cursor-trail"></div>
 
-  <!-- Navigation — floating capsule on scroll -->
-  <nav id="nav" class="fixed top-0 left-0 right-0 z-[100] px-6 md:px-10 py-5">
-    <div class="container-main flex items-center justify-center">
-      <div id="nav-inner" class="flex items-center gap-10">
-        <a href="#hero" class="nav-logo font-heading text-sm font-bold tracking-[0.15em] uppercase text-ink" data-cursor-hover data-magnetic>AM</a>
-        <div class="hidden md:flex items-center gap-10">
-          <a href="#work" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Work</a>
-          <a href="#process" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Process</a>
-          <a href="#about" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>About</a>
-          <a href="#contact" class="nav-link link-hover font-body text-[0.8125rem] tracking-[0.08em] uppercase text-muted hover:text-ink" data-cursor-hover data-magnetic>Contact</a>
-          <button id="theme-toggle" class="w-8 h-8 flex items-center justify-center text-muted hover:text-ink" data-cursor-hover data-magnetic aria-label="Toggle theme">
-            <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-            <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="flex items-center gap-3 md:hidden ml-auto">
-        <button id="theme-toggle-mobile" class="w-8 h-8 flex items-center justify-center text-muted" data-cursor-hover aria-label="Toggle theme">
-          <svg class="icon-moon-m" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun-m" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-        <button id="menu-toggle" class="flex flex-col gap-[5px] p-2 -mr-2" data-cursor-hover aria-label="Menu">
-          <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-1"></span>
-          <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-2"></span>
-        </button>
-      </div>
+  <!-- ─── Nav: Top bar (mobile only) ─── -->
+  <div id="nav-top">
+    <a href="#hero" class="nav-logo font-heading text-sm font-bold tracking-[0.15em] uppercase text-ink" data-cursor-hover data-magnetic>AM</a>
+    <div class="flex items-center gap-3">
+      <button id="theme-toggle-mobile" class="w-8 h-8 flex items-center justify-center text-muted hover:text-ink" data-cursor-hover aria-label="Toggle theme">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <button id="menu-toggle" class="flex flex-col gap-[5px] p-2" data-cursor-hover aria-label="Menu">
+        <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-1"></span>
+        <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-2"></span>
+      </button>
     </div>
+  </div>
+
+  <!-- ─── Nav: Full sidebar rail (desktop) ─── -->
+  <nav id="nav-rail" aria-label="Section navigation">
+    <a href="#hero" class="nav-rail-logo" data-cursor-hover data-magnetic>AM</a>
+
+    <div class="nav-rail-nodes">
+      <div class="nav-rail-line"></div>
+      <div class="nav-rail-progress" id="nav-rail-progress"></div>
+      <a href="#hero" class="nav-node active" data-nav-section="hero" data-cursor-hover>
+        <span class="nav-node-label">Home</span>
+        <span class="nav-node-dot"></span>
+      </a>
+      <a href="#work" class="nav-node" data-nav-section="work" data-cursor-hover>
+        <span class="nav-node-label">Work</span>
+        <span class="nav-node-dot"></span>
+      </a>
+      <a href="#process" class="nav-node" data-nav-section="process" data-cursor-hover>
+        <span class="nav-node-label">Process</span>
+        <span class="nav-node-dot"></span>
+      </a>
+      <a href="#about" class="nav-node" data-nav-section="about" data-cursor-hover>
+        <span class="nav-node-label">About</span>
+        <span class="nav-node-dot"></span>
+      </a>
+      <a href="#contact" class="nav-node" data-nav-section="contact" data-cursor-hover>
+        <span class="nav-node-label">Contact</span>
+        <span class="nav-node-dot"></span>
+      </a>
+    </div>
+
+    <button id="theme-toggle" class="nav-rail-theme" data-cursor-hover aria-label="Toggle theme">
+      <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
   </nav>
 
-  <!-- Mobile menu -->
+  <!-- ─── Nav: Mobile bottom pill ─── -->
+  <nav id="nav-mobile" aria-label="Mobile navigation">
+    <a href="#work" class="nav-mobile-link" data-nav-section="work">Work</a>
+    <a href="#process" class="nav-mobile-link" data-nav-section="process">Process</a>
+    <a href="#about" class="nav-mobile-link" data-nav-section="about">About</a>
+    <a href="#contact" class="nav-mobile-link" data-nav-section="contact">Contact</a>
+  </nav>
+
+  <!-- Mobile fullscreen menu (fallback) -->
   <div id="mobile-menu" class="fixed inset-0 z-[99] bg-ink opacity-0 invisible flex items-center justify-center">
     <div class="flex flex-col items-center gap-8">
       <a href="#work" class="menu-link font-heading text-3xl font-light text-surface tracking-wide" data-cursor-hover>Work</a>
@@ -139,102 +171,101 @@ const steps = [
   <main>
     <!-- ─── HERO ─── -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10">
-      <div class="hero-orb"></div>
-      <div class="container-main w-full pt-24">
-        <h1 id="hero-name" class="hero-name text-ink">
+      <div id="hero-orb-wrapper" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
+      <div class="container-main w-full pt-24 relative z-[1]">
+        <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter>
           Alister Maddrell
         </h1>
-        <div id="hero-subtitle" class="mt-6 md:mt-10 opacity-0" style="transition: opacity 0.8s ease;">
-          <p class="font-heading text-muted text-lg md:text-xl font-medium tracking-wide max-w-xl">
+        <div id="hero-subtitle" class="mt-6 md:mt-10">
+          <p class="subtitle-line font-heading text-muted text-base md:text-lg font-medium tracking-wide max-w-xl">
             Every pixel <span class="text-accent">earns its place.</span>
           </p>
-          <p class="font-body text-sm mt-3 tracking-[0.15em] uppercase" style="color: var(--color-muted); opacity: 0.6;">
+          <p class="subtitle-line font-body text-xs mt-3 tracking-[0.15em] uppercase" style="color: var(--color-muted); opacity: 0.6;">
             Web Designer & Developer · Sydney
           </p>
         </div>
       </div>
-      <div class="scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+      <div id="scroll-indicator" class="scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
         <span class="font-body text-[0.6875rem] tracking-[0.2em] uppercase text-muted">Scroll</span>
         <div class="scroll-line"></div>
       </div>
     </section>
 
-    <!-- ─── INTRO ─── -->
+    <!-- ─── INTRO — Typewriter ─── -->
     <section id="intro" class="px-6 md:px-10 py-28 md:py-40">
       <div class="container-main">
-        <div class="section-divider mb-12" data-reveal></div>
-        <div class="word-reveal-wrapper" data-reveal>
-          <p class="font-heading text-2xl md:text-[2.25rem] md:leading-[1.35] font-medium text-ink max-w-[800px]" data-word-reveal>
-            I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.
-          </p>
+        <div class="section-divider w-full max-w-[200px] mb-14" data-divider></div>
+        <div id="intro-typewriter" class="max-w-[900px]" aria-label="I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.">
+          <div class="typewriter-text font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.25] tracking-tight" aria-hidden="true"></div>
         </div>
-        <p class="font-heading text-2xl md:text-[2.25rem] md:leading-[1.35] font-medium max-w-[800px] mt-2" data-reveal style="transition-delay: 0.1s; color: var(--color-muted); opacity: 0.4;">
-          No templates. No WordPress. Just clean, high-performance code.
-        </p>
+        <div id="intro-strikes" class="mt-12 md:mt-16 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <span class="intro-strike font-heading text-base md:text-lg font-medium text-muted">No templates</span>
+          <span class="intro-strike font-heading text-base md:text-lg text-accent opacity-40">·</span>
+          <span class="intro-strike font-heading text-base md:text-lg font-medium text-muted">No WordPress</span>
+          <span class="intro-strike font-heading text-base md:text-lg text-accent opacity-40">·</span>
+          <span class="intro-strike font-heading text-base md:text-lg font-semibold text-ink">Just clean, high-performance code.</span>
+        </div>
       </div>
     </section>
 
     <!-- ─── WORK ─── -->
-    <section id="work" class="py-28 md:py-0">
-      <!-- Horizontal scroll wrapper (tall on desktop for scroll space) -->
-      <div id="work-scroll-wrapper" class="relative">
-        <div id="work-sticky" class="md:sticky md:top-0 md:h-screen md:flex md:flex-col md:justify-center md:overflow-hidden">
-          <div class="container-main px-6 md:px-10 mb-16 md:mb-10">
-            <div class="flex items-center gap-6" data-reveal>
-              <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
-                Selected Work
-              </h2>
-              <div class="flex-1 h-px" style="background: var(--color-line);"></div>
-              <span class="font-heading text-sm font-medium counter-value" data-counter="5" style="color: var(--color-muted); opacity: 0.4;">0</span>
-            </div>
+    <section id="work" class="px-6 md:px-10 py-28 md:py-40">
+      <div class="container-main">
+        <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal>
+          <div class="flex items-baseline gap-4">
+            <h2 class="section-heading" data-heading-text="Work">Work</h2>
+            <span class="section-heading-number">/05</span>
           </div>
-          <div id="work-track" class="flex flex-col md:flex-row gap-20 md:gap-10 px-6 md:px-0 md:pl-[7.5%]" data-skew>
-            {projects.map((project, i) => (
-              <article
-                class="project-card group rounded-lg overflow-hidden"
-                style={`background: var(--color-surface-alt);`}
-                data-reveal
-                data-tilt
-              >
-                <div class="project-preview rounded-t-lg">
-                  <div
-                    class="project-preview-inner flex items-end p-6 md:p-10"
-                    style={`background: ${project.gradient};`}
-                  >
-                    <span class="font-heading text-white/15 text-2xl md:text-4xl font-bold tracking-tight leading-tight">
-                      {project.name}
-                    </span>
-                  </div>
+          <div class="section-heading-line w-full max-w-[120px]"></div>
+        </div>
+
+        <div class="flex flex-col gap-24 md:gap-32" data-skew>
+          {projects.map((project, i) => (
+            <article
+              class="project-card project-card-v group"
+              data-reveal="scale"
+              data-tilt
+            >
+              <div class="project-image">
+                <div
+                  class="project-image-inner flex items-end justify-start p-8 md:p-12"
+                  style={`background: ${project.gradient};`}
+                >
+                  <span class="font-heading text-white/10 text-4xl md:text-7xl font-bold tracking-tight leading-none">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
                 </div>
-                <div class="p-5 md:p-7">
-                  <div class="flex items-baseline gap-3 mb-2">
-                    <span class="font-heading text-xs font-bold tracking-widest" style="color: var(--color-muted); opacity: 0.35;">{String(i + 1).padStart(2, '0')}</span>
-                    <h3 class="font-heading text-lg md:text-xl font-bold text-ink tracking-tight" data-scramble>
-                      {project.name}
-                    </h3>
-                  </div>
-                  <p class="font-body text-muted text-sm leading-relaxed max-w-md">
-                    {project.description}
-                  </p>
-                  <div class="flex flex-wrap gap-2 mt-4">
+                <div class="project-overlay"></div>
+                <div class="project-info">
+                  <div class="flex flex-wrap gap-2 mb-3">
                     {project.tags.map((tag) => (
-                      <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-3 py-1.5 text-muted rounded-full" style={`border: 1px solid var(--color-line);`}>
+                      <span class="font-body text-[0.6875rem] tracking-[0.06em] uppercase px-3 py-1 text-white/70 rounded-full" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(4px);">
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <a
-                    href={project.link}
-                    class="link-hover inline-flex items-center gap-2 mt-5 font-heading text-sm font-semibold text-ink hover:text-accent tracking-wide"
-                    data-cursor-hover
-                  >
-                    View Live Site
-                    <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
-                  </a>
+                  <p class="font-body text-white/80 text-sm leading-relaxed max-w-md">
+                    {project.description}
+                  </p>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+              <div class="flex items-center justify-between mt-5 md:mt-7">
+                <div>
+                  <h3 class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
+                    {project.name}
+                  </h3>
+                </div>
+                <a
+                  href={project.link}
+                  class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink hover:text-accent tracking-wide"
+                  data-cursor-hover
+                >
+                  View Site
+                  <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
+                </a>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -242,11 +273,12 @@ const steps = [
     <!-- ─── PROCESS ─── -->
     <section id="process" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
       <div class="container-main">
-        <div class="flex items-center gap-6 mb-20 md:mb-28" data-reveal>
-          <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
-            How I Work
-          </h2>
-          <div class="flex-1 h-px" style="background: var(--color-line);"></div>
+        <div class="section-heading-wrap mb-20 md:mb-28" data-heading-reveal>
+          <div class="flex items-baseline gap-4">
+            <h2 class="section-heading" data-heading-text="Process">Process</h2>
+            <span class="section-heading-number">/04</span>
+          </div>
+          <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
         <div class="flex flex-col gap-0">
           {steps.map((step, i) => (
@@ -255,7 +287,7 @@ const steps = [
               style={`border-bottom: 1px solid var(--color-line); ${i === 0 ? 'border-top: 1px solid var(--color-line);' : ''}`}
               data-reveal
             >
-              <span class="step-number" data-parallax="0.02">{step.number}</span>
+              <span class="step-number" data-parallax="0.015">{step.number}</span>
               <div class="max-w-lg">
                 <h3 class="font-heading text-lg md:text-xl font-bold text-ink tracking-tight">
                   {step.title}
@@ -273,102 +305,160 @@ const steps = [
     <!-- ─── ABOUT ─── -->
     <section id="about" class="px-6 md:px-10 py-28 md:py-40">
       <div class="container-main">
-        <div class="flex items-center gap-6 mb-20 md:mb-28" data-reveal>
-          <h2 class="font-heading text-sm font-semibold tracking-[0.2em] uppercase text-muted">
-            About
-          </h2>
-          <div class="flex-1 h-px" style="background: var(--color-line);"></div>
+        <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal>
+          <div class="flex items-baseline gap-4">
+            <h2 class="section-heading" data-heading-text="About">About</h2>
+          </div>
+          <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-12 md:gap-20 items-start">
-          <div id="monogram-wrapper" data-reveal>
-            <!-- Animated SVG monogram — draws itself on scroll -->
-            <svg
-              id="monogram-svg"
-              viewBox="0 0 140 70"
-              class="w-28 h-14 md:w-40 md:h-20"
-              fill="none"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M 8 62 L 32 8 L 56 62" class="monogram-path" pathLength="1" />
-              <path d="M 20 42 L 44 42" class="monogram-path" pathLength="1" />
-              <path d="M 74 62 L 74 8 L 100 38 L 126 8 L 126 62" class="monogram-path" pathLength="1" />
-            </svg>
+
+        <!-- Manifesto — word-by-word scroll lighting -->
+        <div id="manifesto" class="mb-14 md:mb-20 about-block" data-about-block>
+          <p class="font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.3] tracking-tight" data-manifesto>
+            I'm Alister — a web designer in Sydney who believes the best websites don't feel designed. They just work. Fast, modern, and built to turn visitors into customers.
+          </p>
+        </div>
+
+        <!-- Stats — animated counters -->
+        <div class="about-stats mb-14 md:mb-20" data-about-stats>
+          <div class="about-stat" data-stat data-stat-target="100" data-stat-suffix="%">
+            <span class="about-stat-number" data-stat-number>0%</span>
+            <span class="about-stat-label">Custom Built</span>
           </div>
-          <div class="max-w-lg" data-reveal style="transition-delay: 0.1s;">
-            <p class="font-heading text-xl md:text-2xl font-medium text-ink leading-snug">
-              I'm Alister — a web designer based in Sydney, building modern, high-performance websites for local businesses.
-            </p>
-            <p class="font-body text-muted text-[0.9375rem] leading-relaxed mt-5">
-              I believe great design should be invisible. The best websites don't feel designed — they just work.
-            </p>
+          <div class="about-stat" data-stat data-stat-target="3" data-stat-suffix="s">
+            <span class="about-stat-number" data-stat-number>0s</span>
+            <span class="about-stat-label">Avg Load Time</span>
           </div>
+          <div class="about-stat" data-stat data-stat-target="0" data-stat-suffix="">
+            <span class="about-stat-number" data-stat-number>0</span>
+            <span class="about-stat-label">Templates Used</span>
+          </div>
+        </div>
+
+        <!-- Body text -->
+        <div class="max-w-2xl mb-14 md:mb-20 about-block" data-about-block>
+          <p class="font-body text-muted text-[0.8125rem] md:text-[0.875rem] leading-relaxed">
+            No templates. No WordPress. Every project is hand-coded from scratch — clean, semantic HTML, lightning-fast load times, and SEO baked in from day one. I obsess over the details so your customers don't have to think twice.
+          </p>
+        </div>
+
+        <!-- Approach — icon cards that slide in -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14 md:mb-20">
+          <div class="approach-item" data-approach>
+            <div class="approach-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div>
+              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Hand-Coded</h4>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Every line written from scratch. Clean, semantic, performant.</p>
+            </div>
+          </div>
+          <div class="approach-item" data-approach>
+            <div class="approach-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Lightning Fast</h4>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Sub-3 second loads. Optimised images, minimal JS, edge hosting.</p>
+            </div>
+          </div>
+          <div class="approach-item" data-approach>
+            <div class="approach-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/></svg>
+            </div>
+            <div>
+              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">SEO-First</h4>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Built for Google from day one. Semantic markup, meta, schema.</p>
+            </div>
+          </div>
+          <div class="approach-item" data-approach>
+            <div class="approach-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <div>
+              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Responsive</h4>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Pixel-perfect on every device. Mobile-first, tested everywhere.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill pills — staggered reveal -->
+        <div class="skill-pills" data-skill-pills>
+          {['Web Design', 'Development', 'SEO', 'Hosting', 'UI/UX', 'Performance', 'Astro', 'React', 'Tailwind', 'Figma', 'Vercel', 'Node.js'].map((skill) => (
+            <span class="skill-pill" data-cursor-hover>{skill}</span>
+          ))}
         </div>
       </div>
     </section>
 
     <!-- ─── CONTACT ─── -->
     <section id="contact" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
-      <div class="container-main max-w-[700px]">
-        <h2 class="font-heading text-3xl md:text-5xl font-bold text-ink tracking-tight" data-reveal>
-          Let's Work Together
-        </h2>
-        <p class="font-body text-muted text-[0.9375rem] md:text-base mt-4 leading-relaxed max-w-md" data-reveal style="transition-delay: 0.1s;">
-          Got a business that needs a better online presence? I'd love to hear from you. I'll respond within 24 hours.
+      <div class="container-main">
+        <!-- Big typewriter prompt -->
+        <p class="contact-prompt" data-contact-prompt>
+          Got a project in mind? <span class="accent">Let's talk.</span>
         </p>
 
-        <form
-          id="contact-form"
-          action="https://formspree.io/f/placeholder"
-          method="POST"
-          class="mt-12 md:mt-16 flex flex-col gap-8"
-          data-reveal
-          style="transition-delay: 0.15s;"
-        >
-          <div>
-            <label for="name" class="sr-only">Name</label>
-            <input type="text" id="name" name="name" placeholder="Name *" required class="form-input" />
+        <!-- Draw-in line -->
+        <div class="contact-draw-line" data-contact-line></div>
+
+        <!-- Form card -->
+        <div class="contact-form-card" data-contact-card>
+          <form id="contact-form" action="https://formspree.io/f/placeholder" method="POST">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+              <div class="contact-field" data-contact-field>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required />
+                <div class="field-line"></div>
+              </div>
+              <div class="contact-field" data-contact-field>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required />
+                <div class="field-line"></div>
+              </div>
+              <div class="contact-field" data-contact-field>
+                <label for="business">Business</label>
+                <input type="text" id="business" name="business" placeholder="Company name (optional)" />
+                <div class="field-line"></div>
+              </div>
+              <div class="contact-field" data-contact-field>
+                <label for="budget">Budget</label>
+                <input type="text" id="budget" name="budget" placeholder="e.g. $2k — $5k" />
+                <div class="field-line"></div>
+              </div>
+            </div>
+            <div class="contact-field" data-contact-field>
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="3" class="resize-none"></textarea>
+              <div class="field-line"></div>
+            </div>
+            <div class="mt-8">
+              <button type="submit" class="contact-send" data-contact-send data-cursor-hover>
+                <span>Send Message</span>
+                <span class="send-arrow">&rarr;</span>
+              </button>
+            </div>
+          </form>
+
+          <div id="form-success" class="hidden py-12 text-center">
+            <p class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight">Message sent!</p>
+            <p class="font-body text-muted text-sm mt-2">I'll be in touch within 24 hours.</p>
           </div>
-          <div>
-            <label for="email" class="sr-only">Email</label>
-            <input type="email" id="email" name="email" placeholder="Email *" required class="form-input" />
-          </div>
-          <div>
-            <label for="business" class="sr-only">Business Name</label>
-            <input type="text" id="business" name="business" placeholder="Business Name (optional)" class="form-input" />
-          </div>
-          <div>
-            <label for="message" class="sr-only">Message</label>
-            <textarea id="message" name="message" placeholder="Tell me about your project *" required rows="4" class="form-input resize-none"></textarea>
-          </div>
-          <div>
-            <button
-              type="submit"
-              class="accent-btn bg-accent text-white font-heading text-sm font-semibold tracking-[0.1em] uppercase px-10 py-4 rounded-full"
-              data-cursor-hover
-              data-magnetic
-            >
-              Send Message
-            </button>
-          </div>
-          <div id="form-success" class="hidden font-body text-accent text-sm">
-            Thank you! I'll be in touch soon.
-          </div>
-          <div id="form-error" class="hidden font-body text-red-500 text-sm">
+          <div id="form-error" class="hidden font-body text-red-500 text-sm mt-4">
             Something went wrong. Please try emailing me directly.
           </div>
-        </form>
+        </div>
 
-        <div class="mt-16 pt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8" style="border-top: 1px solid var(--color-line); transition-delay: 0.2s;" data-reveal>
-          <a
-            href="mailto:alistermaddrell@gmail.com"
-            class="link-hover font-body text-sm text-ink hover:text-accent"
-            data-cursor-hover
-          >
+        <!-- Info row -->
+        <div class="contact-info-row">
+          <a href="mailto:alistermaddrell@gmail.com" class="contact-info-item" data-contact-info data-cursor-hover>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             alistermaddrell@gmail.com
           </a>
-          <span class="font-body text-sm text-muted">Sydney, Australia</span>
+          <div class="contact-info-item" data-contact-info>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Sydney, Australia
+          </div>
         </div>
       </div>
     </section>
@@ -379,16 +469,19 @@ const steps = [
     <div class="container-main flex items-center justify-between">
       <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
       <div class="flex items-center gap-6">
-        <span class="font-body text-xs text-muted hidden sm:inline flex items-center gap-2">
-          <span class="live-dot"></span>
-          <span id="sydney-time"></span>
-          Sydney
-        </span>
-        <a
-          href="#hero"
-          class="link-hover font-body text-xs text-muted hover:text-ink"
-          data-cursor-hover
-        >
+        <div class="hidden sm:flex items-center gap-3">
+          <div class="clock-face" id="analog-clock">
+            <div class="clock-hand clock-hand-hour" id="clock-hour"></div>
+            <div class="clock-hand clock-hand-minute" id="clock-minute"></div>
+            <div class="clock-hand clock-hand-second" id="clock-second"></div>
+            <div class="clock-dot"></div>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading text-[0.6875rem] font-semibold tracking-[0.08em] text-ink leading-none" id="sydney-time"></span>
+            <span class="font-body text-[0.5625rem] tracking-[0.12em] uppercase text-muted mt-0.5">Sydney</span>
+          </div>
+        </div>
+        <a href="#hero" class="link-hover font-body text-xs text-muted hover:text-ink" data-cursor-hover>
           Back to top &uarr;
         </a>
       </div>
@@ -439,44 +532,42 @@ const steps = [
         loader?.classList.add('done');
         setTimeout(() => {
           if (loader) loader.style.display = 'none';
-          splitAndAnimateHero();
+          startHeroTypewriter();
         }, 800);
       }, 400);
     });
 
-    // ── Text split animation ──
-    function splitAndAnimateHero() {
+    // ── Hero name typewriter ──
+    function startHeroTypewriter() {
       if (!heroName) return;
       const text = heroName.textContent?.trim() || '';
       heroName.innerHTML = '';
+      heroName.style.minHeight = '1em';
 
-      let charIndex = 0;
-      text.split(' ').forEach((word, wordIdx) => {
-        if (wordIdx > 0) {
-          const space = document.createElement('span');
-          space.innerHTML = '&nbsp;';
-          space.classList.add('char');
-          space.style.animationDelay = `${charIndex * 0.04}s`;
-          heroName.appendChild(space);
-          charIndex++;
+      const cursor = document.createElement('span');
+      cursor.classList.add('typewriter-cursor');
+
+      let charIdx = 0;
+      function typeNext() {
+        if (charIdx >= text.length) {
+          heroName.textContent = text;
+          heroName.appendChild(cursor);
+          // Remove cursor after a moment
+          setTimeout(() => cursor.remove(), 1500);
+          // Reveal subtitle with smooth animation
+          setTimeout(() => heroSubtitle?.classList.add('revealed'), 300);
+          // Reveal scroll indicator
+          setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 800);
+          return;
         }
-        const wordSpan = document.createElement('span');
-        wordSpan.style.display = 'inline-block';
-        wordSpan.style.whiteSpace = 'nowrap';
-        word.split('').forEach((char) => {
-          const span = document.createElement('span');
-          span.textContent = char;
-          span.classList.add('char');
-          span.style.animationDelay = `${charIndex * 0.04}s`;
-          wordSpan.appendChild(span);
-          charIndex++;
-        });
-        heroName.appendChild(wordSpan);
-      });
-
-      setTimeout(() => {
-        if (heroSubtitle) heroSubtitle.style.opacity = '1';
-      }, charIndex * 40 + 400);
+        heroName.textContent = text.slice(0, charIdx + 1);
+        heroName.appendChild(cursor);
+        charIdx++;
+        const ch = text[charIdx - 1];
+        const delay = ch === ' ' ? 60 : 50 + Math.random() * 30;
+        setTimeout(typeNext, delay);
+      }
+      typeNext();
     }
 
     // ── Scroll-triggered reveals ──
@@ -491,94 +582,246 @@ const steps = [
       },
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
-
     document.querySelectorAll('[data-reveal]').forEach((el) => {
       revealObserver.observe(el);
     });
 
-    // ── Section divider — animate width/color AFTER reveal fade-in completes ──
-    document.querySelectorAll('.section-divider[data-reveal]').forEach((el) => {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((m) => {
-          if ((m.target as HTMLElement).classList.contains('revealed')) {
-            // Wait for the opacity/transform transition to finish (800ms), then animate width
-            setTimeout(() => {
-              (el as HTMLElement).style.transition = 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.6s ease';
-              (el as HTMLElement).style.width = '96px';
-              (el as HTMLElement).style.backgroundColor = 'var(--color-accent)';
-            }, 600);
-            observer.disconnect();
-          }
-        });
-      });
-      observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+    // ── Section dividers ──
+    document.querySelectorAll('[data-divider]').forEach((el) => {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => (entry.target as HTMLElement).classList.add('animate-in'), 200);
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      obs.observe(el);
     });
 
-    // ── SVG Monogram — draw AFTER parent [data-reveal] finishes fading in ──
-    const monogramWrapper = document.getElementById('monogram-wrapper');
-    const monogramSvg = document.getElementById('monogram-svg');
-    if (monogramWrapper && monogramSvg) {
-      const monoMutation = new MutationObserver((mutations) => {
-        mutations.forEach((m) => {
-          if ((m.target as HTMLElement).classList.contains('revealed')) {
-            // Wait for parent fade-in to complete before triggering draw
-            setTimeout(() => {
-              monogramSvg.classList.add('monogram-drawn');
-            }, 500);
-            monoMutation.disconnect();
-          }
-        });
+    // ── Section heading char reveal ──
+    document.querySelectorAll('[data-heading-reveal]').forEach((wrap) => {
+      const heading = wrap.querySelector('.section-heading') as HTMLElement;
+      if (!heading) return;
+      const text = heading.textContent?.trim() || '';
+      heading.innerHTML = '';
+      text.split('').forEach((char, i) => {
+        const span = document.createElement('span');
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        span.classList.add('heading-char');
+        span.style.transitionDelay = `${i * 0.04}s`;
+        heading.appendChild(span);
       });
-      monoMutation.observe(monogramWrapper, { attributes: true, attributeFilter: ['class'] });
+
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              heading.classList.add('revealed');
+              (entry.target as HTMLElement).classList.add('revealed');
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      obs.observe(wrap);
+
+      // Hover bounce on heading chars
+      if (window.matchMedia('(pointer: fine)').matches) {
+        heading.addEventListener('mouseenter', () => {
+          heading.querySelectorAll('.heading-char').forEach((ch, i) => {
+            (ch as HTMLElement).style.animation = `none`;
+            setTimeout(() => {
+              (ch as HTMLElement).style.animation = ``;
+              (ch as HTMLElement).style.transform = 'translateY(-8px)';
+              setTimeout(() => {
+                (ch as HTMLElement).style.transform = '';
+              }, 150);
+            }, i * 30);
+          });
+        });
+      }
+    });
+
+    // ── Intro typewriter ──
+    const typewriterEl = document.querySelector('#intro-typewriter .typewriter-text') as HTMLElement;
+    const introStrikes = document.querySelectorAll('#intro-strikes .intro-strike');
+
+    const introTemplate = [
+      { text: 'I design and build ' },
+      { text: 'fast, modern', keyword: true },
+      { text: ' websites for local businesses across Sydney. Every site is ' },
+      { text: 'custom-built', keyword: true },
+      { text: ', SEO-optimised, and designed to ' },
+      { text: 'turn visitors into customers', keyword: true },
+      { text: '.' },
+    ];
+
+    let typewriterStarted = false;
+
+    function startTypewriter() {
+      if (typewriterStarted || !typewriterEl) return;
+      typewriterStarted = true;
+
+      // Build the full text with spans
+      let html = '';
+      introTemplate.forEach((part) => {
+        if (part.keyword) {
+          html += `<span class="intro-kw" data-cursor-hover>`;
+          part.text.split('').forEach((ch) => {
+            const sx = (Math.random() - 0.5) * 12;
+            const sy = (Math.random() - 0.5) * 8;
+            const sr = (Math.random() - 0.5) * 20;
+            html += `<span class="kw-char" style="--sx:${sx}px;--sy:${sy}px;--sr:${sr}deg">${ch}</span>`;
+          });
+          html += `</span>`;
+        } else {
+          html += part.text;
+        }
+      });
+
+      // Type it out character by character
+      const fullHTML = html;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = fullHTML;
+      const fullText = tempDiv.textContent || '';
+
+      typewriterEl.innerHTML = '';
+      let charIdx = 0;
+      const cursor = document.createElement('span');
+      cursor.classList.add('typewriter-cursor');
+
+      function typeNext() {
+        if (charIdx >= fullText.length) {
+          // Done typing, set final HTML and show strikes
+          typewriterEl.innerHTML = fullHTML;
+          typewriterEl.appendChild(cursor);
+          // Re-bind cursor hover on keywords
+          typewriterEl.querySelectorAll('[data-cursor-hover]').forEach((el) => {
+            el.addEventListener('mouseenter', () => document.getElementById('cursor-circle')?.classList.add('hover'));
+            el.addEventListener('mouseleave', () => document.getElementById('cursor-circle')?.classList.remove('hover'));
+          });
+          // Animate strikes
+          setTimeout(() => {
+            introStrikes.forEach((s, i) => {
+              setTimeout(() => {
+                s.classList.add('visible');
+                if (s.classList.contains('font-medium')) {
+                  setTimeout(() => s.classList.add('struck'), 400);
+                }
+              }, i * 120);
+            });
+          }, 300);
+          return;
+        }
+
+        // Show plain text progressively
+        const visibleText = fullText.slice(0, charIdx + 1);
+        typewriterEl.textContent = visibleText;
+        typewriterEl.appendChild(cursor);
+        charIdx++;
+
+        const delay = fullText[charIdx - 1] === '.' ? 120 : fullText[charIdx - 1] === ',' ? 80 : 25;
+        setTimeout(typeNext, delay);
+      }
+      typeNext();
     }
 
-    // ── Staggered word reveal on intro paragraph ──
-    document.querySelectorAll('[data-word-reveal]').forEach((el) => {
+    // Trigger typewriter on scroll
+    const typeObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startTypewriter();
+            typeObs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    if (typewriterEl) typeObs.observe(typewriterEl);
+
+    // ── Manifesto word-by-word scroll reveal ──
+    document.querySelectorAll('[data-manifesto]').forEach((el) => {
       const text = el.textContent?.trim() || '';
       el.innerHTML = '';
       const words = text.split(/\s+/);
       words.forEach((word, i) => {
         const span = document.createElement('span');
         span.textContent = word;
-        span.classList.add('word-reveal');
-        span.style.transitionDelay = `${i * 0.04}s`;
+        span.classList.add('manifesto-word');
         el.appendChild(span);
-        if (i < words.length - 1) {
-          el.appendChild(document.createTextNode(' '));
-        }
+        if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
       });
+
+      const wordSpans = el.querySelectorAll('.manifesto-word');
+      const totalWords = wordSpans.length;
+
+      function updateManifesto() {
+        const rect = el.getBoundingClientRect();
+        const viewH = window.innerHeight;
+        const start = viewH * 0.85;
+        const end = viewH * 0.15;
+        const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+        const litCount = Math.floor(progress * totalWords);
+        wordSpans.forEach((w, i) => {
+          w.classList.toggle('lit', i < litCount);
+        });
+      }
+      window.addEventListener('scroll', updateManifesto, { passive: true });
+      updateManifesto();
     });
 
-    // ── Scroll progress bar ──
+    // ── Process step scroll-based highlighting ──
+    const processSteps = document.querySelectorAll('.process-step');
+    function updateProcessHighlight() {
+      const viewCenter = window.innerHeight * 0.5;
+      let closestStep: Element | null = null;
+      let closestDist = Infinity;
+      processSteps.forEach((step) => {
+        const rect = step.getBoundingClientRect();
+        const stepCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(stepCenter - viewCenter);
+        if (dist < closestDist && rect.top < window.innerHeight && rect.bottom > 0) {
+          closestDist = dist;
+          closestStep = step;
+        }
+      });
+      processSteps.forEach((step) => step.classList.toggle('active', step === closestStep));
+    }
+    if (processSteps.length > 0) {
+      window.addEventListener('scroll', updateProcessHighlight, { passive: true });
+      updateProcessHighlight();
+    }
+
+    // ── Scroll progress + nav rail ──
     const scrollProgress = document.getElementById('scroll-progress');
-
-    // ── Nav scroll state ──
-    const nav = document.getElementById('nav');
+    const navTop = document.getElementById('nav-top');
     const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    // ── Scroll velocity tracking for text skew ──
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
-    let velocityTarget = 0;
+    const navNodes = document.querySelectorAll('.nav-node[data-nav-section]');
+    const navMobileLinks = document.querySelectorAll('.nav-mobile-link[data-nav-section]');
+    const navRailProgress = document.getElementById('nav-rail-progress');
 
     window.addEventListener('scroll', () => {
-      // Scroll progress
-      if (scrollProgress) {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        scrollProgress.style.width = `${docHeight > 0 ? (scrollTop / docHeight) * 100 : 0}%`;
-      }
+      // Scroll progress bar
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPct = docHeight > 0 ? scrollTop / docHeight : 0;
+      if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
 
-      // Nav background
-      if (window.scrollY > 80) {
-        nav?.classList.add('scrolled');
-      } else {
-        nav?.classList.remove('scrolled');
-      }
+      // Nav top frosted glass
+      if (scrollTop > 80) navTop?.classList.add('scrolled');
+      else navTop?.classList.remove('scrolled');
 
-      // Active section
-      let currentSection = '';
+      // Nav rail progress line
+      if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
+
+      // Active section detection
+      let currentSection = 'hero';
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 200 && rect.bottom >= 200) {
@@ -586,83 +829,54 @@ const steps = [
         }
       });
 
-      navLinks.forEach((link) => {
-        const href = link.getAttribute('href');
-        if (href === `#${currentSection}`) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
+      // Update nav rail active states
+      navNodes.forEach((node) => {
+        const section = (node as HTMLElement).dataset.navSection;
+        node.classList.toggle('active', section === currentSection);
       });
 
-      // Scroll velocity for skew
+      // Update mobile nav active states
+      navMobileLinks.forEach((link) => {
+        const section = (link as HTMLElement).dataset.navSection;
+        link.classList.toggle('active', section === currentSection);
+      });
+    });
+
+    // ── Scroll velocity tracking for text skew ──
+    let lastScrollY = window.scrollY;
+    let scrollVelocity = 0;
+    let velocityTarget = 0;
+
+    window.addEventListener('scroll', () => {
       velocityTarget = window.scrollY - lastScrollY;
       lastScrollY = window.scrollY;
     });
 
-    // ── Scroll velocity skew (smooth) ──
     const skewElements = document.querySelectorAll('[data-skew]');
     function updateSkew() {
       scrollVelocity += (velocityTarget - scrollVelocity) * 0.1;
-      velocityTarget *= 0.95; // decay
-      const skewVal = Math.max(-4, Math.min(4, scrollVelocity * 0.15));
+      velocityTarget *= 0.95;
+      const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
       skewElements.forEach((el) => {
-        (el as HTMLElement).style.transform = (el as HTMLElement).style.transform
-          ? (el as HTMLElement).style.transform.replace(/skewY\([^)]*\)/, `skewY(${skewVal}deg)`)
-          : `skewY(${skewVal}deg)`;
+        (el as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
       });
       requestAnimationFrame(updateSkew);
     }
     if (skewElements.length > 0) requestAnimationFrame(updateSkew);
 
-    // ── Parallax depth layers (skip elements with char animation) ──
+    // ── Parallax depth layers ──
     if (window.matchMedia('(pointer: fine)').matches) {
       const parallaxElements = document.querySelectorAll('[data-parallax]');
       window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
         parallaxElements.forEach((el) => {
-          // Skip hero name — it gets its transform from char animation
-          if ((el as HTMLElement).id === 'hero-name') return;
-          const speed = parseFloat((el as HTMLElement).dataset.parallax || '0');
+          const htmlEl = el as HTMLElement;
+          if (htmlEl.id === 'hero-name') return;
+          const speed = parseFloat(htmlEl.dataset.parallax || '0');
           const rect = el.getBoundingClientRect();
-          const elementCenter = rect.top + rect.height / 2;
-          const viewCenter = window.innerHeight / 2;
-          const offset = (elementCenter - viewCenter) * speed;
-          (el as HTMLElement).style.transform = `translateY(${offset}px)`;
+          const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * speed;
+          htmlEl.style.transform = `translateY(${offset}px)`;
         });
       });
-    }
-
-    // ── Horizontal scroll gallery (desktop only) ──
-    const workWrapper = document.getElementById('work-scroll-wrapper');
-    const workTrack = document.getElementById('work-track');
-    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
-    if (isDesktop && workWrapper && workTrack) {
-      const calcHorizontalScroll = () => {
-        const trackWidth = workTrack.scrollWidth;
-        const viewportWidth = window.innerWidth;
-        const scrollDistance = trackWidth - viewportWidth + 100;
-        workWrapper.style.height = `${scrollDistance + window.innerHeight}px`;
-        return scrollDistance;
-      };
-
-      let totalScrollDist = calcHorizontalScroll();
-      window.addEventListener('resize', () => {
-        totalScrollDist = calcHorizontalScroll();
-      });
-
-      window.addEventListener('scroll', () => {
-        const rect = workWrapper.getBoundingClientRect();
-        const wrapperTop = -rect.top;
-        const scrollRange = workWrapper.offsetHeight - window.innerHeight;
-        if (scrollRange <= 0) return;
-        const progress = Math.max(0, Math.min(1, wrapperTop / scrollRange));
-        const skewVal = Math.max(-4, Math.min(4, scrollVelocity * 0.15));
-        workTrack.style.transform = `translateX(${-progress * totalScrollDist}px) skewY(${skewVal}deg)`;
-      });
-    } else if (workWrapper) {
-      workWrapper.style.height = 'auto';
     }
 
     // ── Mobile menu ──
@@ -689,13 +903,11 @@ const steps = [
     // ── Custom cursor ──
     const cursorDot = document.getElementById('cursor-dot');
     const cursorCircle = document.getElementById('cursor-circle');
+    let mouseX = -100;
+    let mouseY = -100;
 
     if (window.matchMedia('(pointer: fine)').matches && cursorDot && cursorCircle) {
-      let mouseX = -100;
-      let mouseY = -100;
-      let circleX = -100;
-      let circleY = -100;
-
+      let circleX = -100, circleY = -100;
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -724,7 +936,7 @@ const steps = [
         cursorCircle.style.opacity = '0.4';
       });
 
-      // ── Cursor trail (comet effect) ──
+      // Cursor trail
       const trailContainer = document.getElementById('cursor-trail');
       if (trailContainer) {
         const TRAIL_COUNT = 8;
@@ -737,34 +949,40 @@ const steps = [
           trailContainer.appendChild(dot);
           trailDots.push(dot);
         }
-
         const trailPositions = Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }));
-
         function animateTrail() {
           trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
           trailPositions[0].y += (mouseY - trailPositions[0].y) * 0.3;
-
           for (let i = 1; i < TRAIL_COUNT; i++) {
             trailPositions[i].x += (trailPositions[i - 1].x - trailPositions[i].x) * 0.25;
             trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
           }
-
           trailDots.forEach((dot, i) => {
             dot.style.transform = `translate(${trailPositions[i].x - 2}px, ${trailPositions[i].y - 2}px)`;
             dot.style.opacity = `${0.3 - i * 0.035}`;
           });
-
           requestAnimationFrame(animateTrail);
         }
         animateTrail();
-
         document.addEventListener('mouseleave', () => {
           trailDots.forEach((dot) => { dot.style.opacity = '0'; });
         });
       }
+
+      // Nav rail nodes magnetic pull toward cursor Y
+      const navRailNodes = document.querySelector('.nav-rail-nodes');
+      if (navRailNodes) {
+        document.addEventListener('mousemove', (e) => {
+          const rect = navRailNodes.getBoundingClientRect();
+          const centerY = rect.top + rect.height / 2;
+          const pull = (e.clientY - centerY) * 0.03;
+          const clamped = Math.max(-10, Math.min(10, pull));
+          (navRailNodes as HTMLElement).style.transform = `translateY(${clamped}px)`;
+        });
+      }
     }
 
-    // ── 3D tilt on project cards (RAF-based) ──
+    // ── 3D tilt on project cards ──
     if (window.matchMedia('(pointer: fine)').matches) {
       document.querySelectorAll('[data-tilt]').forEach((card) => {
         const el = card as HTMLElement;
@@ -773,32 +991,23 @@ const steps = [
         let isHovering = false;
 
         function animate() {
-          const dx = targetX - currentX;
-          const dy = targetY - currentY;
-          currentX += dx * 0.08;
-          currentY += dy * 0.08;
+          currentX += (targetX - currentX) * 0.08;
+          currentY += (targetY - currentY) * 0.08;
           el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-
-          if (!isHovering && Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
-            currentX = 0;
-            currentY = 0;
+          if (!isHovering && Math.abs(targetX - currentX) < 0.01 && Math.abs(targetY - currentY) < 0.01) {
             el.style.transform = '';
             rafId = null;
             return;
           }
           rafId = requestAnimationFrame(animate);
         }
-
-        function startLoop() {
-          if (!rafId) rafId = requestAnimationFrame(animate);
-        }
+        function startLoop() { if (!rafId) rafId = requestAnimationFrame(animate); }
 
         el.addEventListener('mouseenter', () => { isHovering = true; startLoop(); });
         el.addEventListener('mousemove', (e: MouseEvent) => {
           const rect = el.getBoundingClientRect();
-          const cx = rect.width / 2, cy = rect.height / 2;
-          targetX = ((e.clientY - rect.top - cy) / cy) * -3;
-          targetY = ((e.clientX - rect.left - cx) / cx) * 3;
+          targetX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -2;
+          targetY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 2;
         });
         el.addEventListener('mouseleave', () => { isHovering = false; targetX = 0; targetY = 0; startLoop(); });
       });
@@ -818,30 +1027,25 @@ const steps = [
       });
     }
 
-    // ── Text scramble on project name hover ──
+    // ── Text scramble on project name — on scroll + hover ──
     if (window.matchMedia('(pointer: fine)').matches) {
       document.querySelectorAll('[data-scramble]').forEach((el) => {
         const element = el as HTMLElement;
         const originalText = element.textContent?.trim() || '';
         let intervalId: number | null = null;
 
-        element.addEventListener('mouseenter', () => {
+        function runScramble() {
           if (intervalId) clearInterval(intervalId);
           const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&0123456789';
           let step = 0;
           const totalSteps = 14;
-
           intervalId = window.setInterval(() => {
             step++;
             let result = '';
             for (let i = 0; i < originalText.length; i++) {
-              if (originalText[i] === ' ' || originalText[i] === '&') {
-                result += originalText[i];
-              } else if (step / totalSteps > i / originalText.length) {
-                result += originalText[i];
-              } else {
-                result += chars[Math.floor(Math.random() * chars.length)];
-              }
+              if (originalText[i] === ' ' || originalText[i] === '&') result += originalText[i];
+              else if (step / totalSteps > i / originalText.length) result += originalText[i];
+              else result += chars[Math.floor(Math.random() * chars.length)];
             }
             element.textContent = result;
             if (step >= totalSteps) {
@@ -850,8 +1054,21 @@ const steps = [
               element.textContent = originalText;
             }
           }, 40);
-        });
+        }
 
+        // Scramble on scroll reveal
+        const scrambleObs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              runScramble();
+              scrambleObs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+        scrambleObs.observe(element);
+
+        // Also on hover
+        element.addEventListener('mouseenter', runScramble);
         element.addEventListener('mouseleave', () => {
           if (intervalId) { clearInterval(intervalId); intervalId = null; }
           element.textContent = originalText;
@@ -859,44 +1076,188 @@ const steps = [
       });
     }
 
-    // ── Scroll-triggered counter ──
-    document.querySelectorAll('[data-counter]').forEach((el) => {
-      const target = parseInt((el as HTMLElement).dataset.counter || '0', 10);
-      let hasAnimated = false;
+    // ── Contact section scroll animations ──
+    // Prompt typewriter
+    const contactPrompt = document.querySelector('[data-contact-prompt]') as HTMLElement;
+    if (contactPrompt) {
+      const promptText = contactPrompt.innerHTML;
+      contactPrompt.innerHTML = '';
+      contactPrompt.style.opacity = '1';
+      let promptStarted = false;
 
-      const counterObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !hasAnimated) {
-              hasAnimated = true;
-              let current = 0;
-              const duration = 1200;
-              const startTime = performance.now();
+      const promptObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !promptStarted) {
+            promptStarted = true;
+            // Strip HTML to get plain text, then type it back with HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = promptText;
+            const plainText = tempDiv.textContent || '';
+            let idx = 0;
+            const cursor = document.createElement('span');
+            cursor.classList.add('typewriter-cursor');
 
-              function tick(now: number) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Ease out cubic
-                const eased = 1 - Math.pow(1 - progress, 3);
-                current = Math.round(eased * target);
-                el.textContent = String(current).padStart(2, '0');
-                if (progress < 1) requestAnimationFrame(tick);
+            function typePrompt() {
+              if (idx >= plainText.length) {
+                contactPrompt.innerHTML = promptText;
+                contactPrompt.classList.add('revealed');
+                // Trigger the line draw
+                setTimeout(() => {
+                  document.querySelector('[data-contact-line]')?.classList.add('drawn');
+                }, 200);
+                // Trigger the card
+                setTimeout(() => {
+                  document.querySelector('[data-contact-card]')?.classList.add('revealed');
+                }, 600);
+                // Trigger fields staggered
+                setTimeout(() => {
+                  document.querySelectorAll('[data-contact-field]').forEach((f, i) => {
+                    setTimeout(() => f.classList.add('revealed'), i * 100);
+                  });
+                }, 900);
+                // Trigger send button
+                setTimeout(() => {
+                  document.querySelector('[data-contact-send]')?.classList.add('revealed');
+                }, 1400);
+                // Trigger info items
+                setTimeout(() => {
+                  document.querySelectorAll('[data-contact-info]').forEach((item, i) => {
+                    setTimeout(() => item.classList.add('revealed'), i * 150);
+                  });
+                }, 1600);
+                return;
               }
-              requestAnimationFrame(tick);
-              counterObserver.unobserve(entry.target);
+              contactPrompt.textContent = plainText.slice(0, idx + 1);
+              contactPrompt.appendChild(cursor);
+              idx++;
+              const ch = plainText[idx - 1];
+              const delay = ch === '?' ? 200 : ch === ' ' ? 40 : 30;
+              setTimeout(typePrompt, delay);
             }
-          });
-        },
-        { threshold: 0.5 }
-      );
-      counterObserver.observe(el);
+            typePrompt();
+            promptObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      promptObs.observe(contactPrompt);
+    }
+
+    // Rotating conic gradient on form card
+    const contactCard = document.querySelector('[data-contact-card]') as HTMLElement;
+    if (contactCard) {
+      let angle = 0;
+      function rotateGradient() {
+        angle = (angle + 0.5) % 360;
+        contactCard.style.setProperty('--contact-angle', `${angle}deg`);
+        requestAnimationFrame(rotateGradient);
+      }
+      rotateGradient();
+    }
+
+    // ── Contact form submit ──
+    const formEl = document.getElementById('contact-form') as HTMLFormElement;
+    const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+
+    formEl?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(formEl);
+      try {
+        const response = await fetch(formEl.action, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' },
+        });
+        if (response.ok) {
+          formEl.style.display = 'none';
+          formSuccess?.classList.remove('hidden');
+        } else {
+          formError?.classList.remove('hidden');
+        }
+      } catch {
+        formError?.classList.remove('hidden');
+      }
     });
 
-    // ── Dark mode toggle with organic blob transition ──
+    // ── About section scroll animations ──
+
+    // About blocks — fade up on scroll
+    document.querySelectorAll('[data-about-block]').forEach((el) => {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      obs.observe(el);
+    });
+
+    // Stat counters — count up on scroll
+    document.querySelectorAll('[data-stat]').forEach((el) => {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            const target = parseInt((entry.target as HTMLElement).dataset.statTarget || '0');
+            const suffix = (entry.target as HTMLElement).dataset.statSuffix || '';
+            const numEl = entry.target.querySelector('[data-stat-number]') as HTMLElement;
+            if (numEl) {
+              let current = 0;
+              const duration = 1200;
+              const start = performance.now();
+              function countUp(now: number) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                current = Math.round(eased * target);
+                numEl.textContent = `${current}${suffix}`;
+                if (progress < 1) requestAnimationFrame(countUp);
+              }
+              requestAnimationFrame(countUp);
+            }
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(el);
+    });
+
+    // Approach items — staggered slide-in
+    document.querySelectorAll('[data-approach]').forEach((el, i) => {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => entry.target.classList.add('revealed'), i * 120);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      obs.observe(el);
+    });
+
+    // Skill pills — staggered pop-in
+    const pillContainer = document.querySelector('[data-skill-pills]');
+    if (pillContainer) {
+      const pillObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const pills = entry.target.querySelectorAll('.skill-pill');
+            pills.forEach((pill, i) => {
+              setTimeout(() => pill.classList.add('revealed'), i * 50);
+            });
+            pillObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      pillObs.observe(pillContainer);
+    }
+
+    // ── Dark mode toggle ──
     function toggleTheme(button: HTMLElement) {
       const overlay = document.getElementById('theme-transition');
       if (!overlay) return;
-
       const rect = button.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
@@ -904,48 +1265,27 @@ const steps = [
         Math.max(x, window.innerWidth - x) ** 2 +
         Math.max(y, window.innerHeight - y) ** 2
       ));
-
       const isDark = document.documentElement.dataset.theme === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
       const newBg = newTheme === 'dark' ? '#0A0A0A' : '#FAFAFA';
-
       overlay.style.backgroundColor = newBg;
       overlay.style.transition = 'none';
       overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
-      overlay.offsetHeight; // force reflow
-
-      // Organic blob transition using ellipse + keyframe animation
+      overlay.offsetHeight;
       const duration = 900;
       const startTime = performance.now();
-
       function animateBlob(now: number) {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // Ease in-out with organic wobble
-        const eased = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
+        const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
         const radius = eased * maxRadius;
-        // Create organic blob shape using ellipse with shifting radii
-        const wobble1 = Math.sin(progress * Math.PI * 3) * radius * 0.08;
-        const wobble2 = Math.cos(progress * Math.PI * 2) * radius * 0.06;
-        const rx = radius + wobble1;
-        const ry = radius + wobble2;
-
-        overlay.style.clipPath = `ellipse(${rx}px ${ry}px at ${x}px ${y}px)`;
-
-        if (progress < 1) {
-          requestAnimationFrame(animateBlob);
-        } else {
-          // Clean up
-          overlay.style.clipPath = 'circle(0px at 50% 50%)';
-        }
+        const w1 = Math.sin(progress * Math.PI * 3) * radius * 0.08;
+        const w2 = Math.cos(progress * Math.PI * 2) * radius * 0.06;
+        overlay.style.clipPath = `ellipse(${radius + w1}px ${radius + w2}px at ${x}px ${y}px)`;
+        if (progress < 1) requestAnimationFrame(animateBlob);
+        else overlay.style.clipPath = 'circle(0px at 50% 50%)';
       }
-
       requestAnimationFrame(animateBlob);
-
-      // Swap theme at ~40% through animation
       setTimeout(() => {
         document.documentElement.dataset.theme = newTheme;
         localStorage.setItem('theme', newTheme);
@@ -955,71 +1295,47 @@ const steps = [
 
     function updateThemeIcons(theme: string) {
       const isDark = theme === 'dark';
-      const moon = document.getElementById('icon-moon');
-      const sun = document.getElementById('icon-sun');
-      if (moon) moon.style.display = isDark ? 'none' : 'block';
-      if (sun) sun.style.display = isDark ? 'block' : 'none';
-      document.querySelectorAll('.icon-moon-m').forEach(el => (el as HTMLElement).style.display = isDark ? 'none' : 'block');
-      document.querySelectorAll('.icon-sun-m').forEach(el => (el as HTMLElement).style.display = isDark ? 'block' : 'none');
+      // Update all moon/sun icons (both rail and mobile)
+      document.querySelectorAll('.icon-moon, #icon-moon').forEach((el) => {
+        (el as HTMLElement).style.display = isDark ? 'none' : 'block';
+      });
+      document.querySelectorAll('.icon-sun, #icon-sun').forEach((el) => {
+        (el as HTMLElement).style.display = isDark ? 'block' : 'none';
+      });
     }
 
-    // Init icons based on current theme
     updateThemeIcons(document.documentElement.dataset.theme || 'light');
 
-    // Desktop toggle
+    // Both theme toggles (rail + mobile)
     document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
       toggleTheme(e.currentTarget as HTMLElement);
     });
-
-    // Mobile toggle
     document.getElementById('theme-toggle-mobile')?.addEventListener('click', (e) => {
       toggleTheme(e.currentTarget as HTMLElement);
     });
 
-    // ── Live Sydney time ──
+    // ── Live Sydney time + analog clock ──
+    const clockHour = document.getElementById('clock-hour');
+    const clockMinute = document.getElementById('clock-minute');
+    const clockSecond = document.getElementById('clock-second');
+
     function updateSydneyTime() {
       const el = document.getElementById('sydney-time');
-      if (!el) return;
       const now = new Date();
-      const sydneyTime = now.toLocaleTimeString('en-AU', {
-        timeZone: 'Australia/Sydney',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      });
-      el.textContent = sydneyTime + ' ';
+      const sydneyStr = now.toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
+      const sydneyDate = new Date(sydneyStr);
+      const h = sydneyDate.getHours();
+      const m = sydneyDate.getMinutes();
+      const s = sydneyDate.getSeconds();
+      if (el) el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      const hourDeg = ((h % 12) / 12) * 360 + (m / 60) * 30;
+      const minDeg = (m / 60) * 360 + (s / 60) * 6;
+      const secDeg = (s / 60) * 360;
+      if (clockHour) clockHour.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+      if (clockMinute) clockMinute.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+      if (clockSecond) clockSecond.style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
     }
     updateSydneyTime();
-    setInterval(updateSydneyTime, 30000);
-
-    // ── Contact form ──
-    const contactForm = document.getElementById('contact-form') as HTMLFormElement | null;
-    const formSuccess = document.getElementById('form-success');
-    const formError = document.getElementById('form-error');
-
-    contactForm?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      formSuccess?.classList.add('hidden');
-      formError?.classList.add('hidden');
-
-      const formData = new FormData(contactForm);
-
-      try {
-        const response = await fetch(contactForm.action, {
-          method: 'POST',
-          body: formData,
-          headers: { Accept: 'application/json' },
-        });
-
-        if (response.ok) {
-          formSuccess?.classList.remove('hidden');
-          contactForm.reset();
-        } else {
-          formError?.classList.remove('hidden');
-        }
-      } catch {
-        formError?.classList.remove('hidden');
-      }
-    });
+    setInterval(updateSydneyTime, 1000);
   </script>
 </Layout>
