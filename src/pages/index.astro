@@ -1272,15 +1272,19 @@ const steps = [
         let isPaused = false;
         let delayCounter = 0;
         let isDelaying = false;
+        let cachedMaxScroll = 0;
 
         function ensureImageLoaded(cb: () => void) {
           if (img.naturalHeight > 0) { cb(); return; }
           img.addEventListener('load', cb, { once: true });
         }
 
+        function cacheMaxScroll() {
+          cachedMaxScroll = img.offsetHeight - container.offsetHeight;
+        }
+
         function animateScroll() {
-          const maxScroll = img.offsetHeight - container.offsetHeight;
-          if (maxScroll <= 0) { scrollRaf = null; return; }
+          if (cachedMaxScroll <= 0) { scrollRaf = null; return; }
 
 
           if (hovering) {
@@ -1295,7 +1299,7 @@ const steps = [
               return;
             }
 
-            const stopTarget = stops[currentStop] * maxScroll;
+            const stopTarget = stops[currentStop] * cachedMaxScroll;
 
             if (isPaused) {
               pauseCounter++;
@@ -1341,6 +1345,7 @@ const steps = [
           isDelaying = true;
           delayCounter = 0;
           ensureImageLoaded(() => {
+            cacheMaxScroll(); // read offsetHeight once, not every frame
             if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
           });
         });
