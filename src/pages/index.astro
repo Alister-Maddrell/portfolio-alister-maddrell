@@ -1511,15 +1511,15 @@ const steps = [
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             contactDivider.classList.add('drawn');
-            setTimeout(() => contactLeft?.classList.add('revealed'), 300);
+            setTimeout(() => contactLeft?.classList.add('revealed'), 600);
             setTimeout(() => {
               contactRight?.classList.add('revealed');
-              // Stagger form fields after right panel starts
+              // Stagger form fields after right panel starts moving in
               contactFields.forEach((field, i) => {
-                setTimeout(() => field.classList.add('revealed'), 200 + i * 120);
+                setTimeout(() => field.classList.add('revealed'), 400 + i * 180);
               });
-              setTimeout(() => contactSend?.classList.add('revealed'), 200 + contactFields.length * 120);
-            }, 500);
+              setTimeout(() => contactSend?.classList.add('revealed'), 400 + contactFields.length * 180);
+            }, 800);
             splitObs.unobserve(entry.target);
           }
         });

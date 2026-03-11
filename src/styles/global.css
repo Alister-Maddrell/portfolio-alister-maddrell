@@ -1182,13 +1182,13 @@ body {
   padding: 3rem 0;
   overflow: hidden;
   opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(40px) scale(0.97);
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-marquee.revealed {
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0) scale(1);
 }
 
 .marquee-track {
@@ -1238,7 +1238,7 @@ body {
   height: 1px;
   background: var(--color-line);
   margin: 0 auto;
-  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+  transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
 }
 
 .contact-divider.drawn {
@@ -1261,8 +1261,8 @@ body {
   flex-direction: column;
   justify-content: space-between;
   opacity: 0;
-  transform: translate(-40px, 30px);
-  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
+  transform: translate(-30px, 50px);
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-left.revealed {
@@ -1326,8 +1326,8 @@ a.contact-detail-link:hover .contact-detail-value {
 /* Right side — form */
 .contact-right {
   opacity: 0;
-  transform: translate(40px, 30px);
-  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+  transform: translate(30px, 50px);
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-right.revealed {
@@ -1339,8 +1339,8 @@ a.contact-detail-link:hover .contact-detail-value {
   position: relative;
   margin-bottom: 2rem;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(30px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-field.revealed {
@@ -1348,8 +1348,8 @@ a.contact-detail-link:hover .contact-detail-value {
   transform: translateY(0);
 }
 
-.contact-field:nth-child(2) { transition-delay: 0.1s; }
-.contact-field:nth-child(3) { transition-delay: 0.2s; }
+.contact-field:nth-child(2) { transition-delay: 0.15s; }
+.contact-field:nth-child(3) { transition-delay: 0.3s; }
 
 .contact-field label {
   display: block;
@@ -1410,10 +1410,10 @@ a.contact-detail-link:hover .contact-detail-value {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color 0.4s ease, border-color 0.4s ease, opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+  transition: color 0.4s ease, border-color 0.4s ease, opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s;
   margin-top: 0.5rem;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px);
 }
 
 .contact-send.revealed {
@@ -1466,7 +1466,7 @@ a.contact-detail-link:hover .contact-detail-value {
   }
 
   .contact-left {
-    transform: translate(0, 40px);
+    transform: translate(0, 50px);
   }
 
   .contact-left.revealed {
@@ -1474,7 +1474,7 @@ a.contact-detail-link:hover .contact-detail-value {
   }
 
   .contact-right {
-    transform: translate(0, 40px);
+    transform: translate(0, 50px);
   }
 
   .contact-right.revealed {
