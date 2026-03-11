@@ -203,7 +203,7 @@ const steps = [
     <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10">
       <div id="hero-orb-wrapper" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
       <div class="container-main w-full pt-24 relative z-[1]">
-        <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter>
+        <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter style="visibility: hidden;">
           Alister Maddrell
         </h1>
         <div id="hero-subtitle" class="mt-6 md:mt-10">
@@ -596,21 +596,27 @@ const steps = [
       const text = heroName.textContent?.trim() || '';
       heroName.innerHTML = '';
       heroName.style.minHeight = '1em';
+      heroName.style.visibility = 'visible';
 
       const cursor = document.createElement('span');
-      cursor.classList.add('typewriter-cursor');
+      cursor.classList.add('tw-cursor');
 
       let charIdx = 0;
       function typeNext() {
         if (charIdx >= text.length) {
           heroName.textContent = text;
           heroName.appendChild(cursor);
-          // Remove cursor after a moment
           setTimeout(() => cursor.remove(), 1500);
-          // Reveal subtitle with smooth animation
+          // Reveal subtitle
           setTimeout(() => heroSubtitle?.classList.add('revealed'), 300);
           // Reveal scroll indicator
           setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 800);
+          // Start zero-g float on all hero elements
+          setTimeout(() => {
+            heroName.classList.add('hero-float');
+            heroSubtitle?.classList.add('hero-float');
+            document.getElementById('scroll-indicator')?.classList.add('hero-float');
+          }, 1800);
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);
