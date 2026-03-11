@@ -360,8 +360,13 @@ const steps = [
     <!-- ─── PROCESS ─── -->
     <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Process</span>
+      <!-- Section-level depth layers -->
+      <span class="process-depth-number" data-section-depth="process" aria-hidden="true">P</span>
+      <div class="process-depth-ring" data-section-depth="process-ring" aria-hidden="true"></div>
       <div class="container-main">
-        <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3">
+        <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3" data-depth-container>
+          <span class="section-heading-bg" data-depth-layer="deep" aria-hidden="true">/04</span>
+          <div class="section-heading-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="flex items-baseline gap-4">
             <h2 class="section-heading" data-heading-text="Process">Process</h2>
             <span class="section-heading-number">/04</span>
@@ -424,8 +429,14 @@ const steps = [
     <!-- ─── ABOUT ─── -->
     <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">About</span>
+      <!-- Section-level depth layers -->
+      <span class="about-depth-number" data-section-depth="about" aria-hidden="true">A</span>
+      <div class="about-depth-line" data-section-depth="about-line" aria-hidden="true"></div>
+      <div class="about-depth-ring" data-section-depth="about-ring" aria-hidden="true"></div>
       <div class="container-main">
-        <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6">
+        <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6" data-depth-container>
+          <span class="section-heading-bg" data-depth-layer="deep" aria-hidden="true">/03</span>
+          <div class="section-heading-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="flex items-baseline gap-4">
             <h2 class="section-heading" data-heading-text="About">About</h2>
           </div>
@@ -467,7 +478,9 @@ const steps = [
         </div>
 
         <!-- Approach — icon cards that slide in -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14 md:mb-20">
+        <div class="approach-grid grid grid-cols-1 md:grid-cols-2 gap-6 mb-14 md:mb-20" data-depth-container>
+          <span class="approach-depth-mark" data-depth-layer="deep" aria-hidden="true">&lt;/&gt;</span>
+          <div class="approach-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="approach-item" data-approach>
             <div class="approach-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -507,7 +520,8 @@ const steps = [
         </div>
 
         <!-- Skill pills — staggered reveal -->
-        <div class="skill-pills" data-skill-pills data-float="10">
+        <div class="skill-pills" data-skill-pills data-float="10" data-depth-container>
+          <span class="skills-depth-mark" data-depth-layer="deep" aria-hidden="true">&#x2605;</span>
           {['Web Design', 'Development', 'SEO', 'Hosting', 'UI/UX', 'Performance', 'Astro', 'React', 'Tailwind', 'Figma', 'Vercel', 'Node.js'].map((skill) => (
             <span class="skill-pill" data-cursor-hover>{skill}</span>
           ))}
@@ -628,8 +642,9 @@ const steps = [
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="px-6 md:px-10 py-8" style="border-top: 1px solid var(--color-line);">
-    <div class="container-main flex items-center justify-between">
+  <footer class="px-6 md:px-10 py-8 relative overflow-hidden" style="border-top: 1px solid var(--color-line);">
+    <span class="footer-depth-mark" aria-hidden="true">AM</span>
+    <div class="container-main flex items-center justify-between relative" style="z-index:1;">
       <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
       <div class="flex items-center gap-6">
         <div class="hidden sm:flex items-center gap-3">
@@ -876,15 +891,17 @@ const steps = [
             if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
           }
         }
-        // Work section depth layers
-        if (workSection) {
-          const workRect = workSection.getBoundingClientRect();
+        // Section-level depth layers (work, process, about)
+        for (let si = 0; si < sectionDepthEls.length; si++) {
+          const sd = sectionDepthEls[si];
+          if (!sd.section) continue;
+          const sr = sd.section.getBoundingClientRect();
           const viewH = window.innerHeight;
-          const wp = 1 - (workRect.top + workRect.height / 2) / (viewH + workRect.height);
-          const wo = (wp - 0.5) * 2;
-          if (workDepthNum) workDepthNum.style.transform = `translateY(${wo * -50}px)`;
-          if (workDepthLine) workDepthLine.style.transform = `translateY(${wo * 30}px)`;
-          if (workDepthRing) workDepthRing.style.transform = `translate(${wo * -8}px, ${wo * 25}px)`;
+          const sp = 1 - (sr.top + sr.height / 2) / (viewH + sr.height);
+          const so = (sp - 0.5) * 2;
+          sd.els.forEach(e => {
+            e.el.style.transform = `translate(${so * e.tx}px, ${so * e.ty}px)`;
+          });
         }
       }
 
@@ -907,10 +924,38 @@ const steps = [
     const contactBgNum = document.querySelector('[data-hero-layer="contact-num"]') as HTMLElement | null;
     const contactBgRing = document.querySelector('[data-hero-layer="contact-ring"]') as HTMLElement | null;
     const contactSection = document.getElementById('contact');
-    const workSection = document.getElementById('work');
-    const workDepthNum = document.querySelector('.work-depth-number') as HTMLElement | null;
-    const workDepthLine = document.querySelector('.work-depth-line') as HTMLElement | null;
-    const workDepthRing = document.querySelector('.work-depth-ring') as HTMLElement | null;
+    // Section-level depth layer config: { section, els: [{ el, tx, ty }] }
+    interface SectionDepthConfig {
+      section: HTMLElement | null;
+      els: { el: HTMLElement; tx: number; ty: number }[];
+    }
+    const sectionDepthEls: SectionDepthConfig[] = [];
+
+    function addSectionDepth(sectionId: string, entries: { selector: string; tx: number; ty: number }[]) {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      const els: { el: HTMLElement; tx: number; ty: number }[] = [];
+      entries.forEach(e => {
+        const el = section.querySelector(e.selector) as HTMLElement | null;
+        if (el) els.push({ el, tx: e.tx, ty: e.ty });
+      });
+      if (els.length) sectionDepthEls.push({ section, els });
+    }
+
+    addSectionDepth('work', [
+      { selector: '.work-depth-number', tx: 0, ty: -50 },
+      { selector: '.work-depth-line', tx: 0, ty: 30 },
+      { selector: '.work-depth-ring', tx: -8, ty: 25 },
+    ]);
+    addSectionDepth('process', [
+      { selector: '.process-depth-number', tx: 0, ty: -45 },
+      { selector: '.process-depth-ring', tx: 10, ty: -20 },
+    ]);
+    addSectionDepth('about', [
+      { selector: '.about-depth-number', tx: 0, ty: -50 },
+      { selector: '.about-depth-line', tx: 0, ty: 28 },
+      { selector: '.about-depth-ring', tx: -6, ty: 22 },
+    ]);
 
     // ── Card layer parallax setup ──
     interface CardLayer {

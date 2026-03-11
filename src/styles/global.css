@@ -1720,6 +1720,215 @@ body.loaded .hero-corner {
 
 /* ─── Section depth layers — parallax background elements ─── */
 
+/* Generic section heading depth (reusable across sections) */
+.section-heading-bg {
+  position: absolute;
+  top: -0.5em;
+  right: -0.15em;
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.05em;
+  will-change: transform;
+}
+
+[data-theme="dark"] .section-heading-bg { opacity: 0.06; }
+
+.section-heading-block {
+  position: absolute;
+  top: -8px;
+  right: -16px;
+  bottom: -8px;
+  left: 30%;
+  background: var(--color-accent);
+  border-radius: 12px;
+  opacity: 0.02;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .section-heading-block { opacity: 0.035; }
+
+/* Process section-level depth */
+.process-depth-number {
+  position: absolute;
+  top: -0.1em;
+  left: 3%;
+  font-family: var(--font-heading);
+  font-size: clamp(12rem, 28vw, 24rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.02;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .process-depth-number { opacity: 0.035; }
+
+.process-depth-ring {
+  position: absolute;
+  right: 5%;
+  top: 20%;
+  width: clamp(100px, 14vw, 200px);
+  height: clamp(100px, 14vw, 200px);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .process-depth-ring { opacity: 0.06; }
+
+/* About section-level depth */
+.about-depth-number {
+  position: absolute;
+  bottom: -0.15em;
+  right: 3%;
+  font-family: var(--font-heading);
+  font-size: clamp(12rem, 28vw, 24rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.02;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .about-depth-number { opacity: 0.035; }
+
+.about-depth-line {
+  position: absolute;
+  right: 10%;
+  top: 12%;
+  bottom: 12%;
+  width: 1.5px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  opacity: 0.07;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .about-depth-line { opacity: 0.1; }
+
+.about-depth-ring {
+  position: absolute;
+  left: 4%;
+  bottom: 15%;
+  width: clamp(80px, 10vw, 160px);
+  height: clamp(80px, 10vw, 160px);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .about-depth-ring { opacity: 0.06; }
+
+/* Approach grid depth */
+.approach-grid {
+  position: relative;
+}
+
+.approach-depth-mark {
+  position: absolute;
+  top: -0.3em;
+  right: -0.1em;
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 10vw, 7rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .approach-depth-mark { opacity: 0.06; }
+
+.approach-depth-block {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: 50%;
+  background: var(--color-accent);
+  border-radius: 14px;
+  opacity: 0.02;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .approach-depth-block { opacity: 0.035; }
+
+/* Skill pills depth */
+.skills-depth-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.03;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .skills-depth-mark { opacity: 0.05; }
+
+/* Footer depth */
+.footer-depth-mark {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.03;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="dark"] .footer-depth-mark { opacity: 0.05; }
+
+@media (max-width: 768px) {
+  .section-heading-bg { font-size: clamp(3rem, 15vw, 5rem); }
+  .process-depth-number, .about-depth-number {
+    font-size: clamp(8rem, 35vw, 14rem);
+  }
+  .process-depth-ring, .about-depth-ring { display: none; }
+  .about-depth-line { display: none; }
+  .approach-depth-mark { font-size: clamp(3rem, 12vw, 5rem); }
+  .footer-depth-mark { font-size: clamp(2rem, 10vw, 3rem); right: 1rem; }
+}
+
 /* Process step depth layers */
 .step-depth-number {
   position: absolute;
@@ -1958,6 +2167,7 @@ body.loaded .hero-corner {
 
 /* About skill pills */
 .skill-pills {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 0.625rem;
