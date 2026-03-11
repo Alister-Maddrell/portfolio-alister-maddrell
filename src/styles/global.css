@@ -845,6 +845,20 @@ body.loaded .hero-corner {
   display: block;
   text-decoration: none;
   contain: style;
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.06)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.04));
+  transition: filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card-v:hover {
+  filter: drop-shadow(0 12px 40px var(--color-accent-soft)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
+}
+
+[data-theme="dark"] .project-card-v {
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+[data-theme="dark"] .project-card-v:hover {
+  filter: drop-shadow(0 12px 40px var(--color-accent-soft)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
 }
 
 /* Oversized index number behind card */
