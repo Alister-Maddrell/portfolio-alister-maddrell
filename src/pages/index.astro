@@ -303,9 +303,10 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <!-- Tagline — typewriter -->
-        <div class="process-tagline" data-float="4">
-          <p class="process-typewriter font-heading text-lg md:text-xl lg:text-2xl font-bold text-ink leading-snug tracking-tight max-w-2xl" data-process-typewriter aria-label="I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers."></p>
+        <!-- Tagline — typewriter (hidden copy reserves full height) -->
+        <div class="process-tagline" data-float="4" style="position: relative;">
+          <p class="font-heading text-lg md:text-xl lg:text-2xl font-bold leading-snug tracking-tight max-w-2xl" aria-hidden="true" style="visibility: hidden; pointer-events: none;">I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.</p>
+          <p class="process-typewriter font-heading text-lg md:text-xl lg:text-2xl font-bold text-ink leading-snug tracking-tight max-w-2xl" data-process-typewriter aria-label="I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers." style="position: absolute; top: 0; left: 0; right: 0;"></p>
           <p class="process-tagline-sub font-body text-sm text-muted mt-4 tracking-wide" data-process-sub style="opacity: 0;">
             No templates <span class="text-accent">·</span> No WordPress <span class="text-accent">·</span> Just clean, high-performance code.
           </p>
