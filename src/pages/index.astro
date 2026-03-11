@@ -722,7 +722,25 @@ const steps = [
           const sub2Delay = 700;
           const scrollDelay = 1000;
 
+          // Gate hero float to only run when hero is in viewport
+          let heroInView = true;
+          const heroSection = document.getElementById('hero');
+          const heroOrb = document.getElementById('hero-orb-wrapper');
+          if (heroSection) {
+            const heroVis = new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                heroInView = entry.isIntersecting;
+                heroOrb?.classList.toggle('in-view', entry.isIntersecting);
+              });
+            }, { threshold: 0 });
+            heroVis.observe(heroSection);
+          }
+
           function heroFloat(now: number) {
+            if (!heroInView) {
+              requestAnimationFrame(heroFloat);
+              return;
+            }
             const t = now - startTime;
             const ramp = Math.min(1, t / rampDuration);
             const easedRamp = ramp * ramp * (3 - 2 * ramp);
@@ -1050,8 +1068,8 @@ const steps = [
 
         // Fill the rail based on active step
         if (processRailFill) {
-          const fillPct = ((activeIndex + 1) / processSteps.length) * 100;
-          processRailFill.style.height = `${fillPct}%`;
+          const fillPct = (activeIndex + 1) / processSteps.length;
+          processRailFill.style.transform = `scaleY(${fillPct})`;
         }
       }
 
@@ -1701,6 +1719,9 @@ const steps = [
     const clockMinute = document.getElementById('clock-minute');
     const clockSecond = document.getElementById('clock-second');
 
+    const footerEl = document.querySelector('footer');
+    let clockIntervalId: ReturnType<typeof setInterval> | null = null;
+
     function updateSydneyTime() {
       const el = document.getElementById('sydney-time');
       const now = new Date();
@@ -1717,7 +1738,20 @@ const steps = [
       if (clockMinute) clockMinute.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
       if (clockSecond) clockSecond.style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
     }
-    updateSydneyTime();
-    setInterval(updateSydneyTime, 1000);
+
+    // Only tick clock when footer is visible
+    if (footerEl) {
+      const footerObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            updateSydneyTime();
+            if (!clockIntervalId) clockIntervalId = setInterval(updateSydneyTime, 1000);
+          } else {
+            if (clockIntervalId) { clearInterval(clockIntervalId); clockIntervalId = null; }
+          }
+        });
+      }, { threshold: 0 });
+      footerObs.observe(footerEl);
+    }
   </script>
 </Layout>
