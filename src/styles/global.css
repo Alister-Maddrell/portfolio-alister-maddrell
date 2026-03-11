@@ -235,7 +235,57 @@ body {
   transform: translateY(20px);
 }
 
-/* ─── Hero zero-g float ─── */
+/* ─── Site-wide zero-g float ─── */
+
+[data-float] {
+  --float-seed: attr(data-float type(<number>), 1);
+}
+
+[data-float].floating {
+  animation: zeroG var(--float-dur, 7s) ease-in-out infinite;
+}
+
+/* Unique durations and delays per seed value */
+[data-float="1"].floating  { animation: zeroG 6.5s ease-in-out infinite; }
+[data-float="2"].floating  { animation: zeroG2 7.2s ease-in-out infinite; }
+[data-float="3"].floating  { animation: zeroG 8s ease-in-out infinite; }
+[data-float="4"].floating  { animation: zeroG2 6.8s ease-in-out infinite; }
+[data-float="5"].floating  { animation: zeroG3 7.5s ease-in-out infinite; }
+[data-float="6"].floating  { animation: zeroG 7s ease-in-out infinite; }
+[data-float="7"].floating  { animation: zeroG2 8.2s ease-in-out infinite; }
+[data-float="8"].floating  { animation: zeroG3 6.6s ease-in-out infinite; }
+[data-float="9"].floating  { animation: zeroG 7.8s ease-in-out infinite; }
+[data-float="10"].floating { animation: zeroG2 7.3s ease-in-out infinite; }
+[data-float="11"].floating { animation: zeroG3 6.9s ease-in-out infinite; }
+[data-float="12"].floating { animation: zeroG 7.6s ease-in-out infinite; }
+
+@keyframes zeroG {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-8px); }
+  50% { transform: translateY(3px); }
+  75% { transform: translateY(-5px); }
+}
+
+@keyframes zeroG2 {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(6px); }
+  60% { transform: translateY(-7px); }
+  80% { transform: translateY(3px); }
+}
+
+@keyframes zeroG3 {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-6px); }
+  45% { transform: translateY(5px); }
+  70% { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-float].floating {
+    animation: none;
+  }
+}
+
 .scroll-line {
   width: 1px;
   height: 48px;
