@@ -613,10 +613,23 @@ const steps = [
           setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 800);
           // Start zero-g float on all hero elements
           setTimeout(() => {
-            heroName.classList.add('hero-float');
-            heroSubtitle?.classList.add('hero-float');
-            document.getElementById('scroll-indicator')?.classList.add('hero-float');
-          }, 1800);
+            const floatEls = [
+              { el: heroName, speed: 0.0008, amp: 12, phase: 0 },
+              { el: heroSubtitle, speed: 0.0006, amp: 10, phase: 2 },
+              { el: document.getElementById('scroll-indicator'), speed: 0.0005, amp: 8, phase: 4 },
+            ];
+            const startTime = performance.now();
+            function heroFloat(now: number) {
+              const t = now - startTime;
+              floatEls.forEach(({ el, speed, amp, phase }) => {
+                if (!el) return;
+                const y = Math.sin(t * speed + phase) * amp + Math.sin(t * speed * 0.7 + phase + 1) * (amp * 0.4);
+                el.style.transform = `translateY(${y}px)`;
+              });
+              requestAnimationFrame(heroFloat);
+            }
+            requestAnimationFrame(heroFloat);
+          }, 2200);
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);

@@ -221,34 +221,27 @@ body {
 
 #hero-subtitle {
   opacity: 0;
-  transform: translateY(20px);
-  transition: none;
 }
 
 #hero-subtitle .subtitle-line {
   opacity: 0;
-  transform: translateY(16px);
-  filter: blur(4px);
-}
-
-#hero-subtitle.revealed .subtitle-line:nth-child(1) {
-  animation: heroSubReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
-}
-
-#hero-subtitle.revealed .subtitle-line:nth-child(2) {
-  animation: heroSubReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
-}
-
-@keyframes heroSubReveal {
-  0% { opacity: 0; transform: translateY(16px); filter: blur(4px); }
-  60% { filter: blur(0); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  transform: translateY(20px);
 }
 
 #hero-subtitle.revealed {
   opacity: 1;
+}
+
+#hero-subtitle.revealed .subtitle-line:nth-child(1) {
+  transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.01s;
+}
+
+#hero-subtitle.revealed .subtitle-line:nth-child(2) {
+  transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── Scroll indicator ─── */
@@ -256,52 +249,15 @@ body {
 .scroll-indicator {
   opacity: 0;
   transform: translateY(20px);
+  transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scroll-indicator.revealed {
-  animation: scrollIndicatorIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes scrollIndicatorIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── Hero zero-g float ─── */
-
-.hero-float {
-  animation: heroZeroG 6s ease-in-out infinite;
-}
-
-#hero-subtitle.hero-float {
-  animation: heroZeroG2 7s ease-in-out infinite;
-}
-
-.scroll-indicator.hero-float {
-  animation: heroZeroG3 8s ease-in-out infinite;
-}
-
-@keyframes heroZeroG {
-  0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-6px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-3px); }
-}
-
-@keyframes heroZeroG2 {
-  0%, 100% { transform: translateY(0); }
-  30% { transform: translateY(4px); }
-  60% { transform: translateY(-5px); }
-  80% { transform: translateY(2px); }
-}
-
-@keyframes heroZeroG3 {
-  0%, 100% { transform: translateY(0); }
-  20% { transform: translateY(-4px); }
-  45% { transform: translateY(3px); }
-  70% { transform: translateY(-6px); }
-}
-
 .scroll-line {
   width: 1px;
   height: 48px;
