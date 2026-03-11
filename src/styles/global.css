@@ -844,7 +844,7 @@ body.loaded .hero-corner {
   position: relative;
   display: block;
   text-decoration: none;
-  contain: layout style;
+  contain: style;
 }
 
 /* Oversized index number behind card */
