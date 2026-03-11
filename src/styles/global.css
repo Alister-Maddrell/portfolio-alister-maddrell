@@ -887,6 +887,20 @@ body {
   letter-spacing: 0.06em;
 }
 
+.tw-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  background: var(--color-accent);
+  margin-left: 4px;
+  animation: twBlink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes twBlink {
+  50% { opacity: 0; }
+}
+
 /* Timeline layout */
 .process-timeline {
   position: relative;
