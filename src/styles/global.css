@@ -932,6 +932,48 @@ body.loaded .hero-corner {
   }
 }
 
+/* ─── Browser chrome frame ─── */
+
+.browser-frame {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-alt);
+}
+
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.browser-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-line);
+  transition: background 0.3s ease;
+}
+
+.project-card-v:hover .browser-dot:nth-child(1) { background: #FF5F57; }
+.project-card-v:hover .browser-dot:nth-child(2) { background: #FEBC2E; }
+.project-card-v:hover .browser-dot:nth-child(3) { background: #28C840; }
+
+.browser-url {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  opacity: 0.5;
+  margin-left: 8px;
+}
+
+.browser-frame .project-image {
+  border-radius: 0;
+}
+
 .project-image-clip {
   clip-path: inset(0 100% 0 0 round 16px);
   transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;

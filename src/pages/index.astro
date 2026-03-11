@@ -284,23 +284,31 @@ const steps = [
             >
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
-              <div class="project-image project-image-clip" data-parallax-container data-skew>
-                <img
-                  src={project.thumbnail}
-                  alt={`${project.name} website screenshot`}
-                  class="project-image-inner"
-                  loading="eager"
-                />
-                {project.floats.map((f) => (
-                  <span
-                    class={`floating-ui floating-ui--${f.style}`}
-                    style={`${f.pos} --depth: ${f.depth};`}
-                    data-float-depth={f.depth}
-                    aria-hidden="true"
-                  >
-                    {f.text}
-                  </span>
-                ))}
+              <div class="browser-frame">
+                <div class="browser-bar" aria-hidden="true">
+                  <span class="browser-dot"></span>
+                  <span class="browser-dot"></span>
+                  <span class="browser-dot"></span>
+                  <span class="browser-url">{new URL(project.link).hostname}</span>
+                </div>
+                <div class="project-image project-image-clip" data-parallax-container data-skew>
+                  <img
+                    src={project.thumbnail}
+                    alt={`${project.name} website screenshot`}
+                    class="project-image-inner"
+                    loading="eager"
+                  />
+                  {project.floats.map((f) => (
+                    <span
+                      class={`floating-ui floating-ui--${f.style}`}
+                      style={`${f.pos} --depth: ${f.depth};`}
+                      data-float-depth={f.depth}
+                      aria-hidden="true"
+                    >
+                      {f.text}
+                    </span>
+                  ))}
+                </div>
               </div>
               <div class="project-details" data-reveal data-skew>
                 <div class="flex items-center justify-between mb-4">
