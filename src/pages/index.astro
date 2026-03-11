@@ -202,14 +202,14 @@ const steps = [
     <!-- ─── HERO ─── -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10 overflow-hidden">
       <!-- Oversized watermark name -->
-      <span class="hero-watermark" aria-hidden="true">AM</span>
+      <span class="hero-watermark" data-hero-layer="watermark" aria-hidden="true">AM</span>
 
       <!-- Corner marks -->
-      <span class="hero-corner hero-corner--tl" aria-hidden="true"></span>
-      <span class="hero-corner hero-corner--br" aria-hidden="true"></span>
+      <span class="hero-corner hero-corner--tl" data-hero-layer="corner" aria-hidden="true"></span>
+      <span class="hero-corner hero-corner--br" data-hero-layer="corner" aria-hidden="true"></span>
 
       <!-- Orb -->
-      <div id="hero-orb-wrapper" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
+      <div id="hero-orb-wrapper" data-hero-layer="orb" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
 
       <div class="container-main w-full pt-24 relative z-[1]">
         <!-- Monospace status line -->
@@ -259,7 +259,7 @@ const steps = [
 
     <!-- ─── WORK ─── -->
     <section id="work" class="px-6 md:px-10 py-32 md:py-48 relative">
-      <span class="section-bg-text" aria-hidden="true">Work</span>
+      <span class="section-bg-text" data-bg-parallax aria-hidden="true">Work</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1">
           <div class="flex items-baseline gap-4">
@@ -343,7 +343,7 @@ const steps = [
 
     <!-- ─── PROCESS ─── -->
     <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
-      <span class="section-bg-text" aria-hidden="true">Process</span>
+      <span class="section-bg-text" data-bg-parallax aria-hidden="true">Process</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3">
           <div class="flex items-baseline gap-4">
@@ -404,7 +404,7 @@ const steps = [
 
     <!-- ─── ABOUT ─── -->
     <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
-      <span class="section-bg-text" aria-hidden="true">About</span>
+      <span class="section-bg-text" data-bg-parallax aria-hidden="true">About</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6">
           <div class="flex items-baseline gap-4">
@@ -753,9 +753,41 @@ const steps = [
         cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX}px, ${blkScrollY + blkHoverY}px)`;
       }
 
+      // ── Section bg text parallax ──
+      for (let i = 0; i < bgParallaxEls.length; i++) {
+        const bp = bgParallaxEls[i];
+        const rect = bp.parentElement!.getBoundingClientRect();
+        const viewH = window.innerHeight;
+        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
+        const offset = (progress - 0.5) * 2;
+        bp.style.transform = `translateY(${offset * -40}px)`;
+      }
+
+      // ── Hero layer parallax (orb, watermark, corners drift at different rates) ──
+      if (heroLayerOrb || heroLayerWatermark) {
+        const heroProgress = Math.min(1, currentScrollY / window.innerHeight);
+        if (heroLayerOrb) {
+          heroLayerOrb.style.transform = `translateX(10%) translateY(${heroProgress * 60}px)`;
+        }
+        if (heroLayerWatermark) {
+          heroLayerWatermark.style.transform = `translateY(${heroProgress * -30}px)`;
+        }
+        heroLayerCorners.forEach((c) => {
+          c.style.transform = `translateY(${heroProgress * 20}px)`;
+        });
+      }
+
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+
+    // ── Section bg text parallax setup ──
+    const bgParallaxEls = Array.from(document.querySelectorAll('[data-bg-parallax]')) as HTMLElement[];
+
+    // ── Hero layer parallax setup ──
+    const heroLayerOrb = document.querySelector('[data-hero-layer="orb"]') as HTMLElement | null;
+    const heroLayerWatermark = document.querySelector('[data-hero-layer="watermark"]') as HTMLElement | null;
+    const heroLayerCorners = Array.from(document.querySelectorAll('[data-hero-layer="corner"]')) as HTMLElement[];
 
     // ── Card layer parallax setup ──
     interface CardLayer {
