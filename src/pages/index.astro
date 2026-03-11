@@ -260,6 +260,7 @@ const steps = [
     <!-- ─── WORK ─── -->
     <section id="work" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Work</span>
+      <div class="deco-dot-grid" aria-hidden="true"></div>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1">
           <div class="flex items-baseline gap-4">
@@ -284,6 +285,7 @@ const steps = [
             >
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
+              <div class="card-stack-shadow" aria-hidden="true"></div>
               <div class="browser-frame" data-skew data-parallax-container>
                 <div class="browser-bar" aria-hidden="true">
                   <span class="browser-dot"></span>
@@ -342,8 +344,9 @@ const steps = [
     <div class="section-mark" aria-hidden="true"></div>
 
     <!-- ─── PROCESS ─── -->
-    <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
+    <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative overflow-hidden">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Process</span>
+      <div class="deco-circle deco-circle--process" data-bg-parallax aria-hidden="true"></div>
       <div class="container-main">
         <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3">
           <div class="flex items-baseline gap-4">
@@ -403,8 +406,9 @@ const steps = [
     <div class="section-mark" aria-hidden="true"></div>
 
     <!-- ─── ABOUT ─── -->
-    <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
+    <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative overflow-hidden">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">About</span>
+      <div class="deco-circle deco-circle--about" data-bg-parallax aria-hidden="true"></div>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6">
           <div class="flex items-baseline gap-4">
@@ -414,7 +418,7 @@ const steps = [
         </div>
 
         <!-- Manifesto — word-by-word scroll lighting -->
-        <div id="manifesto" class="mb-14 md:mb-20 about-block" data-about-block data-float="7">
+        <div id="manifesto" class="mb-14 md:mb-20 about-block manifesto-block" data-about-block data-float="7">
           <p class="font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.3] tracking-tight" data-manifesto>
             I'm Alister — a web designer in Sydney who believes the best websites don't feel designed. They just work. Fast, modern, and built to turn visitors into customers.
           </p>
@@ -528,10 +532,13 @@ const steps = [
       <!-- Split content -->
       <div class="contact-split">
         <div class="contact-left" data-contact-left data-float="11">
-          <p class="contact-cta">
-            <span style="font-weight: 300;">Got a project?</span><br />
-            <span class="contact-cta-accent">Let's make it real.</span>
-          </p>
+          <div class="contact-cta-wrap">
+            <span class="deco-cross deco-cross--tl" aria-hidden="true"></span>
+            <p class="contact-cta">
+              <span style="font-weight: 300;">Got a project?</span><br />
+              <span class="contact-cta-accent">Let's make it real.</span>
+            </p>
+          </div>
           <div class="contact-details">
             <a href="mailto:alistermaddrell@gmail.com" class="contact-detail-link" data-cursor-hover>
               <span class="contact-detail-label">Email</span>
@@ -579,9 +586,13 @@ const steps = [
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="px-6 md:px-10 py-8" style="border-top: 1px solid var(--color-line);">
+  <footer class="px-6 md:px-10 py-8 relative" style="border-top: 1px solid var(--color-line);">
+    <div class="footer-accent-line" aria-hidden="true"></div>
     <div class="container-main flex items-center justify-between">
-      <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
+      <div class="flex items-center gap-4">
+        <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
+        <span class="footer-edition">Handcrafted</span>
+      </div>
       <div class="flex items-center gap-6">
         <div class="hidden sm:flex items-center gap-3">
           <div class="clock-face" id="analog-clock">
