@@ -546,10 +546,50 @@ const steps = [
   <script>
     import Lenis from 'lenis';
 
-    // ── Skew setup (used in Lenis rAF below) ──
+    // ── Animation setup (skew + float, both run in Lenis rAF) ──
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
     const skewElements = document.querySelectorAll('[data-skew]');
+
+    // Float elements: parsed once, animated in Lenis rAF via composed style.transform
+    interface FloatItem {
+      el: HTMLElement;
+      speed: number;
+      amp: number;
+      phase: number;
+      visible: boolean;
+      hasSkew: boolean;
+      hasTilt: boolean;
+      currentY: number;
+    }
+    const floatItems: FloatItem[] = [];
+    document.querySelectorAll('[data-float]').forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      const seed = parseInt(htmlEl.dataset.float || '1');
+      floatItems.push({
+        el: htmlEl,
+        speed: 0.0005 + (seed % 5) * 0.00008,
+        amp: 6 + (seed % 4) * 2,
+        phase: seed * 1.7,
+        visible: false,
+        hasSkew: htmlEl.hasAttribute('data-skew'),
+        hasTilt: htmlEl.hasAttribute('data-tilt'),
+        currentY: 0,
+      });
+    });
+
+    // IntersectionObserver for float visibility
+    if (floatItems.length > 0) {
+      const floatVis = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const item = floatItems.find(f => f.el === entry.target);
+          if (item) item.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      floatItems.forEach(f => floatVis.observe(f.el));
+    }
+
+    const animStart = performance.now();
 
     // ── Lenis smooth scroll ──
     const lenis = new Lenis({
@@ -560,17 +600,35 @@ const steps = [
     function raf(time: number) {
       lenis.raf(time);
 
-      // ── Skew: runs every frame so velocity decays smoothly to 0 ──
-      if (skewElements.length > 0) {
-        const currentY = window.scrollY;
-        const delta = currentY - lastScrollY;
-        lastScrollY = currentY;
-        scrollVelocity += (delta - scrollVelocity) * 0.15;
-        // Snap to 0 when negligible to avoid sub-pixel jitter
-        if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
-        const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
-        for (let i = 0; i < skewElements.length; i++) {
-          (skewElements[i] as HTMLElement).style.transform = `skewY(${skewVal}deg)`;
+      const t = time - animStart;
+
+      // ── Skew velocity ──
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+      scrollVelocity += (delta - scrollVelocity) * 0.15;
+      if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
+      const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
+
+      // ── Apply skew to skew-only elements (no float) ──
+      for (let i = 0; i < skewElements.length; i++) {
+        const el = skewElements[i] as HTMLElement;
+        if (el.hasAttribute('data-float')) continue; // handled below
+        el.style.transform = `skewY(${skewVal}deg)`;
+      }
+
+      // ── Float + compose with skew/tilt ──
+      for (let i = 0; i < floatItems.length; i++) {
+        const f = floatItems[i];
+        if (!f.visible) continue;
+        const y = Math.sin(t * f.speed + f.phase) * f.amp
+                + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
+        f.currentY = y;
+
+        if (f.hasSkew) {
+          f.el.style.transform = `translateY(${y}px) skewY(${skewVal}deg)`;
+        } else {
+          f.el.style.transform = `translateY(${y}px)`;
         }
       }
 
@@ -715,42 +773,7 @@ const steps = [
       revealObserver.observe(el);
     });
 
-    // ── Site-wide zero-g float (JS-driven to avoid CSS transform conflicts) ──
-    const floatElements: { el: HTMLElement; speed: number; amp: number; phase: number; visible: boolean }[] = [];
-    document.querySelectorAll('[data-float]').forEach((el) => {
-      const seed = parseInt((el as HTMLElement).dataset.float || '1');
-      floatElements.push({
-        el: el as HTMLElement,
-        speed: 0.0005 + (seed % 5) * 0.00008,
-        amp: 6 + (seed % 4) * 2,
-        phase: seed * 1.7,
-        visible: false,
-      });
-    });
-
-    if (floatElements.length > 0) {
-      const floatVis = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const item = floatElements.find(f => f.el === entry.target);
-          if (item) item.visible = entry.isIntersecting;
-        });
-      }, { threshold: 0.05 });
-      floatElements.forEach(f => floatVis.observe(f.el));
-
-      const floatStart = performance.now();
-      function siteFloat(now: number) {
-        const t = now - floatStart;
-        for (let i = 0; i < floatElements.length; i++) {
-          const f = floatElements[i];
-          if (!f.visible) continue;
-          const y = Math.sin(t * f.speed + f.phase) * f.amp
-                  + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
-          f.el.style.translate = `0 ${y}px`;
-        }
-        requestAnimationFrame(siteFloat);
-      }
-      requestAnimationFrame(siteFloat);
-    }
+    // (Float moved to Lenis rAF loop above — uses style.transform instead of style.translate)
 
     // ── Section dividers ──
     document.querySelectorAll('[data-divider]').forEach((el) => {
@@ -1304,20 +1327,24 @@ const steps = [
     if (window.matchMedia('(pointer: fine)').matches) {
       document.querySelectorAll('[data-tilt]').forEach((card) => {
         const el = card as HTMLElement;
+        const floatItem = floatItems.find(f => f.el === el);
         let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
         let rafId: number | null = null;
         let isHovering = false;
+
+        function getFloatY() { return floatItem ? floatItem.currentY : 0; }
 
         function animate() {
           const dx = targetX - currentX;
           const dy = targetY - currentY;
           currentX += dx * 0.08;
           currentY += dy * 0.08;
-          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+          const fy = getFloatY();
+          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg) translateY(${fy}px)`;
           if (!isHovering && Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
             currentX = 0;
             currentY = 0;
-            el.style.transform = '';
+            // Don't clear transform — float rAF in Lenis loop takes over
             rafId = null;
             return;
           }
