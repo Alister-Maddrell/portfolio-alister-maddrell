@@ -758,7 +758,7 @@ const steps = [
     function startHeroTypewriter() {
       if (!heroName) return;
       const text = heroName.textContent?.trim() || '';
-      heroName.innerHTML = '';
+      heroName.textContent = '';
       heroName.style.minHeight = '1em';
       heroName.style.visibility = 'visible';
 
