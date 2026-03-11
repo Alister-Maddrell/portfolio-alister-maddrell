@@ -282,8 +282,8 @@ const steps = [
               data-float={String(20 + i * 3)}
               style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
-              <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <div class="project-color-block" aria-hidden="true"></div>
+              <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
               <div class="project-image project-image-clip" data-parallax-container data-skew>
                 <img
                   src={project.thumbnail}
@@ -716,9 +716,89 @@ const steps = [
         }
       }
 
+      // ── Card layer parallax (index number + color block at different rates) ──
+      for (let i = 0; i < cardLayers.length; i++) {
+        const cl = cardLayers[i];
+        if (!cl.visible) continue;
+        const rect = cl.card.getBoundingClientRect();
+        const viewH = window.innerHeight;
+        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
+        const offset = (progress - 0.5) * 2; // -1 to 1
+
+        // Smooth hover interpolation
+        const targetHX = cl.hovering ? cl.hoverX : 0;
+        const targetHY = cl.hovering ? cl.hoverY : 0;
+        cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
+        cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
+
+        // Index: floats higher, moves opposite on hover (deep background layer)
+        const idxScrollY = offset * -35;
+        const idxHoverX = cl.currentHoverX * -25;
+        const idxHoverY = cl.currentHoverY * -20;
+        cl.indexEl.style.transform = `translate(${idxHoverX}px, ${idxScrollY + idxHoverY}px)`;
+
+        // Color block: drifts subtly, moves with cursor (mid layer)
+        const blkScrollX = offset * -6;
+        const blkScrollY = offset * 18;
+        const blkHoverX = cl.currentHoverX * 15;
+        const blkHoverY = cl.currentHoverY * 12;
+        cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX}px, ${blkScrollY + blkHoverY}px)`;
+      }
+
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+
+    // ── Card layer parallax setup ──
+    interface CardLayer {
+      card: HTMLElement;
+      indexEl: HTMLElement;
+      blockEl: HTMLElement;
+      visible: boolean;
+      hoverX: number;
+      hoverY: number;
+      currentHoverX: number;
+      currentHoverY: number;
+      hovering: boolean;
+    }
+    const cardLayers: CardLayer[] = [];
+    document.querySelectorAll('.project-card-v').forEach((card) => {
+      const indexEl = card.querySelector('[data-card-layer="index"]') as HTMLElement;
+      const blockEl = card.querySelector('[data-card-layer="block"]') as HTMLElement;
+      if (!indexEl || !blockEl) return;
+      const cl: CardLayer = {
+        card: card as HTMLElement, indexEl, blockEl, visible: false,
+        hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
+      };
+      cardLayers.push(cl);
+
+      // Hover tracking for layer parallax
+      if (window.matchMedia('(pointer: fine)').matches) {
+        card.addEventListener('mouseenter', () => { cl.hovering = true; }, { passive: true });
+        card.addEventListener('mousemove', (e: Event) => {
+          if (Math.abs(scrollVelocity) > 0.5) return;
+          const me = e as MouseEvent;
+          const rect = (card as HTMLElement).getBoundingClientRect();
+          cl.hoverX = (me.clientX - rect.left - rect.width / 2) / rect.width;
+          cl.hoverY = (me.clientY - rect.top - rect.height / 2) / rect.height;
+        }, { passive: true });
+        card.addEventListener('mouseleave', () => {
+          cl.hovering = false;
+          cl.hoverX = 0;
+          cl.hoverY = 0;
+        }, { passive: true });
+      }
+    });
+
+    if (cardLayers.length > 0) {
+      const cardLayerVis = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const cl = cardLayers.find(c => c.card === entry.target);
+          if (cl) cl.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
+      cardLayers.forEach(cl => cardLayerVis.observe(cl.card));
+    }
 
     // Handle anchor clicks with native smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
