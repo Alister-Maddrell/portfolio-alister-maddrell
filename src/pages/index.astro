@@ -221,23 +221,6 @@ const steps = [
       </div>
     </section>
 
-    <!-- ─── INTRO — Typewriter ─── -->
-    <section id="intro" class="px-6 md:px-10 py-28 md:py-40">
-      <div class="container-main">
-        <div class="section-divider w-full max-w-[200px] mb-14" data-divider></div>
-        <div id="intro-typewriter" class="max-w-[900px]" aria-label="I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.">
-          <div class="typewriter-text font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.25] tracking-tight" aria-hidden="true"></div>
-        </div>
-        <div id="intro-strikes" class="mt-12 md:mt-16 flex flex-wrap items-center gap-x-5 gap-y-3">
-          <span class="intro-strike font-heading text-base md:text-lg font-medium text-muted">No templates</span>
-          <span class="intro-strike font-heading text-base md:text-lg text-accent opacity-40">·</span>
-          <span class="intro-strike font-heading text-base md:text-lg font-medium text-muted">No WordPress</span>
-          <span class="intro-strike font-heading text-base md:text-lg text-accent opacity-40">·</span>
-          <span class="intro-strike font-heading text-base md:text-lg font-semibold text-ink">Just clean, high-performance code.</span>
-        </div>
-      </div>
-    </section>
-
     <!-- ─── WORK ─── -->
     <section id="work" class="px-6 md:px-10 py-28 md:py-40">
       <div class="container-main">
@@ -718,104 +701,6 @@ const steps = [
         });
       }
     });
-
-    // ── Intro typewriter ──
-    const typewriterEl = document.querySelector('#intro-typewriter .typewriter-text') as HTMLElement;
-    const introStrikes = document.querySelectorAll('#intro-strikes .intro-strike');
-
-    const introTemplate = [
-      { text: 'I design and build ' },
-      { text: 'fast, modern', keyword: true },
-      { text: ' websites for local businesses across Sydney. Every site is ' },
-      { text: 'custom-built', keyword: true },
-      { text: ', SEO-optimised, and designed to ' },
-      { text: 'turn visitors into customers', keyword: true },
-      { text: '.' },
-    ];
-
-    let typewriterStarted = false;
-
-    function startTypewriter() {
-      if (typewriterStarted || !typewriterEl) return;
-      typewriterStarted = true;
-
-      // Build the full text with spans
-      let html = '';
-      introTemplate.forEach((part) => {
-        if (part.keyword) {
-          html += `<span class="intro-kw" data-cursor-hover>`;
-          part.text.split('').forEach((ch) => {
-            const sx = (Math.random() - 0.5) * 12;
-            const sy = (Math.random() - 0.5) * 8;
-            const sr = (Math.random() - 0.5) * 20;
-            html += `<span class="kw-char" style="--sx:${sx}px;--sy:${sy}px;--sr:${sr}deg">${ch}</span>`;
-          });
-          html += `</span>`;
-        } else {
-          html += part.text;
-        }
-      });
-
-      // Type it out character by character
-      const fullHTML = html;
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = fullHTML;
-      const fullText = tempDiv.textContent || '';
-
-      typewriterEl.innerHTML = '';
-      let charIdx = 0;
-      const cursor = document.createElement('span');
-      cursor.classList.add('typewriter-cursor');
-
-      function typeNext() {
-        if (charIdx >= fullText.length) {
-          // Done typing, set final HTML and show strikes
-          typewriterEl.innerHTML = fullHTML;
-          typewriterEl.appendChild(cursor);
-          // Re-bind cursor hover on keywords
-          typewriterEl.querySelectorAll('[data-cursor-hover]').forEach((el) => {
-            el.addEventListener('mouseenter', () => document.getElementById('cursor-circle')?.classList.add('hover'));
-            el.addEventListener('mouseleave', () => document.getElementById('cursor-circle')?.classList.remove('hover'));
-          });
-          // Animate strikes
-          setTimeout(() => {
-            introStrikes.forEach((s, i) => {
-              setTimeout(() => {
-                s.classList.add('visible');
-                if (s.classList.contains('font-medium')) {
-                  setTimeout(() => s.classList.add('struck'), 400);
-                }
-              }, i * 120);
-            });
-          }, 300);
-          return;
-        }
-
-        // Show plain text progressively
-        const visibleText = fullText.slice(0, charIdx + 1);
-        typewriterEl.textContent = visibleText;
-        typewriterEl.appendChild(cursor);
-        charIdx++;
-
-        const delay = fullText[charIdx - 1] === '.' ? 120 : fullText[charIdx - 1] === ',' ? 80 : 25;
-        setTimeout(typeNext, delay);
-      }
-      typeNext();
-    }
-
-    // Trigger typewriter on scroll
-    const typeObs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            startTypewriter();
-            typeObs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-    if (typewriterEl) typeObs.observe(typewriterEl);
 
     // ── Manifesto word-by-word scroll reveal (setup) ──
     const manifestoData: { el: Element; wordSpans: NodeListOf<Element>; totalWords: number }[] = [];
