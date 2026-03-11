@@ -268,17 +268,6 @@ body {
   user-select: none;
   letter-spacing: -0.05em;
   z-index: 0;
-  transform: translateY(20px);
-  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
-}
-
-body.loaded .hero-watermark {
-  opacity: 0.018;
-  transform: translateY(0);
-}
-
-[data-theme="dark"] body.loaded .hero-watermark {
-  opacity: 0.03;
 }
 
 .hero-corner {
@@ -354,13 +343,6 @@ body.loaded .hero-corner {
   color: var(--color-muted);
   margin-bottom: 2rem;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
-}
-
-body.loaded .hero-status {
-  opacity: 0.7;
-  transform: translateY(0);
 }
 
 .hero-status-dot {
@@ -389,12 +371,6 @@ body.loaded .hero-status {
   opacity: 0;
   transform: scaleX(0);
   transform-origin: left;
-  transition: opacity 0.5s ease 0.5s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
-}
-
-body.loaded .hero-rule {
-  opacity: 1;
-  transform: scaleX(1);
 }
 
 .hero-services {
@@ -408,13 +384,6 @@ body.loaded .hero-rule {
   color: var(--color-muted);
   margin-top: 2.5rem;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s;
-}
-
-body.loaded .hero-services {
-  opacity: 0.5;
-  transform: translateY(0);
 }
 
 .hero-services-dot {

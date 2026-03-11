@@ -791,6 +791,15 @@ const steps = [
           const subtitleDelay = 150;
           const sub2Delay = 400;
           const scrollDelay = 600;
+          const statusDelay = 100;
+          const servicesDelay = 500;
+          const watermarkDelay = 200;
+
+          // Grab hero detail elements
+          const heroStatusEl = document.querySelector('.hero-status') as HTMLElement | null;
+          const heroServicesEl = document.querySelector('.hero-services') as HTMLElement | null;
+          const heroWatermarkEl = document.querySelector('.hero-watermark') as HTMLElement | null;
+          const heroRuleEl = document.querySelector('.hero-rule') as HTMLElement | null;
 
           // Gate hero float to only run when hero is in viewport
           let heroInView = true;
@@ -802,6 +811,12 @@ const steps = [
               });
             }, { threshold: 0 });
             heroVis.observe(heroSection);
+          }
+
+          // Helper: smoothstep reveal (same as subtitle)
+          function smoothReveal(t: number, delay: number, duration = 2000) {
+            const r = Math.min(1, Math.max(0, (t - delay) / duration));
+            return r * r * (3 - 2 * r);
           }
 
           function heroFloat(now: number) {
@@ -823,8 +838,7 @@ const steps = [
               if (subLines) {
                 subLines.forEach((line, i) => {
                   const delay = i === 0 ? subtitleDelay : sub2Delay;
-                  const reveal = Math.min(1, Math.max(0, (t - delay) / 2000));
-                  const eased = reveal * reveal * (3 - 2 * reveal);
+                  const eased = smoothReveal(t, delay);
                   const floatY = (Math.sin(t * 0.0006 + 2) * 10 + Math.sin(t * 0.00042 + 3) * 4) * easedRamp;
                   const revealY = (1 - eased) * 24;
                   line.style.opacity = `${eased}`;
@@ -835,12 +849,40 @@ const steps = [
 
             // Reveal + float scroll indicator
             if (scrollIndicator) {
-              const sReveal = Math.min(1, Math.max(0, (t - scrollDelay) / 2000));
-              const sEased = sReveal * sReveal * (3 - 2 * sReveal);
+              const sEased = smoothReveal(t, scrollDelay);
               const sFloatY = (Math.sin(t * 0.0005 + 4) * 8 + Math.sin(t * 0.00035 + 5) * 3.2) * easedRamp;
               const sRevealY = (1 - sEased) * 20;
               scrollIndicator.style.opacity = `${sEased}`;
               scrollIndicator.style.transform = `translateY(${sRevealY + sFloatY}px)`;
+            }
+
+            // Reveal status line
+            if (heroStatusEl) {
+              const e = smoothReveal(t, statusDelay);
+              heroStatusEl.style.opacity = `${e * 0.7}`;
+              heroStatusEl.style.transform = `translateY(${(1 - e) * 16}px)`;
+            }
+
+            // Reveal services
+            if (heroServicesEl) {
+              const e = smoothReveal(t, servicesDelay);
+              heroServicesEl.style.opacity = `${e * 0.5}`;
+              heroServicesEl.style.transform = `translateY(${(1 - e) * 16}px)`;
+            }
+
+            // Reveal watermark
+            if (heroWatermarkEl) {
+              const e = smoothReveal(t, watermarkDelay, 3000);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroWatermarkEl.style.opacity = `${e * (isDark ? 0.03 : 0.018)}`;
+              heroWatermarkEl.style.transform = `translateY(${(1 - e) * 30}px)`;
+            }
+
+            // Reveal accent rule
+            if (heroRuleEl) {
+              const e = smoothReveal(t, subtitleDelay);
+              heroRuleEl.style.opacity = `${e}`;
+              heroRuleEl.style.transform = `scaleX(${e})`;
             }
 
             requestAnimationFrame(heroFloat);
