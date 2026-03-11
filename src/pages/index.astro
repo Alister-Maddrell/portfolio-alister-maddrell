@@ -2194,7 +2194,7 @@ const steps = [
       ));
       const isDark = document.documentElement.dataset.theme === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
-      const newBg = newTheme === 'dark' ? '#0A0A0A' : '#FAFAFA';
+      const newBg = newTheme === 'dark' ? '#0c0c0c' : '#FAFAFA';
       overlay.style.backgroundColor = newBg;
       overlay.style.transition = 'none';
       overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
@@ -2229,6 +2229,9 @@ const steps = [
       document.querySelectorAll('.icon-sun, #icon-sun').forEach((el) => {
         (el as HTMLElement).style.display = isDark ? 'block' : 'none';
       });
+      // Update browser theme-color meta
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', isDark ? '#0c0c0c' : '#FAFAFA');
     }
 
     updateThemeIcons(document.documentElement.dataset.theme || 'light');

@@ -18,15 +18,129 @@
 /* ─── Dark mode overrides ─── */
 
 [data-theme="dark"] {
-  --color-surface: #0a0a0a;
-  --color-surface-alt: #111111;
-  --color-ink: #f0f0f0;
-  --color-muted: #808080;
-  --color-line: #1e1e1e;
-  --color-accent: #E8673E;
-  --color-accent-glow: rgba(232, 103, 62, 0.3);
-  --color-accent-mid: rgba(232, 103, 62, 0.6);
-  --color-accent-soft: rgba(232, 103, 62, 0.2);
+  --color-surface: #0c0c0c;
+  --color-surface-alt: #161616;
+  --color-ink: #e8e4e0;
+  --color-muted: #8a8580;
+  --color-line: #252220;
+  --color-accent: #EB6B3E;
+  --color-accent-glow: rgba(235, 107, 62, 0.35);
+  --color-accent-mid: rgba(235, 107, 62, 0.55);
+  --color-accent-soft: rgba(235, 107, 62, 0.18);
+}
+
+/* ─── Dark mode refinements ─── */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Warmer selection in dark mode */
+[data-theme="dark"] ::selection {
+  background-color: var(--color-accent);
+  color: #0c0c0c;
+}
+
+/* Process rail & dots — more visible separation */
+[data-theme="dark"] .process-rail {
+  background: #1f1c1a;
+}
+
+[data-theme="dark"] .process-step-dot {
+  border-color: #302c28;
+  background: #161616;
+}
+
+[data-theme="dark"] .process-step + .process-step {
+  border-color: #1f1c1a;
+}
+
+[data-theme="dark"] .process-step.active .process-step-dot {
+  box-shadow: 0 0 16px var(--color-accent-glow), 0 0 32px var(--color-accent-soft);
+}
+
+/* Process detail tags — warmer border */
+[data-theme="dark"] .process-detail-tag {
+  border-color: #302c28;
+}
+
+/* Step number stroke — visible in dark */
+[data-theme="dark"] .step-number {
+  -webkit-text-stroke-color: #302c28;
+}
+
+/* Approach icons — warmer border */
+[data-theme="dark"] .approach-icon {
+  border-color: #302c28;
+}
+
+/* Skill pills — warmer border */
+[data-theme="dark"] .skill-pill {
+  border-color: #302c28;
+  color: #8a8580;
+}
+
+/* HR rhythm — visible */
+[data-theme="dark"] .hr-rhythm {
+  background: #1f1c1a;
+}
+
+/* Section marks — warmer */
+[data-theme="dark"] .section-mark::before {
+  color: #8a8580;
+}
+
+/* Nav rail — refined for dark */
+[data-theme="dark"] #nav-rail {
+  border-color: #1f1c1a;
+}
+
+[data-theme="dark"] .nav-rail-line {
+  background: #1f1c1a;
+}
+
+[data-theme="dark"] .nav-node-dot {
+  border-color: #302c28;
+  background: #161616;
+}
+
+/* Loader — warm dark */
+[data-theme="dark"] #loader {
+  background: #0c0c0c;
+}
+
+/* Scroll progress — brighter glow */
+[data-theme="dark"] #scroll-progress {
+  box-shadow: 0 0 8px var(--color-accent-glow);
+}
+
+/* Contact send button — warmer border */
+[data-theme="dark"] .contact-send {
+  border-color: var(--color-ink);
+}
+
+[data-theme="dark"] .contact-send:hover {
+  box-shadow: 0 8px 32px var(--color-accent-glow), 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Contact detail labels */
+[data-theme="dark"] .contact-detail-label {
+  color: #6b6560;
+}
+
+/* Form card header — warmer divider */
+[data-theme="dark"] .form-card-header {
+  border-bottom-color: #252220;
+}
+
+/* Footer border */
+[data-theme="dark"] footer {
+  border-top-color: #1f1c1a !important;
+}
+
+/* Clock face — warmer */
+[data-theme="dark"] .clock-face {
+  border-color: #6b6560;
 }
 
 /* ─── Base ─── */
@@ -525,7 +639,7 @@ body.loaded .hero-corner {
 }
 
 [data-theme="dark"] #hero-orb-wrapper div {
-  background: #E8673E !important;
+  background: #EB6B3E !important;
 }
 
 @keyframes orbFloat {
@@ -1097,12 +1211,21 @@ body.loaded .hero-corner {
   border-radius: 12px 12px 0 0;
 }
 
+[data-theme="dark"] .browser-bar {
+  background: #1a1816;
+  border-color: var(--color-line);
+}
+
 .browser-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--color-line);
   transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .browser-dot {
+  background: #302c28;
 }
 
 .project-card-v:hover .browser-dot:nth-child(1) { background: #FF5F57; }
@@ -2116,6 +2239,11 @@ a.contact-detail-link:hover .contact-detail-value {
 .contact-field textarea:focus {
   border-color: var(--color-accent);
   box-shadow: 0 2px 8px var(--color-accent-soft);
+}
+
+[data-theme="dark"] .contact-field input:focus,
+[data-theme="dark"] .contact-field textarea:focus {
+  box-shadow: 0 2px 12px var(--color-accent-glow);
 }
 
 .contact-field input::placeholder,
