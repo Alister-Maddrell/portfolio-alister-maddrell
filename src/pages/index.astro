@@ -242,6 +242,7 @@ const steps = [
               data-reveal="scale"
               data-tilt
               data-cursor-hover
+              data-float={String(20 + i * 3)}
               style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -875,6 +876,38 @@ const steps = [
     const navMobileLinks = document.querySelectorAll('.nav-mobile-link[data-nav-section]');
     const navRailProgress = document.getElementById('nav-rail-progress');
 
+    // ── IntersectionObserver for active section (replaces per-frame getBoundingClientRect) ──
+    let currentSection = 'hero';
+    const sectionObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          currentSection = entry.target.id;
+        }
+      });
+    }, { threshold: 0, rootMargin: '-199px 0px -50% 0px' });
+    sections.forEach((s) => sectionObs.observe(s));
+
+    // ── IntersectionObserver for manifesto visibility ──
+    const manifestoVisible = new Map<Element, boolean>();
+    manifestoData.forEach(({ el }) => manifestoVisible.set(el, false));
+    const manifestoObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        manifestoVisible.set(entry.target, entry.isIntersecting);
+      });
+    }, { threshold: 0.05 });
+    manifestoData.forEach(({ el }) => manifestoObs.observe(el));
+
+    // ── IntersectionObserver for process timeline visibility ──
+    let processVisible = false;
+    if (processTimeline) {
+      const processObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          processVisible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      processObs.observe(processTimeline);
+    }
+
     // ── Skew (setup) ──
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
@@ -884,6 +917,16 @@ const steps = [
     // ── Parallax (setup) ──
     const hasPointer = window.matchMedia('(pointer: fine)').matches;
     const parallaxElements = hasPointer ? document.querySelectorAll('[data-parallax]') : [];
+    const parallaxVisible = new Set<Element>();
+    if (hasPointer && parallaxElements.length > 0) {
+      const parObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) parallaxVisible.add(entry.target);
+          else parallaxVisible.delete(entry.target);
+        });
+      }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
+      parallaxElements.forEach((el) => parObs.observe(el));
+    }
 
     // ── Unified scroll handler (one rAF per frame) ──
     let scrollTicking = false;
@@ -904,14 +947,7 @@ const steps = [
       // Nav rail progress line
       if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
 
-      // Active section detection
-      let currentSection = 'hero';
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= 200 && rect.bottom >= 200) {
-          currentSection = section.id;
-        }
-      });
+      // Active section detection (driven by IntersectionObserver, just update UI here)
       navNodes.forEach((node) => {
         const section = (node as HTMLElement).dataset.navSection;
         node.classList.toggle('active', section === currentSection);
@@ -921,8 +957,9 @@ const steps = [
         link.classList.toggle('active', section === currentSection);
       });
 
-      // Manifesto word-by-word reveal
+      // Manifesto word-by-word reveal (only when visible)
       manifestoData.forEach(({ el, wordSpans, totalWords }) => {
+        if (!manifestoVisible.get(el)) return;
         const rect = el.getBoundingClientRect();
         const start = viewH * 0.85;
         const end = viewH * 0.15;
@@ -933,8 +970,8 @@ const steps = [
         });
       });
 
-      // Process step highlighting + rail fill
-      if (processSteps.length > 0 && processTimeline) {
+      // Process step highlighting + rail fill (only when visible)
+      if (processSteps.length > 0 && processTimeline && processVisible) {
         const viewCenter = viewH * 0.5;
         let closestStep: Element | null = null;
         let closestDist = Infinity;
@@ -972,14 +1009,14 @@ const steps = [
         } else if (absVel > 0) {
           scrollVelocity = 0;
           skewElements.forEach((el) => {
-            (el as HTMLElement).style.transform = '';
+            (el as HTMLElement).style.transform = 'skewY(0deg)';
           });
         }
       }
 
-      // Parallax depth layers
+      // Parallax depth layers (only visible elements)
       if (hasPointer) {
-        parallaxElements.forEach((el) => {
+        parallaxVisible.forEach((el) => {
           const htmlEl = el as HTMLElement;
           if (htmlEl.id === 'hero-name') return;
           const speed = parseFloat(htmlEl.dataset.parallax || '0');
