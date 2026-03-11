@@ -771,6 +771,15 @@ body {
   }
 }
 
+.project-image-clip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+.project-card-v.revealed .project-image-clip {
+  clip-path: inset(0 0 0 0);
+}
+
 .project-card-v .project-image {
   width: 100%;
   aspect-ratio: 16 / 10;
