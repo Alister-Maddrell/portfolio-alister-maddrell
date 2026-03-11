@@ -2301,6 +2301,16 @@ const steps = [
 
     updateThemeIcons(document.documentElement.dataset.theme || 'light');
 
+    // Listen for system theme changes (if user hasn't manually toggled)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (localStorage.getItem('theme')) return; // user has manual preference
+      const newTheme = e.matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = newTheme;
+      updateThemeIcons(newTheme);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', newTheme === 'dark' ? '#0c0c0c' : '#FAFAFA');
+    });
+
     // Both theme toggles (rail + mobile)
     document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
       toggleTheme(e.currentTarget as HTMLElement);

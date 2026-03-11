@@ -19,7 +19,8 @@ const { title, description } = Astro.props;
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
       const t = localStorage.getItem('theme');
-      if (t === 'dark') {
+      const prefersDark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (prefersDark) {
         document.documentElement.dataset.theme = 'dark';
         document.querySelector('meta[name="theme-color"]').content = '#0c0c0c';
       }
