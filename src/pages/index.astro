@@ -201,12 +201,22 @@ const steps = [
   <main>
     <!-- ─── HERO ─── -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10 overflow-hidden">
-      <!-- Oversized watermark name -->
+      <!-- Deep depth layers -->
       <span class="hero-watermark" data-hero-layer="watermark" aria-hidden="true">AM</span>
+      <span class="hero-grid-overlay" data-hero-layer="grid" aria-hidden="true"></span>
+      <span class="hero-year" data-hero-layer="year" aria-hidden="true">&rsquo;26</span>
+
+      <!-- Mid depth layers -->
+      <div class="hero-accent-bar" data-hero-layer="bar" aria-hidden="true"></div>
+      <div class="hero-accent-ring" data-hero-layer="ring" aria-hidden="true"></div>
 
       <!-- Corner marks -->
       <span class="hero-corner hero-corner--tl" data-hero-layer="corner" aria-hidden="true"></span>
       <span class="hero-corner hero-corner--br" data-hero-layer="corner" aria-hidden="true"></span>
+
+      <!-- Coordinate marks -->
+      <span class="hero-coord hero-coord--top" data-hero-layer="coord" aria-hidden="true">33.8688&deg;S</span>
+      <span class="hero-coord hero-coord--bottom" data-hero-layer="coord" aria-hidden="true">151.2093&deg;E</span>
 
       <!-- Orb -->
       <div id="hero-orb-wrapper" data-hero-layer="orb" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
@@ -371,7 +381,10 @@ const steps = [
             <div
               class="process-step"
               data-process-step
+              data-depth-container
             >
+              <span class="step-depth-number" data-depth-layer="deep" aria-hidden="true">{step.number}</span>
+              <div class="step-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
               <div class="process-step-marker" aria-hidden="true">
                 <div class="process-step-dot"></div>
               </div>
@@ -414,14 +427,18 @@ const steps = [
         </div>
 
         <!-- Manifesto — word-by-word scroll lighting -->
-        <div id="manifesto" class="mb-14 md:mb-20 about-block" data-about-block data-float="7">
+        <div id="manifesto" class="mb-14 md:mb-20 about-block" data-about-block data-float="7" data-depth-container>
+          <span class="manifesto-depth-mark" data-depth-layer="deep" aria-hidden="true">&ldquo;</span>
+          <div class="manifesto-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <p class="font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.3] tracking-tight" data-manifesto>
             I'm Alister — a web designer in Sydney who believes the best websites don't feel designed. They just work. Fast, modern, and built to turn visitors into customers.
           </p>
         </div>
 
         <!-- Stats — animated counters -->
-        <div class="about-stats mb-14 md:mb-20" data-about-stats data-float="8">
+        <div class="about-stats mb-14 md:mb-20" data-about-stats data-float="8" data-depth-container>
+          <span class="stats-depth-number" data-depth-layer="deep" aria-hidden="true">&#x221e;</span>
+          <div class="stats-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="about-stat" data-stat data-stat-target="100" data-stat-suffix="%">
             <span class="about-stat-number" data-stat-number>0%</span>
             <span class="about-stat-label">Custom Built</span>
@@ -498,6 +515,11 @@ const steps = [
 
     <!-- ─── CONTACT ─── -->
     <section id="contact" class="contact-section">
+      <!-- Deep background layers -->
+      <span class="contact-bg-number" data-hero-layer="contact-num" aria-hidden="true">05</span>
+      <div class="contact-bg-ring" data-hero-layer="contact-ring" aria-hidden="true"></div>
+      <span class="contact-bg-text" data-bg-parallax aria-hidden="true">Contact</span>
+
       <!-- Velocity-reactive marquee band -->
       <div class="contact-marquee" data-contact-marquee>
         <div class="marquee-track" data-marquee-track="left">
@@ -526,12 +548,21 @@ const steps = [
       <div class="contact-divider" data-contact-divider></div>
 
       <!-- Split content -->
-      <div class="contact-split">
+      <div class="contact-split" data-depth-container>
+        <!-- Deep & mid layers behind the entire split -->
+        <span class="contact-split-arrow" data-depth-layer="deep" aria-hidden="true">&rarr;</span>
+        <div class="contact-split-block" data-depth-layer="mid" aria-hidden="true"></div>
+
         <div class="contact-left" data-contact-left data-float="11">
-          <p class="contact-cta">
-            <span style="font-weight: 300;">Got a project?</span><br />
-            <span class="contact-cta-accent">Let's make it real.</span>
-          </p>
+          <div class="contact-left-inner">
+            <p class="contact-cta">
+              <span style="font-weight: 300;">Got a project?</span><br />
+              <span class="contact-cta-accent">Let's make it real.</span>
+            </p>
+            <p class="contact-sub font-body text-muted text-sm leading-relaxed mt-4 max-w-sm">
+              I'm currently taking on new projects. Drop me a message and I'll get back within 24 hours.
+            </p>
+          </div>
           <div class="contact-details">
             <a href="mailto:alistermaddrell@gmail.com" class="contact-detail-link" data-cursor-hover>
               <span class="contact-detail-label">Email</span>
@@ -541,37 +572,49 @@ const steps = [
               <span class="contact-detail-label">Location</span>
               <span class="contact-detail-value">Sydney, Australia</span>
             </div>
+            <div class="contact-detail-link">
+              <span class="contact-detail-label">Response</span>
+              <span class="contact-detail-value">Within 24 hours</span>
+            </div>
           </div>
         </div>
 
         <div class="contact-right" data-contact-right data-float="12">
-          <form id="contact-form" action="https://formspree.io/f/placeholder" method="POST">
-            <div class="contact-field" data-contact-field>
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your name" required />
+          <div class="contact-form-card" data-depth-container>
+            <span class="form-card-number" data-depth-layer="deep" aria-hidden="true">&#x2709;</span>
+            <div class="form-card-accent" data-depth-layer="mid" aria-hidden="true"></div>
+            <div class="form-card-header">
+              <span class="form-card-title">New Project</span>
+              <span class="form-card-dot"></span>
             </div>
-            <div class="contact-field" data-contact-field>
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com" required />
-            </div>
-            <div class="contact-field" data-contact-field>
-              <label for="message">Message</label>
-              <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="4" class="resize-none"></textarea>
-            </div>
-            <button type="submit" class="contact-send" data-cursor-hover>
-              <span class="contact-send-text">Send Message</span>
-              <span class="contact-send-arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </span>
-            </button>
-          </form>
+            <form id="contact-form" action="https://formspree.io/f/placeholder" method="POST">
+              <div class="contact-field" data-contact-field>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required />
+              </div>
+              <div class="contact-field" data-contact-field>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required />
+              </div>
+              <div class="contact-field" data-contact-field>
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="4" class="resize-none"></textarea>
+              </div>
+              <button type="submit" class="contact-send" data-cursor-hover>
+                <span class="contact-send-text">Send Message</span>
+                <span class="contact-send-arrow">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </button>
+            </form>
 
-          <div id="form-success" class="hidden py-12 text-center">
-            <p class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight">Message sent!</p>
-            <p class="font-body text-muted text-sm mt-2">I'll be in touch within 24 hours.</p>
-          </div>
-          <div id="form-error" class="hidden font-body text-red-500 text-sm mt-4">
-            Something went wrong. Please try emailing me directly.
+            <div id="form-success" class="hidden py-12 text-center">
+              <p class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight">Message sent!</p>
+              <p class="font-body text-muted text-sm mt-2">I'll be in touch within 24 hours.</p>
+            </div>
+            <div id="form-error" class="hidden font-body text-red-500 text-sm mt-4">
+              Something went wrong. Please try emailing me directly.
+            </div>
           </div>
         </div>
       </div>
@@ -763,18 +806,64 @@ const steps = [
         bp.style.transform = `translateY(${offset * -40}px)`;
       }
 
-      // ── Hero layer parallax (orb, watermark, corners drift at different rates) ──
-      if (heroLayerOrb || heroLayerWatermark) {
+      // ── Section depth layer parallax ──
+      for (let i = 0; i < depthLayers.length; i++) {
+        const dl = depthLayers[i];
+        if (!dl.visible) continue;
+        const rect = dl.container.getBoundingClientRect();
+        const viewH = window.innerHeight;
+        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
+        const offset = (progress - 0.5) * 2; // -1 to 1
+
+        // Deep layer: moves opposite direction (like card index)
+        if (dl.deepEl) {
+          dl.deepEl.style.transform = `translateY(${offset * -30}px)`;
+        }
+        // Mid layer: drifts subtly on scroll (like card color block)
+        if (dl.midEl) {
+          dl.midEl.style.transform = `translate(${offset * -5}px, ${offset * 15}px)`;
+        }
+      }
+
+      // ── Hero layer parallax (multiple depth planes) ──
+      {
         const heroProgress = Math.min(1, currentScrollY / window.innerHeight);
+        // Deep layers (move opposite/slower)
         if (heroLayerOrb) {
           heroLayerOrb.style.transform = `translateX(10%) translateY(${heroProgress * 60}px)`;
         }
         if (heroLayerWatermark) {
           heroLayerWatermark.style.transform = `translateY(${heroProgress * -30}px)`;
         }
+        if (heroLayerGrid) {
+          heroLayerGrid.style.transform = `translateY(${heroProgress * -15}px)`;
+        }
+        if (heroLayerYear) {
+          heroLayerYear.style.transform = `translateY(${heroProgress * -45}px)`;
+        }
+        // Mid layers (drift subtly)
+        if (heroLayerBar) {
+          heroLayerBar.style.transform = `translateY(${heroProgress * 25}px)`;
+        }
+        if (heroLayerRing) {
+          heroLayerRing.style.transform = `translate(${heroProgress * -10}px, ${heroProgress * 35}px)`;
+        }
+        // Foreground details
         heroLayerCorners.forEach((c) => {
           c.style.transform = `translateY(${heroProgress * 20}px)`;
         });
+        heroLayerCoords.forEach((c) => {
+          c.style.transform = `translateY(${heroProgress * -12}px)`;
+        });
+        // Contact section bg layers
+        if (contactBgNum) {
+          const contactRect = contactSection?.getBoundingClientRect();
+          if (contactRect && contactRect.top < window.innerHeight) {
+            const cp = 1 - contactRect.top / window.innerHeight;
+            contactBgNum.style.transform = `translateY(${cp * -40}px)`;
+            if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
+          }
+        }
       }
 
       requestAnimationFrame(raf);
@@ -787,7 +876,15 @@ const steps = [
     // ── Hero layer parallax setup ──
     const heroLayerOrb = document.querySelector('[data-hero-layer="orb"]') as HTMLElement | null;
     const heroLayerWatermark = document.querySelector('[data-hero-layer="watermark"]') as HTMLElement | null;
+    const heroLayerGrid = document.querySelector('[data-hero-layer="grid"]') as HTMLElement | null;
+    const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTMLElement | null;
+    const heroLayerBar = document.querySelector('[data-hero-layer="bar"]') as HTMLElement | null;
+    const heroLayerRing = document.querySelector('[data-hero-layer="ring"]') as HTMLElement | null;
     const heroLayerCorners = Array.from(document.querySelectorAll('[data-hero-layer="corner"]')) as HTMLElement[];
+    const heroLayerCoords = Array.from(document.querySelectorAll('[data-hero-layer="coord"]')) as HTMLElement[];
+    const contactBgNum = document.querySelector('[data-hero-layer="contact-num"]') as HTMLElement | null;
+    const contactBgRing = document.querySelector('[data-hero-layer="contact-ring"]') as HTMLElement | null;
+    const contactSection = document.getElementById('contact');
 
     // ── Card layer parallax setup ──
     interface CardLayer {
@@ -838,6 +935,36 @@ const steps = [
         });
       }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
       cardLayers.forEach(cl => cardLayerVis.observe(cl.card));
+    }
+
+    // ── Section depth layer parallax setup ──
+    interface DepthLayer {
+      container: HTMLElement;
+      deepEl: HTMLElement | null;
+      midEl: HTMLElement | null;
+      visible: boolean;
+    }
+    const depthLayers: DepthLayer[] = [];
+    document.querySelectorAll('[data-depth-container]').forEach((container) => {
+      const deepEl = container.querySelector('[data-depth-layer="deep"]') as HTMLElement | null;
+      const midEl = container.querySelector('[data-depth-layer="mid"]') as HTMLElement | null;
+      if (!deepEl && !midEl) return;
+      depthLayers.push({
+        container: container as HTMLElement,
+        deepEl,
+        midEl,
+        visible: false,
+      });
+    });
+
+    if (depthLayers.length > 0) {
+      const depthVis = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const dl = depthLayers.find(d => d.container === entry.target);
+          if (dl) dl.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
+      depthLayers.forEach(dl => depthVis.observe(dl.container));
     }
 
     // Handle anchor clicks with native smooth scroll
@@ -920,6 +1047,11 @@ const steps = [
           const heroServicesEl = document.querySelector('.hero-services') as HTMLElement | null;
           const heroWatermarkEl = document.querySelector('.hero-watermark') as HTMLElement | null;
           const heroRuleEl = document.querySelector('.hero-rule') as HTMLElement | null;
+          const heroYearEl = document.querySelector('.hero-year') as HTMLElement | null;
+          const heroBarEl = document.querySelector('.hero-accent-bar') as HTMLElement | null;
+          const heroRingEl = document.querySelector('.hero-accent-ring') as HTMLElement | null;
+          const heroGridEl = document.querySelector('.hero-grid-overlay') as HTMLElement | null;
+          const heroCoordsEls = Array.from(document.querySelectorAll('.hero-coord')) as HTMLElement[];
 
           // Gate hero float to only run when hero is in viewport
           let heroInView = true;
@@ -1004,6 +1136,43 @@ const steps = [
               heroRuleEl.style.opacity = `${e}`;
               heroRuleEl.style.transform = `scaleX(${e})`;
             }
+
+            // Reveal year marker (deep layer)
+            if (heroYearEl) {
+              const e = smoothReveal(t, 300, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroYearEl.style.opacity = `${e * (isDark ? 0.06 : 0.04)}`;
+              heroYearEl.style.transform = `translateY(${(1 - e) * 20}px)`;
+            }
+
+            // Reveal accent bar (mid layer)
+            if (heroBarEl) {
+              const e = smoothReveal(t, 400, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroBarEl.style.opacity = `${e * (isDark ? 0.12 : 0.08)}`;
+            }
+
+            // Reveal accent ring (mid layer)
+            if (heroRingEl) {
+              const e = smoothReveal(t, 350, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroRingEl.style.opacity = `${e * (isDark ? 0.08 : 0.05)}`;
+              heroRingEl.style.transform = `scale(${0.8 + e * 0.2})`;
+            }
+
+            // Reveal grid overlay (deep layer)
+            if (heroGridEl) {
+              const e = smoothReveal(t, 200, 3000);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroGridEl.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
+            }
+
+            // Reveal coordinates
+            heroCoordsEls.forEach((c, i) => {
+              const e = smoothReveal(t, 600 + i * 200, 2000);
+              c.style.opacity = `${e * 0.3}`;
+              c.style.transform = `translateY(${(1 - e) * 10}px)`;
+            });
 
             requestAnimationFrame(heroFloat);
           }
