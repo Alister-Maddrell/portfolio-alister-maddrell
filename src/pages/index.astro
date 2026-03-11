@@ -936,6 +936,7 @@ const steps = [
 
     // ── IntersectionObserver for active section (replaces per-frame getBoundingClientRect) ──
     let currentSection = 'hero';
+    let lastActiveSection = '';
     const sectionObs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -994,22 +995,27 @@ const steps = [
       // Scroll progress bar
       if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
 
-      // Nav top frosted glass
-      if (scrollTop > 80) navTop?.classList.add('scrolled');
-      else navTop?.classList.remove('scrolled');
+      // Nav top background
+      const shouldScroll = scrollTop > 80;
+      if (shouldScroll !== navTop?.classList.contains('scrolled')) {
+        navTop?.classList.toggle('scrolled', shouldScroll);
+      }
 
       // Nav rail progress line
       if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
 
-      // Active section detection (driven by IntersectionObserver, just update UI here)
-      navNodes.forEach((node) => {
-        const section = (node as HTMLElement).dataset.navSection;
-        node.classList.toggle('active', section === currentSection);
-      });
-      navMobileLinks.forEach((link) => {
-        const section = (link as HTMLElement).dataset.navSection;
-        link.classList.toggle('active', section === currentSection);
-      });
+      // Active section detection (driven by IntersectionObserver, only update on change)
+      if (currentSection !== lastActiveSection) {
+        lastActiveSection = currentSection;
+        navNodes.forEach((node) => {
+          const section = (node as HTMLElement).dataset.navSection;
+          node.classList.toggle('active', section === currentSection);
+        });
+        navMobileLinks.forEach((link) => {
+          const section = (link as HTMLElement).dataset.navSection;
+          link.classList.toggle('active', section === currentSection);
+        });
+      }
 
       // Manifesto word-by-word reveal (only when visible)
       manifestoData.forEach(({ el, wordSpans, totalWords }) => {
@@ -1115,7 +1121,7 @@ const steps = [
 
       // Build trail dots
       const trailContainer = document.getElementById('cursor-trail');
-      const TRAIL_COUNT = 8;
+      const TRAIL_COUNT = 5;
       const trailDots: HTMLElement[] = [];
       const trailPositions = Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }));
       if (trailContainer) {
