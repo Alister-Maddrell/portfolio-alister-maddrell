@@ -200,12 +200,33 @@ const steps = [
 
   <main>
     <!-- ─── HERO ─── -->
-    <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10">
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10 overflow-hidden">
+      <!-- Oversized watermark name -->
+      <span class="hero-watermark" aria-hidden="true">AM</span>
+
+      <!-- Corner marks -->
+      <span class="hero-corner hero-corner--tl" aria-hidden="true"></span>
+      <span class="hero-corner hero-corner--br" aria-hidden="true"></span>
+
+      <!-- Orb -->
       <div id="hero-orb-wrapper" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
+
       <div class="container-main w-full pt-24 relative z-[1]">
+        <!-- Monospace status line -->
+        <div class="hero-status" data-float="13">
+          <span class="hero-status-dot" aria-hidden="true"></span>
+          <span>Available for projects</span>
+          <span class="hero-status-sep" aria-hidden="true">/</span>
+          <span>Sydney, AU</span>
+        </div>
+
         <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter style="visibility: hidden;">
           Alister Maddrell
         </h1>
+
+        <!-- Decorative rule -->
+        <div class="hero-rule" aria-hidden="true"></div>
+
         <div id="hero-subtitle" class="mt-6 md:mt-10">
           <p class="subtitle-line font-heading text-muted text-base md:text-lg tracking-wide max-w-xl" style="font-weight: 300;">
             Every pixel <span class="text-accent" style="font-weight: 700;">earns its place.</span>
@@ -214,7 +235,19 @@ const steps = [
             Web Designer & Developer · Sydney
           </p>
         </div>
+
+        <!-- Services micro-list -->
+        <div class="hero-services" id="hero-services">
+          <span>Design</span>
+          <span class="hero-services-dot" aria-hidden="true"></span>
+          <span>Development</span>
+          <span class="hero-services-dot" aria-hidden="true"></span>
+          <span>SEO</span>
+          <span class="hero-services-dot" aria-hidden="true"></span>
+          <span>Hosting</span>
+        </div>
       </div>
+
       <div id="scroll-indicator" class="scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
         <span class="font-body text-[0.6875rem] tracking-[0.2em] uppercase text-muted">Scroll</span>
         <div class="scroll-line"></div>
@@ -715,6 +748,7 @@ const steps = [
         loader?.classList.add('done');
         setTimeout(() => {
           if (loader) loader.style.display = 'none';
+          document.body.classList.add('loaded');
           startHeroTypewriter();
         }, 800);
       }, 400);
