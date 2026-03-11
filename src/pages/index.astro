@@ -284,14 +284,14 @@ const steps = [
             >
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
-              <div class="browser-frame">
+              <div class="browser-frame" data-skew data-parallax-container>
                 <div class="browser-bar" aria-hidden="true">
                   <span class="browser-dot"></span>
                   <span class="browser-dot"></span>
                   <span class="browser-dot"></span>
                   <span class="browser-url">{new URL(project.link).hostname}</span>
                 </div>
-                <div class="project-image project-image-clip" data-parallax-container data-skew>
+                <div class="project-image project-image-clip">
                   <img
                     src={project.thumbnail}
                     alt={`${project.name} website screenshot`}
