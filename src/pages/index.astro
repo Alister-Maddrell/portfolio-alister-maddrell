@@ -604,14 +604,13 @@ const steps = [
       let charIdx = 0;
       function typeNext() {
         if (charIdx >= text.length) {
-          heroName.textContent = text;
-          heroName.appendChild(cursor);
+          // Don't replace textContent — keep as-is to avoid layout snap
           setTimeout(() => cursor.remove(), 1500);
           // Reveal subtitle
-          setTimeout(() => heroSubtitle?.classList.add('revealed'), 300);
+          setTimeout(() => heroSubtitle?.classList.add('revealed'), 400);
           // Reveal scroll indicator
-          setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 800);
-          // Start zero-g float on all hero elements
+          setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 1000);
+          // Start zero-g float — ease amplitude in over 3s
           setTimeout(() => {
             const floatEls = [
               { el: heroName, speed: 0.0008, amp: 12, phase: 0 },
@@ -619,17 +618,20 @@ const steps = [
               { el: document.getElementById('scroll-indicator'), speed: 0.0005, amp: 8, phase: 4 },
             ];
             const startTime = performance.now();
+            const rampDuration = 3000; // ease amplitude in over 3s
             function heroFloat(now: number) {
               const t = now - startTime;
+              const ramp = Math.min(1, t / rampDuration); // 0 → 1 over 3s
+              const easedRamp = ramp * ramp * (3 - 2 * ramp); // smoothstep
               floatEls.forEach(({ el, speed, amp, phase }) => {
                 if (!el) return;
-                const y = Math.sin(t * speed + phase) * amp + Math.sin(t * speed * 0.7 + phase + 1) * (amp * 0.4);
+                const y = (Math.sin(t * speed + phase) * amp + Math.sin(t * speed * 0.7 + phase + 1) * (amp * 0.4)) * easedRamp;
                 el.style.transform = `translateY(${y}px)`;
               });
               requestAnimationFrame(heroFloat);
             }
             requestAnimationFrame(heroFloat);
-          }, 2200);
+          }, 3500);
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);
