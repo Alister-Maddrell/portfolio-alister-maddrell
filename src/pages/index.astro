@@ -242,6 +242,7 @@ const steps = [
               data-reveal="scale"
               data-tilt
               data-cursor-hover
+              data-float={String(20 + i * 3)}
               style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -604,11 +605,8 @@ const steps = [
 
     // ── Lenis smooth scroll ──
     const lenis = new Lenis({
-      duration: 1.0,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3),
-      lerp: 0.12,
-      smoothWheel: true,
-      wheelMultiplier: 1.2,
+      lerp: 0.14,
+      wheelMultiplier: 0.9,
     });
 
     function raf(time: number) {
@@ -725,12 +723,10 @@ const steps = [
           // Gate hero float to only run when hero is in viewport
           let heroInView = true;
           const heroSection = document.getElementById('hero');
-          const heroOrb = document.getElementById('hero-orb-wrapper');
           if (heroSection) {
             const heroVis = new IntersectionObserver((entries) => {
               entries.forEach((entry) => {
                 heroInView = entry.isIntersecting;
-                heroOrb?.classList.toggle('in-view', entry.isIntersecting);
               });
             }, { threshold: 0 });
             heroVis.observe(heroSection);
@@ -1161,7 +1157,10 @@ const steps = [
 
         circleX += (mouseX - circleX) * 0.12;
         circleY += (mouseY - circleY) * 0.12;
-        cursorCircle.style.transform = `translate(${circleX}px, ${circleY}px)`;
+        const isHover = cursorCircle.classList.contains('hover');
+        cursorCircle.style.transform = isHover
+          ? `translate(${circleX}px, ${circleY}px) scale(1.5)`
+          : `translate(${circleX}px, ${circleY}px)`;
 
         if (trailDots.length && mouseOnPage) {
           trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;

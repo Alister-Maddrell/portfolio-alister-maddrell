@@ -41,6 +41,12 @@ body {
   overflow-x: hidden;
 }
 
+@media (pointer: fine) {
+  a, button, [data-cursor-hover], input, textarea, select, label {
+    cursor: none !important;
+  }
+}
+
 ::selection {
   background-color: var(--color-accent);
   color: #fff;
@@ -139,11 +145,10 @@ body {
   opacity: 0.4;
   margin-left: -20px;
   margin-top: -20px;
-  transition: scale 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
 }
 
 #cursor-circle.hover {
-  scale: 1.5;
   opacity: 0.6;
   border-color: var(--color-accent);
 }
@@ -201,11 +206,7 @@ body {
 /* ─── Hero orb ─── */
 
 #hero-orb-wrapper {
-  animation: orbFloat 10s ease-in-out infinite paused;
-}
-
-#hero-orb-wrapper.in-view {
-  animation-play-state: running;
+  animation: orbFloat 10s ease-in-out infinite;
 }
 
 [data-theme="dark"] #hero-orb-wrapper div {
