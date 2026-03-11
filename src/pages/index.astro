@@ -785,12 +785,12 @@ const steps = [
             { el: scrollIndicator, speed: 0.0005, amp: 8, phase: 4 },
           ];
           const startTime = performance.now();
-          const rampDuration = 4000;
+          const rampDuration = 2500;
 
           // Reveal timings (ms after typing ends)
-          const subtitleDelay = 300;
-          const sub2Delay = 700;
-          const scrollDelay = 1000;
+          const subtitleDelay = 150;
+          const sub2Delay = 400;
+          const scrollDelay = 600;
 
           // Gate hero float to only run when hero is in viewport
           let heroInView = true;
@@ -852,7 +852,7 @@ const steps = [
         heroName.appendChild(cursor);
         charIdx++;
         const ch = text[charIdx - 1];
-        const delay = ch === ' ' ? 60 : 50 + Math.random() * 30;
+        const delay = ch === ' ' ? 40 : 30 + Math.random() * 20;
         setTimeout(typeNext, delay);
       }
       typeNext();
