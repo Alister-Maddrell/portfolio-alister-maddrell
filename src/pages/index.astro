@@ -694,22 +694,42 @@ const steps = [
       revealObserver.observe(el);
     });
 
-    // ── Site-wide zero-g float ──
-    const floatObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('floating');
-          } else {
-            entry.target.classList.remove('floating');
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
+    // ── Site-wide zero-g float (JS-driven to avoid CSS transform conflicts) ──
+    const floatElements: { el: HTMLElement; speed: number; amp: number; phase: number; visible: boolean }[] = [];
     document.querySelectorAll('[data-float]').forEach((el) => {
-      floatObserver.observe(el);
+      const seed = parseInt((el as HTMLElement).dataset.float || '1');
+      floatElements.push({
+        el: el as HTMLElement,
+        speed: 0.0005 + (seed % 5) * 0.00008,
+        amp: 6 + (seed % 4) * 2,
+        phase: seed * 1.7,
+        visible: false,
+      });
     });
+
+    if (floatElements.length > 0) {
+      const floatVis = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const item = floatElements.find(f => f.el === entry.target);
+          if (item) item.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      floatElements.forEach(f => floatVis.observe(f.el));
+
+      const floatStart = performance.now();
+      function siteFloat(now: number) {
+        const t = now - floatStart;
+        for (let i = 0; i < floatElements.length; i++) {
+          const f = floatElements[i];
+          if (!f.visible) continue;
+          const y = Math.sin(t * f.speed + f.phase) * f.amp
+                  + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
+          f.el.style.translate = `0 ${y}px`;
+        }
+        requestAnimationFrame(siteFloat);
+      }
+      requestAnimationFrame(siteFloat);
+    }
 
     // ── Section dividers ──
     document.querySelectorAll('[data-divider]').forEach((el) => {
