@@ -580,7 +580,7 @@ const steps = [
       skewElements.forEach((el) => skewVis.observe(el));
     }
 
-    // Float elements: parsed once, animated in Lenis rAF via composed style.transform
+    // Float elements: parsed once, animated in standalone rAF via composed style.transform
     interface FloatItem {
       el: HTMLElement;
       speed: number;
@@ -590,6 +590,12 @@ const steps = [
       hasSkew: boolean;
       hasTilt: boolean;
       currentY: number;
+      // Tilt state (merged into main loop to avoid competing transforms)
+      tiltHovering: boolean;
+      tiltTargetX: number;
+      tiltTargetY: number;
+      tiltCurrentX: number;
+      tiltCurrentY: number;
     }
     const floatItems: FloatItem[] = [];
     document.querySelectorAll('[data-float]').forEach((el) => {
@@ -604,6 +610,11 @@ const steps = [
         hasSkew: htmlEl.hasAttribute('data-skew'),
         hasTilt: htmlEl.hasAttribute('data-tilt'),
         currentY: 0,
+        tiltHovering: false,
+        tiltTargetX: 0,
+        tiltTargetY: 0,
+        tiltCurrentX: 0,
+        tiltCurrentY: 0,
       });
     });
 
@@ -640,7 +651,7 @@ const steps = [
         el.style.transform = `skewY(${skewVal}deg)`;
       }
 
-      // ── Float + compose with skew/tilt ──
+      // ── Float + compose with skew + tilt (single writer) ──
       for (let i = 0; i < floatItems.length; i++) {
         const f = floatItems[i];
         if (!f.visible) continue;
@@ -648,7 +659,24 @@ const steps = [
                 + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
         f.currentY = y;
 
-        if (f.hasSkew) {
+        // Tilt interpolation (runs in this loop, no separate rAF)
+        if (f.hasTilt) {
+          f.tiltCurrentX += (f.tiltTargetX - f.tiltCurrentX) * 0.08;
+          f.tiltCurrentY += (f.tiltTargetY - f.tiltCurrentY) * 0.08;
+          // Snap to zero when close enough and not hovering
+          if (!f.tiltHovering && Math.abs(f.tiltCurrentX) < 0.01 && Math.abs(f.tiltCurrentY) < 0.01) {
+            f.tiltCurrentX = 0;
+            f.tiltCurrentY = 0;
+          }
+          const hasTiltValues = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
+          if (hasTiltValues) {
+            f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translateY(${y}px)`;
+          } else if (f.hasSkew) {
+            f.el.style.transform = `translateY(${y}px) skewY(${skewVal}deg)`;
+          } else {
+            f.el.style.transform = `translateY(${y}px)`;
+          }
+        } else if (f.hasSkew) {
           f.el.style.transform = `translateY(${y}px) skewY(${skewVal}deg)`;
         } else {
           f.el.style.transform = `translateY(${y}px)`;
@@ -1379,48 +1407,26 @@ const steps = [
       });
     }
 
-    // ── 3D tilt on project cards (suppressed while scrolling) ──
+    // ── 3D tilt on project cards (state only — animation runs in main rAF) ──
     if (window.matchMedia('(pointer: fine)').matches) {
       document.querySelectorAll('[data-tilt]').forEach((card) => {
         const el = card as HTMLElement;
-        const floatItem = floatItems.find(f => f.el === el);
-        let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-        let rafId: number | null = null;
-        let isHovering = false;
+        const f = floatItems.find(item => item.el === el);
+        if (!f) return;
 
-        function getFloatY() { return floatItem ? floatItem.currentY : 0; }
-
-        function animate() {
-          // Skip tilt while scrolling — let main rAF own the transform
-          if (Math.abs(scrollVelocity) > 0.5) {
-            rafId = requestAnimationFrame(animate);
-            return;
-          }
-          const dx = targetX - currentX;
-          const dy = targetY - currentY;
-          currentX += dx * 0.08;
-          currentY += dy * 0.08;
-          const fy = getFloatY();
-          el.style.transform = `perspective(1000px) rotateX(${currentX}deg) rotateY(${currentY}deg) translateY(${fy}px)`;
-          if (!isHovering && Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
-            currentX = 0;
-            currentY = 0;
-            rafId = null;
-            return;
-          }
-          rafId = requestAnimationFrame(animate);
-        }
-        function startLoop() { if (!rafId) rafId = requestAnimationFrame(animate); }
-
-        el.addEventListener('mouseenter', () => { isHovering = true; startLoop(); });
+        el.addEventListener('mouseenter', () => { f.tiltHovering = true; }, { passive: true });
         el.addEventListener('mousemove', (e: MouseEvent) => {
-          if (Math.abs(scrollVelocity) > 0.5) return; // skip layout reads while scrolling
+          if (Math.abs(scrollVelocity) > 0.5) return;
           const rect = el.getBoundingClientRect();
           const cx = rect.width / 2, cy = rect.height / 2;
-          targetX = ((e.clientY - rect.top - cy) / cy) * -3;
-          targetY = ((e.clientX - rect.left - cx) / cx) * 3;
-        });
-        el.addEventListener('mouseleave', () => { isHovering = false; targetX = 0; targetY = 0; startLoop(); });
+          f.tiltTargetX = ((e.clientY - rect.top - cy) / cy) * -3;
+          f.tiltTargetY = ((e.clientX - rect.left - cx) / cx) * 3;
+        }, { passive: true });
+        el.addEventListener('mouseleave', () => {
+          f.tiltHovering = false;
+          f.tiltTargetX = 0;
+          f.tiltTargetY = 0;
+        }, { passive: true });
       });
     }
 
