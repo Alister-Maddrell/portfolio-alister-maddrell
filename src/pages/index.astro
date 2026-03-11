@@ -207,8 +207,8 @@ const steps = [
           Alister Maddrell
         </h1>
         <div id="hero-subtitle" class="mt-6 md:mt-10">
-          <p class="subtitle-line font-heading text-muted text-base md:text-lg font-medium tracking-wide max-w-xl">
-            Every pixel <span class="text-accent">earns its place.</span>
+          <p class="subtitle-line font-heading text-muted text-base md:text-lg tracking-wide max-w-xl" style="font-weight: 300;">
+            Every pixel <span class="text-accent" style="font-weight: 700;">earns its place.</span>
           </p>
           <p class="subtitle-line font-body text-xs mt-3 tracking-[0.15em] uppercase" style="color: var(--color-muted); opacity: 0.6;">
             Web Designer & Developer · Sydney
@@ -221,8 +221,12 @@ const steps = [
       </div>
     </section>
 
+    <!-- Section mark: Hero → Work -->
+    <div class="section-mark" aria-hidden="true"></div>
+
     <!-- ─── WORK ─── -->
-    <section id="work" class="px-6 md:px-10 py-28 md:py-40">
+    <section id="work" class="px-6 md:px-10 py-32 md:py-48 relative">
+      <span class="section-bg-text" aria-hidden="true">Work</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1">
           <div class="flex items-baseline gap-4">
@@ -247,7 +251,7 @@ const steps = [
             >
               <span class="project-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <div class="project-color-block" aria-hidden="true"></div>
-              <div class="project-image" data-parallax-container data-skew>
+              <div class="project-image" data-parallax-container data-skew data-reveal="clip">
                 <img
                   src={project.thumbnail}
                   alt={`${project.name} website screenshot`}
@@ -292,8 +296,13 @@ const steps = [
       </div>
     </section>
 
+    <!-- Horizontal rule: Work → Process -->
+    <hr class="hr-rhythm" aria-hidden="true" />
+    <div class="section-mark" aria-hidden="true"></div>
+
     <!-- ─── PROCESS ─── -->
-    <section id="process" class="px-6 md:px-10 py-28 md:py-40 bg-alt">
+    <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
+      <span class="section-bg-text" aria-hidden="true">Process</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3">
           <div class="flex items-baseline gap-4">
@@ -348,8 +357,13 @@ const steps = [
       </div>
     </section>
 
+    <!-- Horizontal rule: Process → About -->
+    <hr class="hr-rhythm" aria-hidden="true" />
+    <div class="section-mark" aria-hidden="true"></div>
+
     <!-- ─── ABOUT ─── -->
-    <section id="about" class="px-6 md:px-10 py-28 md:py-40">
+    <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
+      <span class="section-bg-text" aria-hidden="true">About</span>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6">
           <div class="flex items-baseline gap-4">
@@ -437,6 +451,10 @@ const steps = [
       </div>
     </section>
 
+    <!-- Horizontal rule: About → Contact -->
+    <hr class="hr-rhythm" aria-hidden="true" />
+    <div class="section-mark" aria-hidden="true"></div>
+
     <!-- ─── CONTACT ─── -->
     <section id="contact" class="contact-section">
       <!-- Velocity-reactive marquee band -->
@@ -470,7 +488,7 @@ const steps = [
       <div class="contact-split">
         <div class="contact-left" data-contact-left data-float="11">
           <p class="contact-cta">
-            Got a project?<br />
+            <span style="font-weight: 300;">Got a project?</span><br />
             <span class="contact-cta-accent">Let's make it real.</span>
           </p>
           <div class="contact-details">
