@@ -602,36 +602,70 @@ const steps = [
       cursor.classList.add('tw-cursor');
 
       let charIdx = 0;
+      const scrollIndicator = document.getElementById('scroll-indicator');
+
       function typeNext() {
         if (charIdx >= text.length) {
-          // Don't replace textContent — keep as-is to avoid layout snap
-          setTimeout(() => cursor.remove(), 1500);
-          // Reveal subtitle
-          setTimeout(() => heroSubtitle?.classList.add('revealed'), 400);
-          // Reveal scroll indicator
-          setTimeout(() => document.getElementById('scroll-indicator')?.classList.add('revealed'), 1000);
-          // Start zero-g float — ease amplitude in over 3s
-          setTimeout(() => {
-            const floatEls = [
-              { el: heroName, speed: 0.0008, amp: 12, phase: 0 },
-              { el: heroSubtitle, speed: 0.0006, amp: 10, phase: 2 },
-              { el: document.getElementById('scroll-indicator'), speed: 0.0005, amp: 8, phase: 4 },
-            ];
-            const startTime = performance.now();
-            const rampDuration = 3000; // ease amplitude in over 3s
-            function heroFloat(now: number) {
-              const t = now - startTime;
-              const ramp = Math.min(1, t / rampDuration); // 0 → 1 over 3s
-              const easedRamp = ramp * ramp * (3 - 2 * ramp); // smoothstep
-              floatEls.forEach(({ el, speed, amp, phase }) => {
-                if (!el) return;
-                const y = (Math.sin(t * speed + phase) * amp + Math.sin(t * speed * 0.7 + phase + 1) * (amp * 0.4)) * easedRamp;
-                el.style.transform = `translateY(${y}px)`;
-              });
-              requestAnimationFrame(heroFloat);
+          // Fade cursor out instead of removing (avoids layout snap)
+          cursor.style.transition = 'opacity 1s ease';
+          cursor.style.opacity = '0';
+
+          // Reveal subtitle and scroll indicator via JS opacity/transform
+          // (no CSS transitions — float will handle transforms)
+          const subLines = heroSubtitle?.querySelectorAll('.subtitle-line') as NodeListOf<HTMLElement>;
+
+          // Start float immediately — it handles reveal + drift together
+          const floatEls = [
+            { el: heroName, speed: 0.0008, amp: 12, phase: 0 },
+            { el: heroSubtitle, speed: 0.0006, amp: 10, phase: 2 },
+            { el: scrollIndicator, speed: 0.0005, amp: 8, phase: 4 },
+          ];
+          const startTime = performance.now();
+          const rampDuration = 4000;
+
+          // Reveal timings (ms after typing ends)
+          const subtitleDelay = 300;
+          const sub2Delay = 700;
+          const scrollDelay = 1000;
+
+          function heroFloat(now: number) {
+            const t = now - startTime;
+            const ramp = Math.min(1, t / rampDuration);
+            const easedRamp = ramp * ramp * (3 - 2 * ramp);
+
+            // Float the title
+            const titleY = (Math.sin(t * 0.0008) * 12 + Math.sin(t * 0.00056 + 1) * 4.8) * easedRamp;
+            heroName.style.transform = `translateY(${titleY}px)`;
+
+            // Reveal + float subtitle
+            if (heroSubtitle) {
+              heroSubtitle.style.opacity = '1';
+              if (subLines) {
+                subLines.forEach((line, i) => {
+                  const delay = i === 0 ? subtitleDelay : sub2Delay;
+                  const reveal = Math.min(1, Math.max(0, (t - delay) / 2000));
+                  const eased = reveal * reveal * (3 - 2 * reveal);
+                  const floatY = (Math.sin(t * 0.0006 + 2) * 10 + Math.sin(t * 0.00042 + 3) * 4) * easedRamp;
+                  const revealY = (1 - eased) * 24;
+                  line.style.opacity = `${eased}`;
+                  line.style.transform = `translateY(${revealY + floatY}px)`;
+                });
+              }
             }
+
+            // Reveal + float scroll indicator
+            if (scrollIndicator) {
+              const sReveal = Math.min(1, Math.max(0, (t - scrollDelay) / 2000));
+              const sEased = sReveal * sReveal * (3 - 2 * sReveal);
+              const sFloatY = (Math.sin(t * 0.0005 + 4) * 8 + Math.sin(t * 0.00035 + 5) * 3.2) * easedRamp;
+              const sRevealY = (1 - sEased) * 20;
+              scrollIndicator.style.opacity = `${sEased}`;
+              scrollIndicator.style.transform = `translateY(${sRevealY + sFloatY}px)`;
+            }
+
             requestAnimationFrame(heroFloat);
-          }, 3500);
+          }
+          requestAnimationFrame(heroFloat);
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);
