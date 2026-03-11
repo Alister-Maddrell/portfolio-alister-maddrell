@@ -544,9 +544,9 @@ const steps = [
 
   <!-- ─── SCRIPTS ─── -->
   <script>
-    import Lenis from 'lenis';
+    // import Lenis from 'lenis'; // DISABLED — testing CSS smooth-scroll
 
-    // ── Animation setup (skew + float, both run in Lenis rAF) ──
+    // ── Animation setup (skew + float, run in standalone rAF) ──
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
     const skewElements = document.querySelectorAll('[data-skew]');
@@ -603,15 +603,8 @@ const steps = [
 
     const animStart = performance.now();
 
-    // ── Lenis smooth scroll ──
-    const lenis = new Lenis({
-      lerp: 0.14,
-      wheelMultiplier: 0.9,
-    });
-
+    // ── Standalone animation loop (no Lenis) ──
     function raf(time: number) {
-      lenis.raf(time);
-
       const t = time - animStart;
 
       // ── Skew velocity ──
@@ -649,7 +642,7 @@ const steps = [
     }
     requestAnimationFrame(raf);
 
-    // Handle anchor clicks for Lenis
+    // Handle anchor clicks with native smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
@@ -657,7 +650,7 @@ const steps = [
         if (!href) return;
         const target = document.querySelector(href);
         if (target) {
-          lenis.scrollTo(target as HTMLElement, { offset: 0 });
+          target.scrollIntoView({ behavior: 'smooth' });
           const mobileMenu = document.getElementById('mobile-menu');
           if (mobileMenu?.classList.contains('open')) {
             mobileMenu.classList.remove('open');
@@ -1476,10 +1469,13 @@ const steps = [
       let marqueeActive = false;
       let lenisVelocity = 0;
 
-      // Tap into Lenis scroll velocity
-      lenis.on('scroll', (e: { velocity: number }) => {
-        lenisVelocity = e.velocity;
-      });
+      // Track scroll velocity for marquee speed
+      let lastMarqueeScroll = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const now = window.scrollY;
+        lenisVelocity = (now - lastMarqueeScroll) * 0.5;
+        lastMarqueeScroll = now;
+      }, { passive: true });
 
       // Get the width of one full repeat unit (half the track since we duplicated content)
       function getResetWidth(track: HTMLElement) {

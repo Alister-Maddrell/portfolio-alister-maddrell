@@ -36,6 +36,10 @@ html {
   transition: background-color 0s;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   cursor: none;
   overflow-x: hidden;
