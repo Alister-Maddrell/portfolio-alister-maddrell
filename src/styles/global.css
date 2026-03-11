@@ -612,7 +612,6 @@ body {
   position: relative;
   display: block;
   text-decoration: none;
-  will-change: transform;
   contain: layout style;
 }
 
@@ -716,6 +715,9 @@ body {
   min-height: 100%;
   object-fit: cover;
   object-position: top;
+}
+
+.project-card-v:hover .project-image-inner {
   will-change: transform;
 }
 
@@ -729,11 +731,11 @@ body {
   font-family: var(--font-heading);
   letter-spacing: 0.04em;
   transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
 }
 
 .project-card-v:hover .floating-ui {
   opacity: 1;
+  will-change: transform;
 }
 
 .project-card-v:hover .floating-ui:nth-child(3) { transition-delay: 0.05s; }
@@ -1259,13 +1261,13 @@ body {
   flex-direction: column;
   justify-content: space-between;
   opacity: 0;
-  transform: translateX(-60px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
+  transform: translate(-40px, 30px);
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
 }
 
 .contact-left.revealed {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate(0, 0);
 }
 
 .contact-cta {
@@ -1324,19 +1326,30 @@ a.contact-detail-link:hover .contact-detail-value {
 /* Right side — form */
 .contact-right {
   opacity: 0;
-  transform: translateX(60px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+  transform: translate(40px, 30px);
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
 }
 
 .contact-right.revealed {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate(0, 0);
 }
 
 .contact-field {
   position: relative;
   margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.contact-field.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.contact-field:nth-child(2) { transition-delay: 0.1s; }
+.contact-field:nth-child(3) { transition-delay: 0.2s; }
 
 .contact-field label {
   display: block;
@@ -1397,8 +1410,15 @@ a.contact-detail-link:hover .contact-detail-value {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color 0.4s ease, border-color 0.4s ease;
+  transition: color 0.4s ease, border-color 0.4s ease, opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
   margin-top: 0.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.contact-send.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .contact-send::before {
@@ -1446,19 +1466,19 @@ a.contact-detail-link:hover .contact-detail-value {
   }
 
   .contact-left {
-    transform: translateY(40px);
+    transform: translate(0, 40px);
   }
 
   .contact-left.revealed {
-    transform: translateY(0);
+    transform: translate(0, 0);
   }
 
   .contact-right {
-    transform: translateY(40px);
+    transform: translate(0, 40px);
   }
 
   .contact-right.revealed {
-    transform: translateY(0);
+    transform: translate(0, 0);
   }
 
   .marquee-text {
