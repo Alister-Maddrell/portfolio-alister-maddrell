@@ -650,6 +650,7 @@ const steps = [
     // ── Animation setup (skew + float, run in standalone rAF) ──
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
+    const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
     const skewElements = document.querySelectorAll('[data-skew]');
 
     // Skew visibility — only transform elements in viewport
@@ -782,15 +783,19 @@ const steps = [
         cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
         cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
 
+        // On mobile, amplify scroll multipliers to compensate for no hover
+        const isMobile = !hasFineCursor;
+
         // Index: floats higher, moves opposite on hover (deep background layer)
-        const idxScrollY = offset * -35;
+        const idxScrollY = offset * (isMobile ? -50 : -35);
+        const idxScrollX = isMobile ? offset * 8 : 0;
         const idxHoverX = cl.currentHoverX * -25;
         const idxHoverY = cl.currentHoverY * -20;
-        cl.indexEl.style.transform = `translate(${idxHoverX}px, ${idxScrollY + idxHoverY}px)`;
+        cl.indexEl.style.transform = `translate(${idxScrollX + idxHoverX}px, ${idxScrollY + idxHoverY}px)`;
 
         // Color block: drifts subtly, moves with cursor (mid layer)
-        const blkScrollX = offset * -6;
-        const blkScrollY = offset * 18;
+        const blkScrollX = offset * (isMobile ? -10 : -6);
+        const blkScrollY = offset * (isMobile ? 25 : 18);
         const blkHoverX = cl.currentHoverX * 15;
         const blkHoverY = cl.currentHoverY * 12;
         cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX}px, ${blkScrollY + blkHoverY}px)`;
@@ -814,14 +819,15 @@ const steps = [
         const viewH = window.innerHeight;
         const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
         const offset = (progress - 0.5) * 2; // -1 to 1
+        const m = hasFineCursor ? 1 : 1.4; // amplify on mobile
 
         // Deep layer: moves opposite direction (like card index)
         if (dl.deepEl) {
-          dl.deepEl.style.transform = `translateY(${offset * -30}px)`;
+          dl.deepEl.style.transform = `translateY(${offset * -30 * m}px)`;
         }
         // Mid layer: drifts subtly on scroll (like card color block)
         if (dl.midEl) {
-          dl.midEl.style.transform = `translate(${offset * -5}px, ${offset * 15}px)`;
+          dl.midEl.style.transform = `translate(${offset * -5 * m}px, ${offset * 15 * m}px)`;
         }
       }
 
@@ -1251,8 +1257,8 @@ const steps = [
       );
       obs.observe(wrap);
 
-      // Hover bounce on heading chars
-      if (window.matchMedia('(pointer: fine)').matches) {
+      // Hover bounce on heading chars (desktop) / scroll-triggered bounce (mobile)
+      if (hasFineCursor) {
         heading.addEventListener('mouseenter', () => {
           heading.querySelectorAll('.heading-char').forEach((ch, i) => {
             (ch as HTMLElement).style.animation = `none`;
@@ -1265,6 +1271,24 @@ const steps = [
             }, i * 30);
           });
         });
+      } else {
+        // On mobile, bounce chars when section heading scrolls into view
+        const bounceObs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              heading.querySelectorAll('.heading-char').forEach((ch, i) => {
+                setTimeout(() => {
+                  (ch as HTMLElement).style.transform = 'translateY(-6px)';
+                  setTimeout(() => {
+                    (ch as HTMLElement).style.transform = '';
+                  }, 150);
+                }, i * 30);
+              });
+              bounceObs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.8 });
+        bounceObs.observe(wrap);
       }
     });
 
@@ -1720,6 +1744,108 @@ const steps = [
           currentStop = 0;
           if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
         });
+      });
+    }
+
+    // ── Mobile: scroll-triggered card effects (replaces hover) ──
+    if (!window.matchMedia('(pointer: fine)').matches) {
+      // Scroll-triggered image auto-scroll on mobile
+      document.querySelectorAll('.project-card-v').forEach((card) => {
+        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const container = card.querySelector('.project-image') as HTMLElement;
+        if (!img || !container) return;
+
+        let scrollPos = 0;
+        let scrollRaf: number | null = null;
+        let active = false;
+        let currentStop = 0;
+        const stops = [0, 0.25, 0.5, 0.75, 1];
+        const pauseDuration = 100;
+        const initialDelay = 60;
+        let pauseCounter = 0;
+        let isPaused = false;
+        let delayCounter = 0;
+        let isDelaying = false;
+        let cachedMaxScroll = 0;
+
+        function cacheMaxScroll() {
+          cachedMaxScroll = img.offsetHeight - container.offsetHeight;
+        }
+
+        function animateScroll() {
+          if (cachedMaxScroll <= 0) { scrollRaf = null; return; }
+
+          if (active) {
+            if (isDelaying) {
+              delayCounter++;
+              if (delayCounter >= initialDelay) isDelaying = false;
+              img.style.transform = `translateY(${-scrollPos}px)`;
+              scrollRaf = requestAnimationFrame(animateScroll);
+              return;
+            }
+            const stopTarget = stops[currentStop] * cachedMaxScroll;
+            if (isPaused) {
+              pauseCounter++;
+              if (pauseCounter >= pauseDuration) {
+                isPaused = false;
+                pauseCounter = 0;
+                if (currentStop < stops.length - 1) currentStop++;
+              }
+            } else {
+              scrollPos += (stopTarget - scrollPos) * 0.04;
+              if (Math.abs(scrollPos - stopTarget) < 1) {
+                scrollPos = stopTarget;
+                if (currentStop < stops.length - 1) {
+                  isPaused = true;
+                  pauseCounter = 0;
+                }
+              }
+            }
+          } else {
+            scrollPos += (0 - scrollPos) * 0.05;
+            if (Math.abs(scrollPos) < 0.5) {
+              scrollPos = 0;
+              img.style.transform = '';
+              currentStop = 0;
+              isPaused = false;
+              pauseCounter = 0;
+              scrollRaf = null;
+              return;
+            }
+          }
+          img.style.transform = `translateY(${-scrollPos}px)`;
+          scrollRaf = requestAnimationFrame(animateScroll);
+        }
+
+        // Activate when card is centered in viewport
+        const mobileCardObs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !active) {
+              active = true;
+              (card as HTMLElement).classList.add('scroll-active');
+              currentStop = 1;
+              isPaused = false;
+              pauseCounter = 0;
+              isDelaying = true;
+              delayCounter = 0;
+              if (img.naturalHeight > 0) {
+                cacheMaxScroll();
+                if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+              } else {
+                img.addEventListener('load', () => {
+                  cacheMaxScroll();
+                  if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+                }, { once: true });
+              }
+            } else if (!entry.isIntersecting && active) {
+              active = false;
+              (card as HTMLElement).classList.remove('scroll-active');
+              currentStop = 0;
+              if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+            }
+          });
+        }, { threshold: 0.5 });
+        mobileCardObs.observe(card);
       });
     }
 
