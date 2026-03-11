@@ -1069,6 +1069,120 @@ body.loaded .hero-corner {
   filter: drop-shadow(0 20px 60px var(--color-accent-mid)) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
 }
 
+/* ─── Work section depth layers ─── */
+
+/* Deep: Large letter behind the section */
+.work-depth-number {
+  position: absolute;
+  top: -0.1em;
+  right: 5%;
+  font-family: var(--font-heading);
+  font-size: clamp(12rem, 28vw, 24rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.025;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+  will-change: transform;
+}
+
+[data-theme="dark"] .work-depth-number {
+  opacity: 0.04;
+}
+
+/* Mid: Vertical accent line running down left edge */
+.work-depth-line {
+  position: absolute;
+  left: 8%;
+  top: 15%;
+  bottom: 15%;
+  width: 1.5px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .work-depth-line {
+  opacity: 0.12;
+}
+
+/* Mid: Accent ring floating in the section */
+.work-depth-ring {
+  position: absolute;
+  left: 3%;
+  bottom: 12%;
+  width: clamp(80px, 12vw, 180px);
+  height: clamp(80px, 12vw, 180px);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .work-depth-ring {
+  opacity: 0.06;
+}
+
+/* Heading depth: Large /05 behind heading */
+.work-heading-depth {
+  position: absolute;
+  top: -0.6em;
+  right: -0.2em;
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.05em;
+  will-change: transform;
+}
+
+[data-theme="dark"] .work-heading-depth {
+  opacity: 0.06;
+}
+
+/* Heading depth: accent block behind heading */
+.work-heading-block {
+  position: absolute;
+  top: -8px;
+  right: -16px;
+  bottom: -8px;
+  left: 30%;
+  background: var(--color-accent);
+  border-radius: 12px;
+  opacity: 0.02;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+[data-theme="dark"] .work-heading-block {
+  opacity: 0.035;
+}
+
+@media (max-width: 768px) {
+  .work-depth-number {
+    font-size: clamp(8rem, 35vw, 14rem);
+    right: -2%;
+  }
+  .work-depth-line { display: none; }
+  .work-depth-ring { display: none; }
+  .work-heading-depth {
+    font-size: clamp(3rem, 15vw, 5rem);
+  }
+}
+
 /* Mobile scroll-active state (replaces hover on touch devices) */
 @media (pointer: coarse) {
   .project-card-v.scroll-active {

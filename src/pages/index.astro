@@ -270,8 +270,14 @@ const steps = [
     <!-- ─── WORK ─── -->
     <section id="work" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Work</span>
-      <div class="container-main">
-        <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1">
+      <!-- Section-level depth layers -->
+      <span class="work-depth-number" data-depth-layer="deep" aria-hidden="true">W</span>
+      <div class="work-depth-line" data-depth-layer="mid" aria-hidden="true"></div>
+      <div class="work-depth-ring" data-depth-layer="mid" aria-hidden="true"></div>
+      <div class="container-main" data-depth-container>
+        <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
+          <span class="work-heading-depth" data-depth-layer="deep" aria-hidden="true">/05</span>
+          <div class="work-heading-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="flex items-baseline gap-4">
             <h2 class="section-heading" data-heading-text="Work">Work</h2>
             <span class="section-heading-number">/05</span>
@@ -870,6 +876,16 @@ const steps = [
             if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
           }
         }
+        // Work section depth layers
+        if (workSection) {
+          const workRect = workSection.getBoundingClientRect();
+          const viewH = window.innerHeight;
+          const wp = 1 - (workRect.top + workRect.height / 2) / (viewH + workRect.height);
+          const wo = (wp - 0.5) * 2;
+          if (workDepthNum) workDepthNum.style.transform = `translateY(${wo * -50}px)`;
+          if (workDepthLine) workDepthLine.style.transform = `translateY(${wo * 30}px)`;
+          if (workDepthRing) workDepthRing.style.transform = `translate(${wo * -8}px, ${wo * 25}px)`;
+        }
       }
 
       requestAnimationFrame(raf);
@@ -891,6 +907,10 @@ const steps = [
     const contactBgNum = document.querySelector('[data-hero-layer="contact-num"]') as HTMLElement | null;
     const contactBgRing = document.querySelector('[data-hero-layer="contact-ring"]') as HTMLElement | null;
     const contactSection = document.getElementById('contact');
+    const workSection = document.getElementById('work');
+    const workDepthNum = document.querySelector('.work-depth-number') as HTMLElement | null;
+    const workDepthLine = document.querySelector('.work-depth-line') as HTMLElement | null;
+    const workDepthRing = document.querySelector('.work-depth-ring') as HTMLElement | null;
 
     // ── Card layer parallax setup ──
     interface CardLayer {
