@@ -3154,7 +3154,36 @@ body.loaded #nav-rail {
   color: var(--color-accent);
   line-height: 1;
   letter-spacing: -0.03em;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Rolling digit counter — odometer effect */
+.rolling-counter {
+  overflow: hidden;
+}
+
+.rolling-digit {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.rolling-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rolling-strip span {
   display: block;
+  height: 1em;
+}
+
+.rolling-suffix {
+  display: inline-block;
+  line-height: 1;
 }
 
 .about-stat-label {
@@ -3946,5 +3975,18 @@ a.contact-detail-link:hover .contact-detail-value {
   @keyframes hrFade {
     from { opacity: 0; transform: scaleX(0.3); }
     to { opacity: 0.4; transform: scaleX(1); }
+  }
+
+  /* Section marks — draw in as they enter view */
+  .section-mark.revealed {
+    animation: sectionMarkPulse linear both;
+    animation-timeline: view();
+    animation-range: entry 20% entry 80%;
+  }
+
+  @keyframes sectionMarkPulse {
+    from { opacity: 0.5; }
+    50% { opacity: 1; }
+    to { opacity: 0.7; }
   }
 }
