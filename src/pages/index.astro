@@ -2666,6 +2666,11 @@ const steps = [
       const suffix = counterEl.dataset.rollingSuffix || '';
       const digits = target.split('');
 
+      // Measure the computed line-height to set --digit-h
+      const computedSize = getComputedStyle(counterEl).fontSize;
+      const digitH = parseFloat(computedSize);
+      counterEl.style.setProperty('--digit-h', `${digitH}px`);
+
       // Build digit strips
       digits.forEach((d, i) => {
         const digitWrap = document.createElement('div');
@@ -2681,6 +2686,7 @@ const steps = [
         const delay = (digits.length - 1 - i) * 100;
         strip.style.transitionDelay = `${delay}ms`;
         (strip as any)._targetDigit = parseInt(d, 10);
+        (strip as any)._digitH = digitH;
         digitWrap.appendChild(strip);
         counterEl.appendChild(digitWrap);
       });
@@ -2703,7 +2709,8 @@ const steps = [
             // Trigger rolling digits
             entry.target.querySelectorAll('.rolling-strip').forEach((strip) => {
               const d = (strip as any)._targetDigit || 0;
-              (strip as HTMLElement).style.transform = `translateY(-${d}em)`;
+              const h = (strip as any)._digitH || 0;
+              (strip as HTMLElement).style.transform = `translateY(-${d * h}px)`;
             });
             obs.unobserve(entry.target);
           }
