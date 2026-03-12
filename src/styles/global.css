@@ -2330,7 +2330,7 @@ body.loaded #nav-rail {
 
 .project-card-v .project-image {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   border-radius: 0 0 14px 14px;
   position: relative;
@@ -2528,9 +2528,9 @@ body.loaded #nav-rail {
 
 .project-tag {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
   font-weight: 400;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-muted);
   padding: 0.3rem 0.625rem;
@@ -2541,7 +2541,8 @@ body.loaded #nav-rail {
 
 @media (min-width: 769px) {
   .project-tag {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
     padding: 0.375rem 0.875rem;
   }
 }
