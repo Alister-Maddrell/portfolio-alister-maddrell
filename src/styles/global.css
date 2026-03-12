@@ -1221,7 +1221,7 @@ body.loaded .scroll-indicator {
   display: inline-flex;
   font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, 3.75rem);
-  font-weight: 800;
+  font-weight: 300;
   line-height: 1;
   letter-spacing: -0.04em;
   color: var(--color-ink);
