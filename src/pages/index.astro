@@ -432,8 +432,13 @@ const steps = [
     <section id="process" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Process</span>
       <!-- Section-level depth layers -->
-      <span class="process-depth-number" data-section-depth="process" aria-hidden="true">P</span>
-      <div class="process-depth-ring" data-section-depth="process-ring" aria-hidden="true"></div>
+      <span class="process-depth-number" aria-hidden="true">P</span>
+      <div class="process-depth-ring" aria-hidden="true"></div>
+      <div class="process-depth-line" aria-hidden="true"></div>
+      <div class="process-depth-crosshair" aria-hidden="true"></div>
+      <span class="process-depth-coord" aria-hidden="true">04 / WORKFLOW</span>
+      <div class="process-depth-dot process-depth-dot--1" aria-hidden="true"></div>
+      <div class="process-depth-dot process-depth-dot--2" aria-hidden="true"></div>
       <div class="container-main">
         <div class="section-heading-wrap mb-10 md:mb-14" data-heading-reveal data-float="3" data-depth-container>
           <span class="section-heading-bg" data-depth-layer="deep" aria-hidden="true">/04</span>
@@ -501,9 +506,14 @@ const steps = [
     <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">About</span>
       <!-- Section-level depth layers -->
-      <span class="about-depth-number" data-section-depth="about" aria-hidden="true">A</span>
-      <div class="about-depth-line" data-section-depth="about-line" aria-hidden="true"></div>
-      <div class="about-depth-ring" data-section-depth="about-ring" aria-hidden="true"></div>
+      <span class="about-depth-number" aria-hidden="true">A</span>
+      <div class="about-depth-line" aria-hidden="true"></div>
+      <div class="about-depth-ring" aria-hidden="true"></div>
+      <div class="about-depth-crosshair" aria-hidden="true"></div>
+      <div class="about-depth-diagonal" aria-hidden="true"></div>
+      <span class="about-depth-coord" aria-hidden="true">03 / PROFILE</span>
+      <div class="about-depth-dot about-depth-dot--1" aria-hidden="true"></div>
+      <div class="about-depth-dot about-depth-dot--2" aria-hidden="true"></div>
       <div class="container-main">
         <div class="section-heading-wrap mb-16 md:mb-20" data-heading-reveal data-float="6" data-depth-container>
           <span class="section-heading-bg" data-depth-layer="deep" aria-hidden="true">/03</span>
@@ -610,6 +620,11 @@ const steps = [
       <span class="contact-bg-number" data-hero-layer="contact-num" aria-hidden="true">05</span>
       <div class="contact-bg-ring" data-hero-layer="contact-ring" aria-hidden="true"></div>
       <span class="contact-bg-text" data-bg-parallax aria-hidden="true">Contact</span>
+      <div class="contact-depth-crosshair" aria-hidden="true"></div>
+      <div class="contact-depth-line" aria-hidden="true"></div>
+      <span class="contact-depth-coord" aria-hidden="true">01 / CONNECT</span>
+      <div class="contact-depth-dot contact-depth-dot--1" aria-hidden="true"></div>
+      <div class="contact-depth-dot contact-depth-dot--2" aria-hidden="true"></div>
 
       <!-- Velocity-reactive marquee band -->
       <div class="contact-marquee" data-contact-marquee>
@@ -713,8 +728,11 @@ const steps = [
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="px-6 md:px-10 py-8 relative overflow-hidden" style="border-top: 1px solid var(--color-line);">
+  <footer id="footer" class="px-6 md:px-10 py-8 relative overflow-hidden" style="border-top: 1px solid var(--color-line);">
     <span class="footer-depth-mark" aria-hidden="true">AM</span>
+    <div class="footer-depth-line" aria-hidden="true"></div>
+    <div class="footer-depth-dot footer-depth-dot--1" aria-hidden="true"></div>
+    <div class="footer-depth-dot footer-depth-dot--2" aria-hidden="true"></div>
     <div class="container-main flex items-center justify-between relative" style="z-index:1;">
       <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
       <div class="flex items-center gap-6">
@@ -1078,16 +1096,22 @@ const steps = [
             if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
           }
         }
-        // Section-level depth layers (work, process, about)
+        // Section-level depth layers (work, process, about, contact, footer)
         for (let si = 0; si < sectionDepthEls.length; si++) {
           const sd = sectionDepthEls[si];
           if (!sd.section) continue;
           const sr = sd.section.getBoundingClientRect();
           const viewH = window.innerHeight;
+          // Skip if section is off-screen
+          if (sr.bottom < -100 || sr.top > viewH + 100) continue;
           const sp = 1 - (sr.top + sr.height / 2) / (viewH + sr.height);
           const so = (sp - 0.5) * 2;
-          sd.els.forEach(e => {
-            e.el.style.transform = `translate(${so * e.tx}px, ${so * e.ty}px)`;
+          sd.els.forEach((e, ei) => {
+            // Zero-G ambient drift per element
+            const driftX = Math.sin(t * 0.00015 + si * 3.1 + ei * 2.3) * 5;
+            const driftY = Math.sin(t * 0.0002 + si * 1.8 + ei * 4.1) * 4;
+            const driftRot = Math.sin(t * 0.0001 + si * 5.7 + ei * 1.4) * 0.4;
+            e.el.style.transform = `translate(${so * e.tx + driftX}px, ${so * e.ty + driftY}px) rotate(${driftRot}deg)`;
           });
         }
       }
@@ -1148,11 +1172,34 @@ const steps = [
     addSectionDepth('process', [
       { selector: '.process-depth-number', tx: 0, ty: -45 },
       { selector: '.process-depth-ring', tx: 10, ty: -20 },
+      { selector: '.process-depth-line', tx: 0, ty: 25 },
+      { selector: '.process-depth-crosshair', tx: -6, ty: -30 },
+      { selector: '.process-depth-coord', tx: 5, ty: -35 },
+      { selector: '.process-depth-dot--1', tx: 4, ty: 18 },
+      { selector: '.process-depth-dot--2', tx: -3, ty: -22 },
     ]);
     addSectionDepth('about', [
       { selector: '.about-depth-number', tx: 0, ty: -50 },
       { selector: '.about-depth-line', tx: 0, ty: 28 },
       { selector: '.about-depth-ring', tx: -6, ty: 22 },
+      { selector: '.about-depth-crosshair', tx: 4, ty: -32 },
+      { selector: '.about-depth-diagonal', tx: -3, ty: -48 },
+      { selector: '.about-depth-coord', tx: 5, ty: -38 },
+      { selector: '.about-depth-dot--1', tx: -4, ty: 16 },
+      { selector: '.about-depth-dot--2', tx: 3, ty: -20 },
+    ]);
+    addSectionDepth('contact', [
+      { selector: '.contact-depth-crosshair', tx: -5, ty: -28 },
+      { selector: '.contact-depth-line', tx: 0, ty: 22 },
+      { selector: '.contact-depth-coord', tx: 4, ty: -32 },
+      { selector: '.contact-depth-dot--1', tx: 3, ty: 15 },
+      { selector: '.contact-depth-dot--2', tx: -4, ty: -18 },
+    ]);
+    addSectionDepth('footer', [
+      { selector: '.footer-depth-mark', tx: 0, ty: -15 },
+      { selector: '.footer-depth-line', tx: 0, ty: 10 },
+      { selector: '.footer-depth-dot--1', tx: 3, ty: -8 },
+      { selector: '.footer-depth-dot--2', tx: -2, ty: 6 },
     ]);
 
     // ── Card layer parallax setup ──
