@@ -2975,11 +2975,14 @@ const steps = [
     function updateSydneyTime() {
       const el = document.getElementById('sydney-time');
       const now = new Date();
-      const sydneyStr = now.toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
-      const sydneyDate = new Date(sydneyStr);
-      const h = sydneyDate.getHours();
-      const m = sydneyDate.getMinutes();
-      const s = sydneyDate.getSeconds();
+      const parts = new Intl.DateTimeFormat('en-AU', {
+        timeZone: 'Australia/Sydney',
+        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        hour12: false,
+      }).formatToParts(now);
+      const h = Number(parts.find(p => p.type === 'hour')?.value ?? 0);
+      const m = Number(parts.find(p => p.type === 'minute')?.value ?? 0);
+      const s = Number(parts.find(p => p.type === 'second')?.value ?? 0);
       if (el) el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
       const hourDeg = ((h % 12) / 12) * 360 + (m / 60) * 30;
       const minDeg = (m / 60) * 360 + (s / 60) * 6;

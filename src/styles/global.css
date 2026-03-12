@@ -1031,7 +1031,7 @@ body.loaded .hero-corner {
 .hero-name {
   font-family: var(--font-heading);
   font-size: clamp(2.75rem, 8.5vw, 7.5rem);
-  font-weight: 900;
+  font-weight: 300;
   line-height: 0.9;
   letter-spacing: -0.05em;
   text-transform: uppercase;
