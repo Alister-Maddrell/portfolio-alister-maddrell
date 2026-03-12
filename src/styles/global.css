@@ -2191,6 +2191,12 @@ body.loaded #nav-rail {
   background-color: #171717;
 }
 
+/* Parallax layers — smooth transform */
+.card-work [data-card-depth] {
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
 .project-card-v:hover .card-work {
   box-shadow: 0 25px 50px -12px rgba(41, 41, 41, 0.12);
 }
