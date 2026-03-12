@@ -108,7 +108,13 @@ const steps = [
   description="Independent web designer and developer in Sydney. Hand-coded websites — no templates, no WordPress. Custom-built, SEO-optimised, engineered to convert."
 >
   <!-- Loader -->
-  <div id="loader"><span>AM</span></div>
+  <div id="loader">
+    <div class="loader-letters">
+      <span class="loader-char">A</span>
+      <span class="loader-char">M</span>
+    </div>
+    <div class="loader-line"></div>
+  </div>
 
   <!-- Scroll progress -->
   <div id="scroll-progress"></div>
@@ -258,7 +264,7 @@ const steps = [
       <!-- Orb -->
       <div id="hero-orb-wrapper" data-hero-layer="orb" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
 
-      <div class="container-main w-full pt-24 relative z-[1]">
+      <div class="container-main w-full pt-24 relative z-[1] hero-scroll-fade">
         <!-- Monospace status line -->
         <div class="hero-status" data-float="13">
           <span class="hero-status-dot" aria-hidden="true"></span>
@@ -301,7 +307,7 @@ const steps = [
         </div>
 
         <!-- CTA -->
-        <a href="#contact" class="hero-cta" id="hero-cta" data-cursor-hover>
+        <a href="#contact" class="hero-cta" id="hero-cta" data-cursor-hover data-magnetic>
           <span class="hero-cta-text">Start your project</span>
           <span class="hero-cta-arrow" aria-hidden="true">&rarr;</span>
         </a>
@@ -713,26 +719,31 @@ const steps = [
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="px-6 md:px-10 py-8 relative overflow-hidden" style="border-top: 1px solid var(--color-line);">
+  <footer class="px-6 md:px-10 py-10 md:py-12 relative overflow-hidden" style="border-top: 1px solid var(--color-line);">
     <span class="footer-depth-mark" aria-hidden="true">AM</span>
-    <div class="container-main flex items-center justify-between relative" style="z-index:1;">
-      <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
-      <div class="flex items-center gap-6">
-        <div class="hidden sm:flex items-center gap-3">
-          <div class="clock-face" id="analog-clock">
-            <div class="clock-hand clock-hand-hour" id="clock-hour"></div>
-            <div class="clock-hand clock-hand-minute" id="clock-minute"></div>
-            <div class="clock-hand clock-hand-second" id="clock-second"></div>
-            <div class="clock-dot"></div>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-heading text-[0.6875rem] font-semibold tracking-[0.08em] text-ink leading-none" id="sydney-time"></span>
-            <span class="font-body text-[0.5625rem] tracking-[0.12em] uppercase text-muted mt-0.5">Sydney</span>
-          </div>
+    <div class="container-main relative" style="z-index:1;">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <span class="font-heading text-sm font-bold tracking-[0.12em] uppercase text-ink">AM</span>
+          <span class="font-body text-xs text-muted">&copy; 2026 Alister Maddrell</span>
         </div>
-        <a href="#hero" class="link-hover font-body text-xs text-muted hover:text-ink" data-cursor-hover>
-          Back to top &uarr;
-        </a>
+        <div class="flex items-center gap-6">
+          <div class="hidden sm:flex items-center gap-3">
+            <div class="clock-face" id="analog-clock">
+              <div class="clock-hand clock-hand-hour" id="clock-hour"></div>
+              <div class="clock-hand clock-hand-minute" id="clock-minute"></div>
+              <div class="clock-hand clock-hand-second" id="clock-second"></div>
+              <div class="clock-dot"></div>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-heading text-[0.6875rem] font-semibold tracking-[0.08em] text-ink leading-none" id="sydney-time"></span>
+              <span class="font-body text-[0.5625rem] tracking-[0.12em] uppercase text-muted mt-0.5">Sydney</span>
+            </div>
+          </div>
+          <a href="#hero" class="link-hover font-mono text-[0.625rem] tracking-[0.12em] uppercase text-muted hover:text-accent transition-colors" data-cursor-hover>
+            Back to top &uarr;
+          </a>
+        </div>
       </div>
     </div>
   </footer>
@@ -1627,6 +1638,10 @@ const steps = [
     document.querySelectorAll('[data-reveal]').forEach((el) => {
       revealObserver.observe(el);
     });
+    // Section marks — reuse same reveal observer
+    document.querySelectorAll('.section-mark').forEach((el) => {
+      revealObserver.observe(el);
+    });
 
     // (Float moved to Lenis rAF loop above — uses style.transform instead of style.translate)
 
@@ -1843,6 +1858,7 @@ const steps = [
 
     // ── Unified scroll handler (one rAF per frame) ──
     let scrollTicking = false;
+    const heroScrollFade = document.querySelector('.hero-scroll-fade') as HTMLElement | null;
 
     function onScrollFrame() {
       const scrollTop = window.scrollY;
@@ -1852,6 +1868,14 @@ const steps = [
 
       // Scroll progress bar
       if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
+
+      // Hero scroll-fade — content fades and lifts as user scrolls
+      if (heroScrollFade) {
+        const fadeEnd = viewH * 0.6;
+        const fadeProg = Math.min(1, Math.max(0, scrollTop / fadeEnd));
+        heroScrollFade.style.opacity = String(1 - fadeProg);
+        heroScrollFade.style.transform = `translateY(${fadeProg * -40}px)`;
+      }
 
       // Nav top background
       const shouldScroll = scrollTop > 80;
@@ -1960,6 +1984,27 @@ const steps = [
         if (menuLine2) menuLine2.style.transform = 'translateY(-3.25px) rotate(-45deg)';
       }
     });
+
+    // ── Magnetic hover elements ──
+    if (hasFineCursor) {
+      const magneticEls = document.querySelectorAll('[data-magnetic]');
+      magneticEls.forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const strength = parseFloat(htmlEl.dataset.magnetic || '0.3');
+        htmlEl.addEventListener('mousemove', (e: Event) => {
+          const me = e as MouseEvent;
+          const rect = htmlEl.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (me.clientX - cx) * strength;
+          const dy = (me.clientY - cy) * strength;
+          htmlEl.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
+        htmlEl.addEventListener('mouseleave', () => {
+          htmlEl.style.transform = '';
+        });
+      });
+    }
 
     // ── Custom cursor ──
     const cursorDot = document.getElementById('cursor-dot');

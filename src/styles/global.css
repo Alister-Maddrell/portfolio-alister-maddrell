@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* ─── @property registrations for animatable custom props ─── */
+@property --glow-opacity {
+  syntax: '<number>';
+  initial-value: 0.04;
+  inherits: false;
+}
+
+@property --glow-scale {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: false;
+}
+
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @theme {
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'DM Sans', sans-serif;
@@ -225,6 +244,9 @@ body {
   height: 1px;
   background: var(--color-accent);
   opacity: 0.2;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
 }
 
 .section-mark::after {
@@ -233,6 +255,14 @@ body {
   height: 1px;
   background: var(--color-accent);
   opacity: 0.2;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+
+.section-mark.revealed::before,
+.section-mark.revealed::after {
+  transform: scaleX(1);
 }
 
 .section-mark-dot {
@@ -240,8 +270,16 @@ body {
   height: 5px;
   border-radius: 50%;
   background: var(--color-accent);
-  opacity: 0.3;
+  opacity: 0;
+  transform: scale(0);
   flex-shrink: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+.section-mark.revealed .section-mark-dot {
+  opacity: 0.3;
+  transform: scale(1);
 }
 
 /* ─── Horizontal rhythm rules ─── */
@@ -303,23 +341,57 @@ body {
   z-index: 9999;
   background: #1A1714;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+  gap: 2rem;
 }
 
 #loader.done {
-  transform: translateY(-100%);
+  animation: loaderExit 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
-#loader span {
+@keyframes loaderExit {
+  0% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+
+#loader .loader-letters {
+  display: flex;
+  gap: 0.15em;
+  overflow: hidden;
+}
+
+#loader .loader-char {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--color-surface);
-  opacity: 0.5;
   font-weight: 300;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: loaderCharIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#loader .loader-char:nth-child(1) { animation-delay: 0.1s; }
+#loader .loader-char:nth-child(2) { animation-delay: 0.2s; }
+
+@keyframes loaderCharIn {
+  to { opacity: 0.6; transform: translateY(0); }
+}
+
+#loader .loader-line {
+  width: 48px;
+  height: 1px;
+  background: var(--color-surface);
+  opacity: 0;
+  transform: scaleX(0);
+  animation: loaderLineIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+}
+
+@keyframes loaderLineIn {
+  to { opacity: 0.2; transform: scaleX(1); }
 }
 
 
@@ -420,6 +492,12 @@ body {
   .cursor-trail-dot { display: none; }
   #nav-rail { display: none !important; }
   #nav-mobile { display: flex !important; }
+}
+
+/* ─── Magnetic hover elements ─── */
+[data-magnetic] {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 /* ─── Hero detail layers ─── */
@@ -552,7 +630,7 @@ body.loaded .hero-corner {
   );
 }
 
-/* Hero CTA — monospace, accent, understated */
+/* Hero CTA — monospace, accent, with bordered capsule hover */
 .hero-cta {
   display: inline-flex;
   align-items: center;
@@ -565,11 +643,23 @@ body.loaded .hero-corner {
   color: var(--color-accent);
   text-decoration: none;
   opacity: 0;
-  transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-cta:hover {
   gap: 1.25rem;
+  border-color: var(--color-accent-soft);
+  background: rgba(212, 85, 42, 0.04);
+}
+
+[data-theme="dark"] .hero-cta:hover {
+  background: rgba(235, 107, 62, 0.06);
 }
 
 .hero-cta-text {
@@ -584,7 +674,7 @@ body.loaded .hero-corner {
   width: 0;
   height: 1px;
   background: var(--color-accent);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-cta:hover .hero-cta-text::after {
@@ -593,14 +683,14 @@ body.loaded .hero-corner {
 
 .hero-cta-arrow {
   display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-cta:hover .hero-cta-arrow {
   transform: translateX(4px);
 }
 
-/* Hero atmospheric glow — accent-tinted radial behind content */
+/* Hero atmospheric glow — accent-tinted radial with breathing animation */
 #hero::before {
   content: '';
   position: absolute;
@@ -610,21 +700,35 @@ body.loaded .hero-corner {
   height: 50vh;
   background: radial-gradient(
     ellipse,
-    rgba(212, 85, 42, 0.04) 0%,
+    rgba(212, 85, 42, var(--glow-opacity)) 0%,
     transparent 65%
   );
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
+  --glow-opacity: 0.04;
+  animation: glowBreathe 8s ease-in-out infinite alternate;
+}
+
+@keyframes glowBreathe {
+  0% { --glow-opacity: 0.03; transform: scale(1) translate(0, 0); }
+  50% { --glow-opacity: 0.06; transform: scale(1.05) translate(2%, -1%); }
+  100% { --glow-opacity: 0.04; transform: scale(0.98) translate(-1%, 1%); }
 }
 
 [data-theme="dark"] #hero::before {
-  background: radial-gradient(
-    ellipse,
-    rgba(235, 107, 62, 0.07) 0%,
-    transparent 60%
-  );
+  --glow-opacity: 0.07;
   filter: blur(80px);
+}
+
+[data-theme="dark"] #hero::before {
+  animation-name: glowBreatheDark;
+}
+
+@keyframes glowBreatheDark {
+  0% { --glow-opacity: 0.05; transform: scale(1) translate(0, 0); }
+  50% { --glow-opacity: 0.09; transform: scale(1.08) translate(2%, -1%); }
+  100% { --glow-opacity: 0.06; transform: scale(0.97) translate(-1%, 1%); }
 }
 
 /* Hero vignette — subtle edge darkening for depth */
@@ -975,6 +1079,12 @@ body.loaded .hero-corner {
 
 /* ─── Scroll indicator ─── */
 
+/* Hero scroll-fade — content dims and lifts as user scrolls away */
+.hero-scroll-fade {
+  transition: none;
+  will-change: opacity, transform;
+}
+
 .scroll-indicator {
   opacity: 0;
   transform: translateY(20px);
@@ -1044,6 +1154,34 @@ body.loaded .hero-corner {
 
 [data-reveal="clip"].revealed {
   clip-path: inset(0 0 0 0);
+}
+
+/* Mask-up — content rises from behind a curtain */
+[data-reveal="mask-up"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-reveal="mask-up"].revealed {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Blur-in — content materialises from blur */
+[data-reveal="blur"] {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-reveal="blur"].revealed {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
 }
 
 /* ─── Section divider ─── */
