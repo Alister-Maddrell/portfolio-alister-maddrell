@@ -833,6 +833,7 @@ const steps = [
     // ── Standalone animation loop (no Lenis) ──
     function raf(time: number) {
       const t = time - animStart;
+      const viewH = window.innerHeight;
 
       // ── Skew velocity ──
       const currentScrollY = window.scrollY;
@@ -842,12 +843,14 @@ const steps = [
       if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
 
-      // ── Apply skew to skew-only elements (no float, only visible) ──
-      for (let i = 0; i < skewElements.length; i++) {
-        const el = skewElements[i] as HTMLElement;
-        if (el.hasAttribute('data-float')) continue; // handled below
-        if (!skewVisible.has(el)) continue;
-        el.style.transform = `skewY(${skewVal}deg)`;
+      // ── Apply skew to skew-only elements (skip when velocity is zero) ──
+      if (skewVal !== 0) {
+        for (let i = 0; i < skewElements.length; i++) {
+          const el = skewElements[i] as HTMLElement;
+          if (el.hasAttribute('data-float')) continue;
+          if (!skewVisible.has(el)) continue;
+          el.style.transform = `skewY(${skewVal}deg)`;
+        }
       }
 
       // ── Float + zero-G drift + compose with skew + tilt + reveal (single writer) ──
@@ -901,7 +904,6 @@ const steps = [
         const cl = cardLayers[i];
         if (!cl.visible) continue;
         const rect = cl.card.getBoundingClientRect();
-        const viewH = window.innerHeight;
         const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
         const offset = (progress - 0.5) * 2; // -1 to 1
 
@@ -966,14 +968,15 @@ const steps = [
         }
       }
 
-      // ── Section bg text parallax + zero-G drift ──
+      // ── Section bg text parallax + zero-G drift (visibility-gated) ──
       for (let i = 0; i < bgParallaxEls.length; i++) {
         const bp = bgParallaxEls[i];
-        const rect = bp.parentElement!.getBoundingClientRect();
-        const viewH = window.innerHeight;
+        const parent = bp.parentElement!;
+        const rect = parent.getBoundingClientRect();
+        // Skip off-screen sections
+        if (rect.bottom < -50 || rect.top > viewH + 50) continue;
         const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
         const offset = (progress - 0.5) * 2;
-        // Zero-G ambient drift on bg text
         const bgDriftX = Math.sin(t * 0.00015 + i * 2.5) * 8;
         const bgDriftY = Math.sin(t * 0.0002 + i * 1.8) * 5;
         const bgRot = Math.sin(t * 0.0001 + i * 3.2) * 0.4;
@@ -985,7 +988,6 @@ const steps = [
         const dl = depthLayers[i];
         if (!dl.visible) continue;
         const rect = dl.container.getBoundingClientRect();
-        const viewH = window.innerHeight;
         const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
         const offset = (progress - 0.5) * 2; // -1 to 1
         const m = hasFineCursor ? 1 : 1.4; // amplify on mobile
@@ -1006,9 +1008,9 @@ const steps = [
         }
       }
 
-      // ── Hero layer parallax + zero-G drift (multiple depth planes) ──
-      {
-        const heroProgress = Math.min(1, currentScrollY / window.innerHeight);
+      // ── Hero layer parallax + zero-G drift (skip when hero is off-screen) ──
+      if (currentScrollY < viewH * 1.5) {
+        const heroProgress = Math.min(1, currentScrollY / viewH);
         // Deep layers — slow scroll parallax + ambient zero-G orbit
         if (heroLayerOrb) {
           const dx = Math.sin(t * 0.00008 + 1.0) * 12;
@@ -1072,23 +1074,24 @@ const steps = [
         // Contact section bg layers
         if (contactBgNum) {
           const contactRect = contactSection?.getBoundingClientRect();
-          if (contactRect && contactRect.top < window.innerHeight) {
-            const cp = 1 - contactRect.top / window.innerHeight;
+          if (contactRect && contactRect.top < viewH) {
+            const cp = 1 - contactRect.top / viewH;
             contactBgNum.style.transform = `translateY(${cp * -40}px)`;
             if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
           }
         }
-        // Section-level depth layers (work, process, about)
+        // Section-level depth layers (work, process, about — off-screen culled)
         for (let si = 0; si < sectionDepthEls.length; si++) {
           const sd = sectionDepthEls[si];
           if (!sd.section) continue;
           const sr = sd.section.getBoundingClientRect();
-          const viewH = window.innerHeight;
+          if (sr.bottom < -100 || sr.top > viewH + 100) continue;
           const sp = 1 - (sr.top + sr.height / 2) / (viewH + sr.height);
           const so = (sp - 0.5) * 2;
-          sd.els.forEach(e => {
+          for (let ei = 0; ei < sd.els.length; ei++) {
+            const e = sd.els[ei];
             e.el.style.transform = `translate(${so * e.tx}px, ${so * e.ty}px)`;
-          });
+          }
         }
       }
 
@@ -2349,8 +2352,8 @@ const steps = [
           const x = e.clientX - rect.left - rect.width / 2;
           const y = e.clientY - rect.top - rect.height / 2;
           element.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
-        });
-        element.addEventListener('mouseleave', () => { element.style.transform = ''; });
+        }, { passive: true });
+        element.addEventListener('mouseleave', () => { element.style.transform = ''; }, { passive: true });
       });
     }
 

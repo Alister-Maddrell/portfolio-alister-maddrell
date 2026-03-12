@@ -1464,21 +1464,7 @@ body.loaded .hero-corner {
   position: relative;
   display: block;
   text-decoration: none;
-  contain: style;
-  filter: drop-shadow(0 8px 30px var(--color-accent-soft)) drop-shadow(0 4px 12px rgba(212, 85, 42, 0.08));
-  transition: filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.project-card-v:hover {
-  filter: drop-shadow(0 12px 50px var(--color-accent-mid)) drop-shadow(0 6px 20px var(--color-accent-glow));
-}
-
-[data-theme="dark"] .project-card-v {
-  filter: drop-shadow(0 8px 30px var(--color-accent-soft)) drop-shadow(0 4px 12px rgba(235, 107, 62, 0.06));
-}
-
-[data-theme="dark"] .project-card-v:hover {
-  filter: drop-shadow(0 12px 50px var(--color-accent-mid)) drop-shadow(0 6px 20px var(--color-accent-glow));
+  contain: style layout;
 }
 
 /* ─── Work section depth layers ─── */
@@ -1828,12 +1814,10 @@ body.loaded .hero-corner {
 
 /* Mobile scroll-active state (replaces hover on touch devices) */
 @media (pointer: coarse) {
-  .project-card-v.scroll-active {
-    filter: drop-shadow(0 12px 50px var(--color-accent-mid)) drop-shadow(0 6px 20px var(--color-accent-glow));
-  }
-
-  [data-theme="dark"] .project-card-v.scroll-active {
-    filter: drop-shadow(0 12px 50px var(--color-accent-mid)) drop-shadow(0 6px 20px var(--color-accent-glow));
+  .project-card-v.scroll-active .browser-frame {
+    box-shadow:
+      0 12px 50px var(--color-accent-mid),
+      0 6px 20px var(--color-accent-glow);
   }
 
   .project-card-v.scroll-active .project-index {
@@ -1956,6 +1940,28 @@ body.loaded .hero-corner {
   border: none;
   background: none;
   position: relative;
+  box-shadow:
+    0 8px 30px var(--color-accent-soft),
+    0 4px 12px rgba(212, 85, 42, 0.08);
+  transition: box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card-v:hover .browser-frame {
+  box-shadow:
+    0 12px 50px var(--color-accent-mid),
+    0 6px 20px var(--color-accent-glow);
+}
+
+[data-theme="dark"] .browser-frame {
+  box-shadow:
+    0 8px 30px var(--color-accent-soft),
+    0 4px 12px rgba(235, 107, 62, 0.06);
+}
+
+[data-theme="dark"] .project-card-v:hover .browser-frame {
+  box-shadow:
+    0 12px 50px var(--color-accent-mid),
+    0 6px 20px var(--color-accent-glow);
 }
 
 /* Corner bracket on browser frame — echoes hero brackets */
