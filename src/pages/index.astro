@@ -369,33 +369,34 @@ const steps = [
               <div class="project-accent-line" data-card-layer="line" aria-hidden="true"></div>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
               <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
-              <div class="browser-frame" data-skew data-parallax-container>
-                <span class="browser-corner" aria-hidden="true"></span>
-                <div class="browser-bar" aria-hidden="true">
-                  <span class="browser-dot"></span>
-                  <span class="browser-dot"></span>
-                  <span class="browser-dot"></span>
-                  <span class="browser-url">{new URL(project.link).hostname}</span>
+              <div class="card-work" data-skew data-parallax-container>
+                <div class="card-work-topbar">
+                  <div class="card-work-urlbar">
+                    <svg class="card-work-globe" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1C7.25065 2.36917 7.9614 4.14602 8 6C7.9614 7.854 7.25065 9.6308 6 11M6 1C4.74936 2.36917 4.03862 4.14602 4 6C4.03862 7.854 4.74936 9.6308 6 11M6 1C3.23857 1 1 3.23857 1 6C1 8.7614 3.23857 11 6 11M6 1C8.7614 1 11 3.23857 11 6C11 8.7614 8.7614 11 6 11M1.25001 4.5H10.75M1.25 7.5H10.75" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="card-work-url"><span class="card-work-url-proto">https://</span>{new URL(project.link).hostname}</span>
+                  </div>
+                  <span class="card-work-title">{project.name}</span>
+                  <span class="card-work-capsule" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12L12 4M12 4H6.66667M12 4V9.33333" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
                 </div>
-                <div class="project-image project-image-clip">
-                  <img
-                    src={project.thumbnail}
-                    alt={`${project.name} website screenshot`}
-                    class="project-image-inner"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="async"
-                  />
-                  {project.floats.map((f) => (
-                    <span
-                      class={`floating-ui floating-ui--${f.style}`}
-                      style={`${f.pos} --depth: ${f.depth};`}
-                      data-float-depth={f.depth}
-                      aria-hidden="true"
-                    >
-                      {f.text}
+                <div class="card-work-window">
+                  <div class="card-work-window-inner">
+                    <span class="card-work-dots" aria-hidden="true">
+                      <span></span>
+                      <span></span>
+                      <span></span>
                     </span>
-                  ))}
+                    <div class="card-work-img">
+                      <img
+                        src={project.thumbnail}
+                        alt={`${project.name} website screenshot`}
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="project-details" data-reveal data-skew>
@@ -1282,7 +1283,7 @@ const steps = [
     });
 
     // ── Pre-decode project thumbnails so they're pixel-ready before scroll ──
-    document.querySelectorAll('.project-image-inner').forEach((img: HTMLImageElement) => {
+    document.querySelectorAll('.card-work-img img').forEach((img: HTMLImageElement) => {
       if (img.complete) {
         img.decode().catch(() => {});
       } else {
@@ -2121,7 +2122,7 @@ const steps = [
     // ── Smooth image scroll on project card hover ──
     if (window.matchMedia('(pointer: fine)').matches) {
       document.querySelectorAll('.project-card-v').forEach((card) => {
-        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const img = card.querySelector('.card-work-img img') as HTMLImageElement;
         const container = card.querySelector('.project-image') as HTMLElement;
         if (!img || !container) return;
 
@@ -2226,7 +2227,7 @@ const steps = [
     if (!window.matchMedia('(pointer: fine)').matches) {
       // Scroll-triggered image auto-scroll on mobile
       document.querySelectorAll('.project-card-v').forEach((card) => {
-        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const img = card.querySelector('.card-work-img img') as HTMLImageElement;
         const container = card.querySelector('.project-image') as HTMLElement;
         if (!img || !container) return;
 
