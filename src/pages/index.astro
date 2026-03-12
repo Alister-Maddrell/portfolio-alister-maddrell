@@ -2666,20 +2666,30 @@ const steps = [
       const suffix = counterEl.dataset.rollingSuffix || '';
       const digits = target.split('');
 
-      // Measure the computed line-height to set --digit-h
-      const computedSize = getComputedStyle(counterEl).fontSize;
-      const digitH = parseFloat(computedSize);
-      counterEl.style.setProperty('--digit-h', `${digitH}px`);
+      // Insert a measuring character, read its height, then remove it
+      const measurer = document.createElement('span');
+      measurer.textContent = '0';
+      measurer.style.visibility = 'hidden';
+      counterEl.appendChild(measurer);
+      const digitH = measurer.offsetHeight;
+      counterEl.removeChild(measurer);
 
-      // Build digit strips
+      // Build digit strips with explicit inline heights
       digits.forEach((d, i) => {
         const digitWrap = document.createElement('div');
-        digitWrap.className = 'rolling-digit';
+        digitWrap.style.display = 'inline-block';
+        digitWrap.style.height = `${digitH}px`;
+        digitWrap.style.overflow = 'hidden';
+        digitWrap.style.lineHeight = '1';
+
         const strip = document.createElement('div');
-        strip.className = 'rolling-strip';
+        strip.style.transition = 'transform 1.6s cubic-bezier(0.16, 1, 0.3, 1)';
         for (let n = 0; n <= 9; n++) {
           const span = document.createElement('span');
           span.textContent = String(n);
+          span.style.display = 'block';
+          span.style.height = `${digitH}px`;
+          span.style.lineHeight = `${digitH}px`;
           strip.appendChild(span);
         }
         // Stagger: rightmost rolls first (odometer feel)
@@ -2694,7 +2704,6 @@ const steps = [
       // Add suffix
       if (suffix) {
         const suffixEl = document.createElement('span');
-        suffixEl.className = 'rolling-suffix';
         suffixEl.textContent = suffix;
         counterEl.appendChild(suffixEl);
       }

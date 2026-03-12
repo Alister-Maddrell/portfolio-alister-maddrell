@@ -3156,29 +3156,12 @@ body.loaded #nav-rail {
   letter-spacing: -0.03em;
 }
 
-/* Rolling digit counter — odometer effect
-   --digit-h is set via JS to match computed font-size */
+/* Rolling digit counter — odometer effect (heights set inline by JS) */
 .rolling-counter {
   display: flex;
   align-items: baseline;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-
-.rolling-digit {
-  display: block;
-  height: var(--digit-h, 1em);
-  overflow: hidden;
-}
-
-.rolling-strip {
-  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.rolling-strip span {
-  display: block;
-  height: var(--digit-h, 1em);
-  line-height: var(--digit-h, 1em);
 }
 
 .about-stat-label {
