@@ -1196,6 +1196,15 @@ const steps = [
       });
     });
 
+    // ── Pre-decode project thumbnails so they're pixel-ready before scroll ──
+    document.querySelectorAll('.project-image-inner').forEach((img: HTMLImageElement) => {
+      if (img.complete) {
+        img.decode().catch(() => {});
+      } else {
+        img.addEventListener('load', () => img.decode().catch(() => {}), { once: true });
+      }
+    });
+
     // ── Loader ──
     const loader = document.getElementById('loader');
     const heroName = document.getElementById('hero-name');
