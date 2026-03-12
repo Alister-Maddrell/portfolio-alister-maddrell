@@ -2311,15 +2311,7 @@ body.loaded #nav-rail {
   color: var(--color-ink);
 }
 
-@media (min-width: 769px) {
-  .card-work-capsule {
-    opacity: 0;
-  }
-
-  .project-card-v:hover .card-work-capsule {
-    opacity: 1;
-  }
-}
+/* capsule always visible */
 
 /* Window — browser simulation area */
 .card-work-window {
