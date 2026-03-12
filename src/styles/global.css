@@ -3154,13 +3154,7 @@ body.loaded #nav-rail {
   color: var(--color-accent);
   line-height: 1;
   letter-spacing: -0.03em;
-}
-
-/* Rolling digit counter — odometer effect (heights set inline by JS) */
-.rolling-counter {
-  display: flex;
-  align-items: baseline;
-  line-height: 1;
+  display: block;
   font-variant-numeric: tabular-nums;
 }
 

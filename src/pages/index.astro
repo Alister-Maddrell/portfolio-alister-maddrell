@@ -534,15 +534,15 @@ const steps = [
           <span class="stats-depth-number" data-depth-layer="deep" aria-hidden="true">&#x221e;</span>
           <div class="stats-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="about-stat" data-stat data-stat-target="100" data-stat-suffix="%">
-            <div class="about-stat-number rolling-counter" data-rolling-counter="100" data-rolling-suffix="%"></div>
+            <span class="about-stat-number" data-stat-number>0%</span>
             <span class="about-stat-label">Custom Code</span>
           </div>
           <div class="about-stat" data-stat data-stat-target="95" data-stat-suffix="+">
-            <div class="about-stat-number rolling-counter" data-rolling-counter="95" data-rolling-suffix="+"></div>
+            <span class="about-stat-number" data-stat-number>0+</span>
             <span class="about-stat-label">Lighthouse Score</span>
           </div>
           <div class="about-stat" data-stat data-stat-target="0" data-stat-suffix="">
-            <div class="about-stat-number rolling-counter" data-rolling-counter="0" data-rolling-suffix=""></div>
+            <span class="about-stat-number" data-stat-number>0</span>
             <span class="about-stat-label">Templates. Ever.</span>
           </div>
         </div>
@@ -2660,67 +2660,29 @@ const steps = [
     });
 
     // Rolling digit counters — odometer effect on scroll
-    document.querySelectorAll('[data-rolling-counter]').forEach((el) => {
-      const counterEl = el as HTMLElement;
-      const target = counterEl.dataset.rollingCounter || '0';
-      const suffix = counterEl.dataset.rollingSuffix || '';
-      const digits = target.split('');
-
-      // Insert a measuring character, read its height, then remove it
-      const measurer = document.createElement('span');
-      measurer.textContent = '0';
-      measurer.style.visibility = 'hidden';
-      counterEl.appendChild(measurer);
-      const digitH = measurer.offsetHeight;
-      counterEl.removeChild(measurer);
-
-      // Build digit strips with explicit inline heights
-      digits.forEach((d, i) => {
-        const digitWrap = document.createElement('div');
-        digitWrap.style.display = 'inline-block';
-        digitWrap.style.height = `${digitH}px`;
-        digitWrap.style.overflow = 'hidden';
-        digitWrap.style.lineHeight = '1';
-
-        const strip = document.createElement('div');
-        strip.style.transition = 'transform 1.6s cubic-bezier(0.16, 1, 0.3, 1)';
-        for (let n = 0; n <= 9; n++) {
-          const span = document.createElement('span');
-          span.textContent = String(n);
-          span.style.display = 'block';
-          span.style.height = `${digitH}px`;
-          span.style.lineHeight = `${digitH}px`;
-          strip.appendChild(span);
-        }
-        // Stagger: rightmost rolls first (odometer feel)
-        const delay = (digits.length - 1 - i) * 100;
-        strip.style.transitionDelay = `${delay}ms`;
-        (strip as any)._targetDigit = parseInt(d, 10);
-        (strip as any)._digitH = digitH;
-        digitWrap.appendChild(strip);
-        counterEl.appendChild(digitWrap);
-      });
-
-      // Add suffix
-      if (suffix) {
-        const suffixEl = document.createElement('span');
-        suffixEl.textContent = suffix;
-        counterEl.appendChild(suffixEl);
-      }
-    });
-
-    // Stat counters — trigger rolling on scroll
+    // Stat counters — count up on scroll
     document.querySelectorAll('[data-stat]').forEach((el) => {
       const obs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
-            // Trigger rolling digits
-            entry.target.querySelectorAll('.rolling-strip').forEach((strip) => {
-              const d = (strip as any)._targetDigit || 0;
-              const h = (strip as any)._digitH || 0;
-              (strip as HTMLElement).style.transform = `translateY(-${d * h}px)`;
-            });
+            const target = parseInt((entry.target as HTMLElement).dataset.statTarget || '0');
+            const suffix = (entry.target as HTMLElement).dataset.statSuffix || '';
+            const numEl = entry.target.querySelector('[data-stat-number]') as HTMLElement;
+            if (numEl) {
+              let current = 0;
+              const duration = 1200;
+              const start = performance.now();
+              function countUp(now: number) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                current = Math.round(eased * target);
+                numEl.textContent = `${current}${suffix}`;
+                if (progress < 1) requestAnimationFrame(countUp);
+              }
+              requestAnimationFrame(countUp);
+            }
             obs.unobserve(entry.target);
           }
         });
