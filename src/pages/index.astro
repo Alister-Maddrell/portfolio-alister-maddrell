@@ -323,7 +323,7 @@ const steps = [
     <div class="section-mark" aria-hidden="true"><span class="section-mark-dot"></span></div>
 
     <!-- ─── WORK ─── -->
-    <section id="work" class="px-6 md:px-10 py-36 md:py-56 relative">
+    <section id="work" class="px-5 md:px-10 py-24 md:py-56 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Work</span>
       <!-- Section-level depth layers -->
       <span class="work-depth-number" data-depth-layer="deep" aria-hidden="true">W</span>
@@ -343,7 +343,7 @@ const steps = [
       <div class="work-depth-dot work-depth-dot--2" data-depth-layer="deep" aria-hidden="true"></div>
       <div class="work-depth-dot work-depth-dot--3" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="container-main" data-depth-container>
-        <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
+        <div class="section-heading-wrap mb-12 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
           <span class="work-heading-depth" data-depth-layer="deep" aria-hidden="true">/05</span>
           <div class="work-heading-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="flex items-baseline gap-4">
@@ -353,7 +353,7 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <div class="project-list flex flex-col gap-32 md:gap-40">
+        <div class="project-list flex flex-col gap-20 md:gap-40">
           {projects.map((project, i) => (
             <a
               href={project.link}
@@ -403,17 +403,17 @@ const steps = [
               <div class="project-details" data-reveal data-skew>
                 <div class="details-depth-block" aria-hidden="true"></div>
                 <div class="details-accent-bar" aria-hidden="true"></div>
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="project-title font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
+                <div class="project-details-header">
+                  <h3 class="project-title font-heading text-lg md:text-2xl font-bold text-ink tracking-tight" data-scramble>
                     {project.name}
                   </h3>
-                  <span class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink group-hover:text-accent tracking-wide transition-colors">
+                  <span class="link-hover inline-flex items-center gap-1.5 md:gap-2 font-heading text-xs md:text-sm font-semibold text-ink group-hover:text-accent tracking-wide transition-colors whitespace-nowrap">
                     <span class="status-dot" aria-hidden="true"></span>
                     View Site
                     <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
                   </span>
                 </div>
-                <p class="font-body text-muted text-sm md:text-[0.9375rem] leading-relaxed mb-4 max-w-lg">
+                <p class="font-body text-muted text-[0.8125rem] md:text-[0.9375rem] leading-relaxed mb-3 md:mb-4 max-w-lg">
                   {project.description}
                 </p>
                 <div class="flex flex-wrap gap-2">
