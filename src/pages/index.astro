@@ -9,7 +9,12 @@ const projects = [
     tags: ['Google Maps', 'FAQ Accordion', 'Contact Form', 'SEO'],
     thumbnail: '/thumbnails/hartley.webp',
     link: 'https://demo-hartley-plumbing.vercel.app',
-    role: 'Design + Development',
+    color: '#2563eb',
+    floats: [
+      { text: 'Interactive Service Map', style: 'badge', pos: 'top: 10%; right: 5%;', depth: 0.04 },
+      { text: 'Emergency Contact Flow', style: 'cta', pos: 'bottom: 22%; left: 5%;', depth: 0.05 },
+      { text: 'Live FAQ Accordion', style: 'pill', pos: 'top: 65%; left: 5%;', depth: 0.03 },
+    ],
   },
   {
     name: 'Kin & Grain Café',
@@ -17,7 +22,12 @@ const projects = [
     tags: ['Email Newsletter', 'Tabbed Menu', 'Event Listings', 'Catering Form'],
     thumbnail: '/thumbnails/cafe.webp',
     link: 'https://demo-kin-grain-cafe.vercel.app',
-    role: 'Design + Development',
+    color: '#b45309',
+    floats: [
+      { text: 'Tabbed Menu System', style: 'badge', pos: 'top: 10%; left: 5%;', depth: 0.04 },
+      { text: 'Event Listings & RSVP', style: 'cta', pos: 'bottom: 22%; right: 5%;', depth: 0.05 },
+      { text: 'Newsletter Capture', style: 'pill', pos: 'top: 60%; right: 5%;', depth: 0.03 },
+    ],
   },
   {
     name: 'Apex Performance Studio',
@@ -25,7 +35,12 @@ const projects = [
     tags: ['Pricing Table', 'Multi-Step Form', 'Class Timetable', 'Before/After'],
     thumbnail: '/thumbnails/fitness.webp',
     link: 'https://demo-apex-fitness.vercel.app',
-    role: 'Design + Development',
+    color: '#dc2626',
+    floats: [
+      { text: 'Multi-Step Sign Up', style: 'cta', pos: 'top: 10%; right: 5%;', depth: 0.05 },
+      { text: 'Before / After Slider', style: 'badge', pos: 'bottom: 22%; left: 5%;', depth: 0.04 },
+      { text: 'Class Timetable', style: 'pill', pos: 'top: 60%; left: 5%;', depth: 0.03 },
+    ],
   },
   {
     name: 'Whitfield & Associates',
@@ -33,7 +48,12 @@ const projects = [
     tags: ['Blog with Filters', 'Booking Form', 'Scroll Animations', 'Client Logos'],
     thumbnail: '/thumbnails/accounting.webp',
     link: 'https://demo-whitfield-accounting.vercel.app',
-    role: 'Design + Development',
+    color: '#1e3a5f',
+    floats: [
+      { text: 'Filterable Blog', style: 'badge', pos: 'top: 10%; left: 5%;', depth: 0.04 },
+      { text: 'Consultation Booking', style: 'cta', pos: 'bottom: 22%; right: 5%;', depth: 0.05 },
+      { text: 'Scroll Animations', style: 'pill', pos: 'top: 60%; right: 5%;', depth: 0.03 },
+    ],
   },
   {
     name: 'LUMA Hair & Beauty',
@@ -41,7 +61,12 @@ const projects = [
     tags: ['Booking Flow', 'Service Pricing', 'Before/After Slider', 'Team Carousel'],
     thumbnail: '/thumbnails/hair.webp',
     link: 'https://demo-luma-hair-beauty.vercel.app',
-    role: 'Design + Development',
+    color: '#7c3aed',
+    floats: [
+      { text: 'Step-by-Step Booking', style: 'cta', pos: 'top: 10%; right: 5%;', depth: 0.05 },
+      { text: 'Transformation Gallery', style: 'badge', pos: 'bottom: 22%; left: 5%;', depth: 0.04 },
+      { text: 'Team Carousel', style: 'pill', pos: 'top: 60%; left: 5%;', depth: 0.03 },
+    ],
   },
 ];
 
@@ -305,8 +330,18 @@ const steps = [
       <div class="work-depth-line" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="work-depth-ring" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="work-depth-crosshair" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-rule" data-depth-layer="mid" aria-hidden="true">
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+      </div>
       <span class="work-depth-coord" data-depth-layer="deep" aria-hidden="true">05 / SELECTED</span>
       <div class="work-depth-diagonal" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--1" data-depth-layer="mid" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--2" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--3" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="container-main" data-depth-container>
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
           <span class="work-heading-depth" data-depth-layer="deep" aria-hidden="true">/05</span>
@@ -318,41 +353,76 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <!-- Editorial work list -->
-        <div class="work-list" data-work-list>
-          <div class="work-list-rule" aria-hidden="true"></div>
+        <div class="project-list flex flex-col gap-32 md:gap-40">
           {projects.map((project, i) => (
             <a
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              class="work-item group"
+              class="project-card project-card-v group block"
               data-reveal="scale"
+              data-tilt
               data-cursor-hover
-              data-work-item
+              data-float={String(20 + i * 3)}
+              style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
-              <div class="work-item-row">
-                <span class="work-item-index">{String(i + 1).padStart(2, '0')}</span>
-                <div class="work-item-content">
-                  <h3 class="work-item-name" data-scramble>{project.name}</h3>
-                  <div class="work-item-meta">
-                    <span class="work-item-role">{project.role}</span>
-                    <span class="work-item-sep" aria-hidden="true">/</span>
-                    <span class="work-item-tags">{project.tags.slice(0, 3).join(' · ')}</span>
-                  </div>
+              <span class="project-index-stroke" data-card-layer="stroke" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div class="project-accent-line" data-card-layer="line" aria-hidden="true"></div>
+              <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
+              <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
+              <div class="browser-frame" data-skew data-parallax-container>
+                <span class="browser-corner" aria-hidden="true"></span>
+                <div class="browser-bar" aria-hidden="true">
+                  <span class="browser-dot"></span>
+                  <span class="browser-dot"></span>
+                  <span class="browser-dot"></span>
+                  <span class="browser-url">{new URL(project.link).hostname}</span>
                 </div>
-                <span class="work-item-arrow" aria-hidden="true">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                </span>
+                <div class="project-image project-image-clip">
+                  <img
+                    src={project.thumbnail}
+                    alt={`${project.name} website screenshot`}
+                    class="project-image-inner"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                  />
+                  {project.floats.map((f) => (
+                    <span
+                      class={`floating-ui floating-ui--${f.style}`}
+                      style={`${f.pos} --depth: ${f.depth};`}
+                      data-float-depth={f.depth}
+                      aria-hidden="true"
+                    >
+                      {f.text}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div class="work-item-rule" aria-hidden="true"></div>
-              <!-- Cursor-following image (desktop only) -->
-              <div class="work-item-image" aria-hidden="true">
-                <img src={project.thumbnail} alt="" loading="eager" decoding="async" />
-              </div>
-              <!-- Inline image (mobile) -->
-              <div class="work-item-preview">
-                <img src={project.thumbnail} alt={`${project.name} screenshot`} loading="lazy" decoding="async" />
+              <div class="project-details" data-reveal data-skew>
+                <div class="details-depth-block" aria-hidden="true"></div>
+                <div class="details-accent-bar" aria-hidden="true"></div>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="project-title font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
+                    {project.name}
+                  </h3>
+                  <span class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink group-hover:text-accent tracking-wide transition-colors">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    View Site
+                    <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
+                  </span>
+                </div>
+                <p class="font-body text-muted text-sm md:text-[0.9375rem] leading-relaxed mb-4 max-w-lg">
+                  {project.description}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span class="project-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </a>
           ))}
@@ -849,6 +919,75 @@ const steps = [
         }
       }
 
+      // ── Card layer parallax (index number + color block at different rates) ──
+      for (let i = 0; i < cardLayers.length; i++) {
+        const cl = cardLayers[i];
+        if (!cl.visible) continue;
+        const rect = cl.card.getBoundingClientRect();
+        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
+        const offset = (progress - 0.5) * 2; // -1 to 1
+
+        // Smooth hover interpolation
+        const targetHX = cl.hovering ? cl.hoverX : 0;
+        const targetHY = cl.hovering ? cl.hoverY : 0;
+        cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
+        cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
+
+        // On mobile, amplify scroll multipliers to compensate for no hover
+        const isMobile = !hasFineCursor;
+
+        // Index: floats higher, moves opposite on hover + zero-G orbit
+        const idxScrollY = offset * (isMobile ? -50 : -35);
+        const idxScrollX = isMobile ? offset * 8 : 0;
+        const idxHoverX = cl.currentHoverX * -25;
+        const idxHoverY = cl.currentHoverY * -20;
+        const idxDriftX = Math.sin(t * 0.00013 + i * 3.7) * 5;
+        const idxDriftY = Math.sin(t * 0.00018 + i * 2.1) * 4;
+        const idxRot = Math.sin(t * 0.00009 + i * 5.4) * 0.6;
+        cl.indexEl.style.transform = `translate(${idxScrollX + idxHoverX + idxDriftX}px, ${idxScrollY + idxHoverY + idxDriftY}px) rotate(${idxRot}deg)`;
+
+        // Color block: drifts subtly, moves with cursor + zero-G orbit
+        const blkScrollX = offset * (isMobile ? -10 : -6);
+        const blkScrollY = offset * (isMobile ? 25 : 18);
+        const blkHoverX = cl.currentHoverX * 15;
+        const blkHoverY = cl.currentHoverY * 12;
+        const blkDriftX = Math.sin(t * 0.00016 + i * 4.3 + 1.0) * 4;
+        const blkDriftY = Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3;
+        const blkRot = Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35;
+        cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX + blkDriftX}px, ${blkScrollY + blkHoverY + blkDriftY}px) rotate(${blkRot}deg)`;
+
+        // Stroke index: deepest plane — moves opposite, slower orbit, larger amplitude
+        if (cl.strokeEl) {
+          const stkScrollY = offset * (isMobile ? -65 : -48);
+          const stkScrollX = isMobile ? offset * 12 : 0;
+          const stkHoverX = cl.currentHoverX * -35;
+          const stkHoverY = cl.currentHoverY * -28;
+          const stkDriftX = Math.sin(t * 0.0001 + i * 2.9) * 7;
+          const stkDriftY = Math.sin(t * 0.00014 + i * 1.5) * 5;
+          const stkRot = Math.sin(t * 0.00007 + i * 4.8) * 0.8;
+          cl.strokeEl.style.transform = `translate(${stkScrollX + stkHoverX + stkDriftX}px, ${stkScrollY + stkHoverY + stkDriftY}px) rotate(${stkRot}deg)`;
+        }
+
+        // Accent line: mid-plane, subtle horizontal drift
+        if (cl.lineEl) {
+          const lnScrollX = offset * (isMobile ? 6 : 4);
+          const lnScrollY = offset * (isMobile ? 12 : 8);
+          const lnDriftX = Math.sin(t * 0.00019 + i * 5.2 + 1.5) * 3;
+          const lnHoverX = cl.currentHoverX * 8;
+          cl.lineEl.style.transform = `translate(${lnScrollX + lnDriftX + lnHoverX}px, ${lnScrollY}px)`;
+        }
+
+        // Project label: deep plane, moves opposite like index
+        if (cl.labelEl) {
+          const lblScrollY = offset * (isMobile ? -28 : -20);
+          const lblHoverX = cl.currentHoverX * -12;
+          const lblHoverY = cl.currentHoverY * -10;
+          const lblDriftX = Math.sin(t * 0.00015 + i * 3.1 + 2.5) * 4;
+          const lblDriftY = Math.sin(t * 0.0002 + i * 2.4 + 1.8) * 3;
+          cl.labelEl.style.transform = `translate(${lblHoverX + lblDriftX}px, ${lblScrollY + lblHoverY + lblDriftY}px)`;
+        }
+      }
+
       // ── Section bg text parallax + zero-G drift (visibility-gated) ──
       for (let i = 0; i < bgParallaxEls.length; i++) {
         const bp = bgParallaxEls[i];
@@ -1022,8 +1161,12 @@ const steps = [
       { selector: '.work-depth-line', tx: 0, ty: 30 },
       { selector: '.work-depth-ring', tx: -8, ty: 25 },
       { selector: '.work-depth-crosshair', tx: 5, ty: -35 },
+      { selector: '.work-depth-rule', tx: -3, ty: 18 },
       { selector: '.work-depth-coord', tx: 6, ty: -40 },
       { selector: '.work-depth-diagonal', tx: -4, ty: -55 },
+      { selector: '.work-depth-dot--1', tx: 3, ty: 20 },
+      { selector: '.work-depth-dot--2', tx: -5, ty: -30 },
+      { selector: '.work-depth-dot--3', tx: 4, ty: 15 },
     ]);
     addSectionDepth('process', [
       { selector: '.process-depth-number', tx: 0, ty: -45 },
@@ -1034,6 +1177,63 @@ const steps = [
       { selector: '.about-depth-line', tx: 0, ty: 28 },
       { selector: '.about-depth-ring', tx: -6, ty: 22 },
     ]);
+
+    // ── Card layer parallax setup ──
+    interface CardLayer {
+      card: HTMLElement;
+      indexEl: HTMLElement;
+      blockEl: HTMLElement;
+      strokeEl: HTMLElement | null;
+      lineEl: HTMLElement | null;
+      labelEl: HTMLElement | null;
+      visible: boolean;
+      hoverX: number;
+      hoverY: number;
+      currentHoverX: number;
+      currentHoverY: number;
+      hovering: boolean;
+    }
+    const cardLayers: CardLayer[] = [];
+    document.querySelectorAll('.project-card-v').forEach((card) => {
+      const indexEl = card.querySelector('[data-card-layer="index"]') as HTMLElement;
+      const blockEl = card.querySelector('[data-card-layer="block"]') as HTMLElement;
+      const strokeEl = card.querySelector('[data-card-layer="stroke"]') as HTMLElement | null;
+      const lineEl = card.querySelector('[data-card-layer="line"]') as HTMLElement | null;
+      const labelEl = card.querySelector('[data-card-layer="label"]') as HTMLElement | null;
+      if (!indexEl || !blockEl) return;
+      const cl: CardLayer = {
+        card: card as HTMLElement, indexEl, blockEl, strokeEl, lineEl, labelEl, visible: false,
+        hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
+      };
+      cardLayers.push(cl);
+
+      // Hover tracking for layer parallax
+      if (window.matchMedia('(pointer: fine)').matches) {
+        card.addEventListener('mouseenter', () => { cl.hovering = true; }, { passive: true });
+        card.addEventListener('mousemove', (e: Event) => {
+          if (Math.abs(scrollVelocity) > 0.5) return;
+          const me = e as MouseEvent;
+          const rect = (card as HTMLElement).getBoundingClientRect();
+          cl.hoverX = (me.clientX - rect.left - rect.width / 2) / rect.width;
+          cl.hoverY = (me.clientY - rect.top - rect.height / 2) / rect.height;
+        }, { passive: true });
+        card.addEventListener('mouseleave', () => {
+          cl.hovering = false;
+          cl.hoverX = 0;
+          cl.hoverY = 0;
+        }, { passive: true });
+      }
+    });
+
+    if (cardLayers.length > 0) {
+      const cardLayerVis = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const cl = cardLayers.find(c => c.card === entry.target);
+          if (cl) cl.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
+      cardLayers.forEach(cl => cardLayerVis.observe(cl.card));
+    }
 
     // ── Section depth layer parallax setup ──
     interface DepthLayer {
@@ -1081,6 +1281,15 @@ const steps = [
           }
         }
       });
+    });
+
+    // ── Pre-decode project thumbnails so they're pixel-ready before scroll ──
+    document.querySelectorAll('.project-image-inner').forEach((img: HTMLImageElement) => {
+      if (img.complete) {
+        img.decode().catch(() => {});
+      } else {
+        img.addEventListener('load', () => img.decode().catch(() => {}), { once: true });
+      }
     });
 
     // ── Loader ──
@@ -1911,56 +2120,286 @@ const steps = [
       }
     }
 
-    // ── Cursor-following image on work items (desktop) ──
+    // ── Smooth image scroll on project card hover ──
     if (window.matchMedia('(pointer: fine)').matches) {
-      document.querySelectorAll('[data-work-item]').forEach((item) => {
-        const el = item as HTMLElement;
-        const imgWrap = el.querySelector('.work-item-image') as HTMLElement;
-        if (!imgWrap) return;
+      document.querySelectorAll('.project-card-v').forEach((card) => {
+        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const container = card.querySelector('.project-image') as HTMLElement;
+        if (!img || !container) return;
 
-        let currentX = 0, currentY = 0;
-        let targetX = 0, targetY = 0;
-        let rafId: number | null = null;
+        let scrollPos = 0;
+        let scrollRaf: number | null = null;
+        let hovering = false;
+        let currentStop = 0;
+        const stops = [0, 0.25, 0.5, 0.75, 1];
+        const pauseDuration = 90; // ~1.5s pause at each stop
+        const initialDelay = 90; // ~1.5s delay before first move
+        let pauseCounter = 0;
+        let isPaused = false;
+        let delayCounter = 0;
+        let isDelaying = false;
+        let cachedMaxScroll = 0;
 
-        function animate() {
-          currentX += (targetX - currentX) * 0.1;
-          currentY += (targetY - currentY) * 0.1;
-          imgWrap.style.left = `${currentX}px`;
-          imgWrap.style.top = `${currentY}px`;
-
-          if (Math.abs(targetX - currentX) > 0.5 || Math.abs(targetY - currentY) > 0.5) {
-            rafId = requestAnimationFrame(animate);
-          } else {
-            rafId = null;
-          }
+        function ensureImageLoaded(cb: () => void) {
+          if (img.naturalHeight > 0) { cb(); return; }
+          img.addEventListener('load', cb, { once: true });
         }
 
-        el.addEventListener('mouseenter', () => {
-          el.classList.add('is-hovering');
+        function cacheMaxScroll() {
+          cachedMaxScroll = img.offsetHeight - container.offsetHeight;
+        }
+
+        function animateScroll() {
+          if (cachedMaxScroll <= 0) { scrollRaf = null; return; }
+
+
+          if (hovering) {
+            // Initial delay before starting to scroll
+            if (isDelaying) {
+              delayCounter++;
+              if (delayCounter >= initialDelay) {
+                isDelaying = false;
+              }
+              img.style.transform = `translateY(${-scrollPos}px)`;
+              scrollRaf = requestAnimationFrame(animateScroll);
+              return;
+            }
+
+            const stopTarget = stops[currentStop] * cachedMaxScroll;
+
+            if (isPaused) {
+              pauseCounter++;
+              if (pauseCounter >= pauseDuration) {
+                isPaused = false;
+                pauseCounter = 0;
+                if (currentStop < stops.length - 1) currentStop++;
+              }
+            } else {
+              scrollPos += (stopTarget - scrollPos) * 0.04;
+
+              if (Math.abs(scrollPos - stopTarget) < 1) {
+                scrollPos = stopTarget;
+                if (currentStop < stops.length - 1) {
+                  isPaused = true;
+                  pauseCounter = 0;
+                }
+              }
+            }
+          } else {
+            scrollPos += (0 - scrollPos) * 0.05;
+            if (Math.abs(scrollPos) < 0.5) {
+              scrollPos = 0;
+              img.style.transform = '';
+              currentStop = 0;
+              isPaused = false;
+              pauseCounter = 0;
+              scrollRaf = null;
+              return;
+            }
+          }
+
+          img.style.transform = `translateY(${-scrollPos}px)`;
+
+          scrollRaf = requestAnimationFrame(animateScroll);
+        }
+
+        card.addEventListener('mouseenter', () => {
+          hovering = true;
+          currentStop = 1;
+          isPaused = false;
+          pauseCounter = 0;
+          isDelaying = true;
+          delayCounter = 0;
+          ensureImageLoaded(() => {
+            cacheMaxScroll(); // read offsetHeight once, not every frame
+            if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+          });
         });
 
-        el.addEventListener('mousemove', (e: MouseEvent) => {
-          // Position image offset from cursor
-          targetX = e.clientX + 20;
-          targetY = e.clientY - imgWrap.offsetHeight / 2;
-          if (!rafId) rafId = requestAnimationFrame(animate);
-        });
-
-        el.addEventListener('mouseleave', () => {
-          el.classList.remove('is-hovering');
+        card.addEventListener('mouseleave', () => {
+          hovering = false;
+          currentStop = 0;
+          if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
         });
       });
     }
 
-    // ── Mobile: scroll-triggered work item effects ──
+    // ── Mobile: scroll-triggered card effects (replaces hover) ──
     if (!window.matchMedia('(pointer: fine)').matches) {
-      document.querySelectorAll('[data-work-item]').forEach((item) => {
-        const obs = new IntersectionObserver((entries) => {
+      // Scroll-triggered image auto-scroll on mobile
+      document.querySelectorAll('.project-card-v').forEach((card) => {
+        const img = card.querySelector('.project-image-inner') as HTMLImageElement;
+        const container = card.querySelector('.project-image') as HTMLElement;
+        if (!img || !container) return;
+
+        let scrollPos = 0;
+        let scrollRaf: number | null = null;
+        let active = false;
+        let currentStop = 0;
+        const stops = [0, 0.25, 0.5, 0.75, 1];
+        const pauseDuration = 100;
+        const initialDelay = 60;
+        let pauseCounter = 0;
+        let isPaused = false;
+        let delayCounter = 0;
+        let isDelaying = false;
+        let cachedMaxScroll = 0;
+
+        function cacheMaxScroll() {
+          cachedMaxScroll = img.offsetHeight - container.offsetHeight;
+        }
+
+        function animateScroll() {
+          if (cachedMaxScroll <= 0) { scrollRaf = null; return; }
+
+          if (active) {
+            if (isDelaying) {
+              delayCounter++;
+              if (delayCounter >= initialDelay) isDelaying = false;
+              img.style.transform = `translateY(${-scrollPos}px)`;
+              scrollRaf = requestAnimationFrame(animateScroll);
+              return;
+            }
+            const stopTarget = stops[currentStop] * cachedMaxScroll;
+            if (isPaused) {
+              pauseCounter++;
+              if (pauseCounter >= pauseDuration) {
+                isPaused = false;
+                pauseCounter = 0;
+                if (currentStop < stops.length - 1) currentStop++;
+              }
+            } else {
+              scrollPos += (stopTarget - scrollPos) * 0.04;
+              if (Math.abs(scrollPos - stopTarget) < 1) {
+                scrollPos = stopTarget;
+                if (currentStop < stops.length - 1) {
+                  isPaused = true;
+                  pauseCounter = 0;
+                }
+              }
+            }
+          } else {
+            scrollPos += (0 - scrollPos) * 0.05;
+            if (Math.abs(scrollPos) < 0.5) {
+              scrollPos = 0;
+              img.style.transform = '';
+              currentStop = 0;
+              isPaused = false;
+              pauseCounter = 0;
+              scrollRaf = null;
+              return;
+            }
+          }
+          img.style.transform = `translateY(${-scrollPos}px)`;
+          scrollRaf = requestAnimationFrame(animateScroll);
+        }
+
+        // Activate when card is centered in viewport
+        const mobileCardObs = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            (entry.target as HTMLElement).classList.toggle('scroll-active', entry.isIntersecting);
+            if (entry.isIntersecting && !active) {
+              active = true;
+              (card as HTMLElement).classList.add('scroll-active');
+              currentStop = 1;
+              isPaused = false;
+              pauseCounter = 0;
+              isDelaying = true;
+              delayCounter = 0;
+              if (img.naturalHeight > 0) {
+                cacheMaxScroll();
+                if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+              } else {
+                img.addEventListener('load', () => {
+                  cacheMaxScroll();
+                  if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+                }, { once: true });
+              }
+            } else if (!entry.isIntersecting && active) {
+              active = false;
+              (card as HTMLElement).classList.remove('scroll-active');
+              currentStop = 0;
+              if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
+            }
           });
-        }, { threshold: 0.6 });
-        obs.observe(item);
+        }, { threshold: 0.5 });
+        mobileCardObs.observe(card);
+      });
+    }
+
+    // ── Floating UI parallax on project cards ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-parallax-container]').forEach((container) => {
+        const floats = container.querySelectorAll('[data-float-depth]');
+        if (!floats.length) return;
+
+        let targetX = 0, targetY = 0;
+        const currentPositions = Array.from(floats, () => ({ x: 0, y: 0 }));
+        let isHovering = false;
+        let rafId: number | null = null;
+
+        function animateFloats() {
+          floats.forEach((el, i) => {
+            const depth = parseFloat((el as HTMLElement).dataset.floatDepth || '0.04');
+            const goalX = isHovering ? targetX * depth * 600 : 0;
+            const goalY = isHovering ? targetY * depth * 600 : 0;
+            currentPositions[i].x += (goalX - currentPositions[i].x) * 0.08;
+            currentPositions[i].y += (goalY - currentPositions[i].y) * 0.08;
+            (el as HTMLElement).style.transform = `translate(${currentPositions[i].x}px, ${currentPositions[i].y}px)`;
+          });
+
+          if (!isHovering) {
+            const settled = currentPositions.every(p => Math.abs(p.x) < 0.1 && Math.abs(p.y) < 0.1);
+            if (settled) {
+              floats.forEach((el) => { (el as HTMLElement).style.transform = 'translate(0px, 0px)'; });
+              rafId = null;
+              return;
+            }
+          }
+          rafId = requestAnimationFrame(animateFloats);
+        }
+
+        container.addEventListener('mouseenter', () => {
+          isHovering = true;
+          if (!rafId) rafId = requestAnimationFrame(animateFloats);
+        });
+
+        container.addEventListener('mousemove', (e: Event) => {
+          if (Math.abs(scrollVelocity) > 0.5) return; // skip layout reads while scrolling
+          const me = e as MouseEvent;
+          const rect = (container as HTMLElement).getBoundingClientRect();
+          targetX = (me.clientX - rect.left - rect.width / 2) / rect.width;
+          targetY = (me.clientY - rect.top - rect.height / 2) / rect.height;
+        });
+
+        container.addEventListener('mouseleave', () => {
+          isHovering = false;
+          targetX = 0;
+          targetY = 0;
+          if (!rafId) rafId = requestAnimationFrame(animateFloats);
+        });
+      });
+    }
+
+    // ── 3D tilt on project cards (state only — animation runs in main rAF) ──
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('[data-tilt]').forEach((card) => {
+        const el = card as HTMLElement;
+        const f = floatItems.find(item => item.el === el);
+        if (!f) return;
+
+        el.addEventListener('mouseenter', () => { f.tiltHovering = true; }, { passive: true });
+        el.addEventListener('mousemove', (e: MouseEvent) => {
+          if (Math.abs(scrollVelocity) > 0.5) return;
+          const rect = el.getBoundingClientRect();
+          const cx = rect.width / 2, cy = rect.height / 2;
+          f.tiltTargetX = ((e.clientY - rect.top - cy) / cy) * -3;
+          f.tiltTargetY = ((e.clientX - rect.left - cx) / cx) * 3;
+        }, { passive: true });
+        el.addEventListener('mouseleave', () => {
+          f.tiltHovering = false;
+          f.tiltTargetX = 0;
+          f.tiltTargetY = 0;
+        }, { passive: true });
       });
     }
 
