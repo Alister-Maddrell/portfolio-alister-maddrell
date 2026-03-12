@@ -34,6 +34,11 @@
   --color-line: #E4DFD8;
 }
 
+/* ─── Light mode weight reduction — match dark mode's refined look ─── */
+
+[data-theme="light"] .font-bold { font-weight: 300; }
+[data-theme="light"] .font-semibold { font-weight: 400; }
+
 /* ─── Dark mode overrides ─── */
 
 [data-theme="dark"] {
@@ -182,8 +187,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
 /* Body text — eliminate orphan words */
 p { text-wrap: pretty; }
 
-/* Dark mode halation compensation — variable font weight reduction */
-[data-theme="dark"] body {
+/* Global light typography — match dark mode's refined visual weight */
+body {
   font-variation-settings: 'wght' 370;
 }
 
@@ -1306,7 +1311,7 @@ body.loaded #nav-rail {
   right: 0;
   font-family: var(--font-heading);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-ink);
@@ -2733,7 +2738,7 @@ body.loaded #nav-rail {
 .step-number {
   font-family: var(--font-heading);
   font-size: clamp(1.5rem, 2.5vw, 2rem);
-  font-weight: 800;
+  font-weight: 300;
   line-height: 1;
   color: transparent;
   -webkit-text-stroke: 1px var(--color-line);
@@ -3559,7 +3564,7 @@ body.loaded #nav-rail {
 .contact-cta {
   font-family: var(--font-heading);
   font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 800;
+  font-weight: 300;
   color: var(--color-ink);
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -3604,7 +3609,7 @@ a.contact-detail-link:hover .contact-detail-value {
 .contact-detail-value {
   font-family: var(--font-heading);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--color-ink);
   transition: color 0.3s ease;
 }
