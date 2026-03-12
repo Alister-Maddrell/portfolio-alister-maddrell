@@ -362,6 +362,8 @@ const steps = [
                     alt={`${project.name} website screenshot`}
                     class="project-image-inner"
                     loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                   />
                   {project.floats.map((f) => (
                     <span
