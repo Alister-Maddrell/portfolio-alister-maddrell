@@ -5,7 +5,7 @@ import '../styles/global.css';
 const projects = [
   {
     name: 'Hartley & Co Plumbing',
-    description: 'Professional plumbing website with emergency contact features and service area mapping',
+    description: 'Emergency-first plumbing site with interactive service mapping and instant contact flow.',
     tags: ['Google Maps', 'FAQ Accordion', 'Contact Form', 'SEO'],
     thumbnail: '/thumbnails/hartley.webp',
     link: 'https://demo-hartley-plumbing.vercel.app',
@@ -18,7 +18,7 @@ const projects = [
   },
   {
     name: 'Kin & Grain Café',
-    description: 'Warm editorial-style cafe site with full menu, events, and email capture',
+    description: 'Editorial cafe experience with tabbed menu system, event listings, and newsletter capture.',
     tags: ['Email Newsletter', 'Tabbed Menu', 'Event Listings', 'Catering Form'],
     thumbnail: '/thumbnails/cafe.webp',
     link: 'https://demo-kin-grain-cafe.vercel.app',
@@ -31,7 +31,7 @@ const projects = [
   },
   {
     name: 'Apex Performance Studio',
-    description: 'Bold dark-themed fitness site with membership pricing and class timetable',
+    description: 'High-contrast fitness platform with multi-step sign-up, pricing engine, and class scheduling.',
     tags: ['Pricing Table', 'Multi-Step Form', 'Class Timetable', 'Before/After'],
     thumbnail: '/thumbnails/fitness.webp',
     link: 'https://demo-apex-fitness.vercel.app',
@@ -44,7 +44,7 @@ const projects = [
   },
   {
     name: 'Whitfield & Associates',
-    description: 'Minimal professional services site with insights blog and consultation booking',
+    description: 'Refined professional services site with filterable insights blog and consultation booking.',
     tags: ['Blog with Filters', 'Booking Form', 'Scroll Animations', 'Client Logos'],
     thumbnail: '/thumbnails/accounting.webp',
     link: 'https://demo-whitfield-accounting.vercel.app',
@@ -57,7 +57,7 @@ const projects = [
   },
   {
     name: 'LUMA Hair & Beauty',
-    description: 'Luxury salon site with full service menu, booking flow, and transformation gallery',
+    description: 'Luxury salon experience with step-by-step booking, service pricing, and transformation gallery.',
     tags: ['Booking Flow', 'Service Pricing', 'Before/After Slider', 'Team Carousel'],
     thumbnail: '/thumbnails/hair.webp',
     link: 'https://demo-luma-hair-beauty.vercel.app',
@@ -74,29 +74,29 @@ const steps = [
   {
     number: '01',
     title: 'Discovery',
-    description: 'I research your business, your competitors, and your customers. Then I build a free mockup so you can see what\'s possible before committing.',
-    details: ['Competitor Analysis', 'Customer Research', 'Free Mockup', 'Strategy Call'],
+    description: 'I study your business, your market, and your competitors. You get a free mockup before any commitment.',
+    details: ['Competitor Audit', 'User Research', 'Free Mockup', 'Strategy Session'],
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`,
   },
   {
     number: '02',
     title: 'Design & Build',
-    description: 'Every site is custom-designed from scratch. Fast-loading, mobile-first, and optimised for Google search from day one.',
-    details: ['Custom Design', 'Mobile-First', 'SEO Baked In', 'Performance Tuned'],
+    description: 'Custom-designed from scratch. Mobile-first, performance-tuned, search-optimised from the first line of code.',
+    details: ['Custom UI', 'Mobile-First', 'SEO Architecture', 'Performance Budget'],
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
   },
   {
     number: '03',
     title: 'Launch',
-    description: 'I handle hosting, domain setup, and deployment. Your site goes live on a fast, reliable platform with zero downtime.',
-    details: ['Domain Setup', 'Edge Hosting', 'SSL & Security', 'Zero Downtime'],
+    description: 'Domain, hosting, SSL, deployment — all handled. Your site goes live on edge infrastructure with zero downtime.',
+    details: ['Domain Config', 'Edge CDN', 'SSL & Security', 'Zero-Downtime Deploy'],
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3M22 2l-7.5 7.5"/><path d="M9.05 12.95 5.5 16.5"/><path d="M11.05 10.95 14.5 7.5"/><circle cx="18" cy="6" r="3"/></svg>`,
   },
   {
     number: '04',
     title: 'Support',
-    description: 'Monthly performance reports, quick updates when you need them, and ongoing hosting management. You focus on your business.',
-    details: ['Monthly Reports', 'Quick Updates', 'Hosting Managed', 'Ongoing SEO'],
+    description: 'Monthly performance reports. Quick content updates. Ongoing hosting and SEO monitoring. You run your business.',
+    details: ['Performance Reports', 'Content Updates', 'Hosting Managed', 'SEO Monitoring'],
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>`,
   },
 ];
@@ -104,8 +104,8 @@ const steps = [
 ---
 
 <Layout
-  title="Alister Maddrell — Web Designer & Developer, Sydney"
-  description="I design and build fast, modern websites for local businesses across Sydney. Custom-built, SEO-optimised, and designed to convert."
+  title="Alister Maddrell — Web Design & Development, Sydney"
+  description="Independent web designer and developer in Sydney. Hand-coded websites — no templates, no WordPress. Custom-built, SEO-optimised, engineered to convert."
 >
   <!-- Loader -->
   <div id="loader"><span>AM</span></div>
@@ -116,6 +116,8 @@ const steps = [
   <!-- Theme transition overlay -->
   <div id="theme-transition"></div>
 
+  <!-- Site-wide dot paper texture — canvas for per-dot shimmer -->
+  <canvas id="dot-grid" aria-hidden="true" style="opacity:0"></canvas>
 
   <!-- Custom cursor -->
   <div id="cursor-dot"></div>
@@ -126,14 +128,23 @@ const steps = [
   <div id="nav-top">
     <a href="#hero" class="nav-logo font-heading text-sm font-bold tracking-[0.15em] uppercase text-ink" data-cursor-hover data-magnetic>AM</a>
     <div class="flex items-center gap-3">
-      <button id="theme-toggle-mobile" class="w-8 h-8 flex items-center justify-center text-muted hover:text-ink" data-cursor-hover aria-label="Toggle theme">
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-      </button>
+      <div id="theme-switcher-mobile" class="theme-switcher-mobile" data-cursor-hover>
+        <button class="theme-option-mobile" data-theme-value="light" aria-label="Light theme">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        <button class="theme-option-mobile" data-theme-value="system" aria-label="System theme">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </button>
+        <button class="theme-option-mobile" data-theme-value="dark" aria-label="Dark theme">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
       <button id="menu-toggle" class="flex flex-col gap-[5px] p-2" data-cursor-hover aria-label="Menu">
         <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-1"></span>
         <span class="block w-5 h-[1.5px] bg-ink transition-all origin-center" id="menu-line-2"></span>
@@ -170,14 +181,34 @@ const steps = [
       </a>
     </div>
 
-    <button id="theme-toggle" class="nav-rail-theme" data-cursor-hover aria-label="Toggle theme">
-      <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-      <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-    </button>
+    <div id="theme-switcher" class="theme-switcher" data-cursor-hover>
+      <div class="theme-switcher-prompt" id="theme-prompt">
+        <span class="theme-prompt-text">Theme</span>
+        <svg class="theme-prompt-arrow" viewBox="0 0 28 24" aria-hidden="true">
+          <path d="M2 14 C6 4, 16 2, 20 10 C22 14, 20 18, 24 12 L22 14 M24 12 L22 9"/>
+        </svg>
+      </div>
+      <div class="theme-switcher-options">
+        <button class="theme-option" data-theme-value="light" aria-label="Light theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <span class="theme-option-label">Light</span>
+        </button>
+        <button class="theme-option active" data-theme-value="system" aria-label="System theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <span class="theme-option-label">Auto</span>
+        </button>
+        <button class="theme-option" data-theme-value="dark" aria-label="Dark theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <span class="theme-option-label">Dark</span>
+        </button>
+      </div>
+    </div>
   </nav>
 
   <!-- ─── Nav: Mobile bottom pill ─── -->
@@ -210,9 +241,15 @@ const steps = [
       <div class="hero-accent-bar" data-hero-layer="bar" aria-hidden="true"></div>
       <div class="hero-accent-ring" data-hero-layer="ring" aria-hidden="true"></div>
 
-      <!-- Corner marks -->
+      <!-- Corner brackets (animated draw-in) -->
       <span class="hero-corner hero-corner--tl" data-hero-layer="corner" aria-hidden="true"></span>
       <span class="hero-corner hero-corner--br" data-hero-layer="corner" aria-hidden="true"></span>
+
+      <!-- Scan line — periodic horizontal sweep -->
+      <div class="hero-scan-line" aria-hidden="true"></div>
+
+      <!-- Data line — full-width horizontal accent at midpoint -->
+      <div class="hero-data-line" data-hero-layer="data-line" aria-hidden="true"></div>
 
       <!-- Coordinate marks -->
       <span class="hero-coord hero-coord--top" data-hero-layer="coord" aria-hidden="true">33.8688&deg;S</span>
@@ -230,19 +267,25 @@ const steps = [
           <span>Sydney, AU</span>
         </div>
 
-        <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter style="visibility: hidden;">
-          Alister Maddrell
-        </h1>
+        <!-- Hero depth layers behind text -->
+        <div class="hero-title-wrap relative">
+          <span class="hero-section-index" data-hero-layer="index" aria-hidden="true">/01</span>
+          <div class="hero-title-block" data-hero-layer="title-block" aria-hidden="true"></div>
+          <div class="hero-title-line" data-hero-layer="title-line" aria-hidden="true"></div>
+          <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter style="visibility: hidden;">
+            Alister Maddrell
+          </h1>
+        </div>
 
         <!-- Decorative rule -->
         <div class="hero-rule" aria-hidden="true"></div>
 
         <div id="hero-subtitle" class="mt-6 md:mt-10">
           <p class="subtitle-line font-heading text-muted text-base md:text-lg tracking-wide max-w-xl" style="font-weight: 300;">
-            Every pixel <span class="text-accent" style="font-weight: 700;">earns its place.</span>
+            Designed with intent. <span class="text-accent" style="font-weight: 700;">Built with precision.</span>
           </p>
           <p class="subtitle-line font-body text-xs mt-3 tracking-[0.15em] uppercase" style="color: var(--color-muted); opacity: 0.6;">
-            Web Designer & Developer · Sydney
+            Web Design + Engineering · Sydney, Australia
           </p>
         </div>
 
@@ -250,12 +293,18 @@ const steps = [
         <div class="hero-services" id="hero-services">
           <span>Design</span>
           <span class="hero-services-dot" aria-hidden="true"></span>
-          <span>Development</span>
+          <span>Engineering</span>
           <span class="hero-services-dot" aria-hidden="true"></span>
-          <span>SEO</span>
+          <span>Search</span>
           <span class="hero-services-dot" aria-hidden="true"></span>
-          <span>Hosting</span>
+          <span>Infrastructure</span>
         </div>
+
+        <!-- CTA -->
+        <a href="#contact" class="hero-cta" id="hero-cta" data-cursor-hover>
+          <span class="hero-cta-text">Start your project</span>
+          <span class="hero-cta-arrow" aria-hidden="true">&rarr;</span>
+        </a>
       </div>
 
       <div id="scroll-indicator" class="scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
@@ -268,7 +317,7 @@ const steps = [
     <div class="section-mark" aria-hidden="true"></div>
 
     <!-- ─── WORK ─── -->
-    <section id="work" class="px-6 md:px-10 py-32 md:py-48 relative">
+    <section id="work" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Work</span>
       <!-- Section-level depth layers -->
       <span class="work-depth-number" data-depth-layer="deep" aria-hidden="true">W</span>
@@ -358,7 +407,7 @@ const steps = [
     <div class="section-mark" aria-hidden="true"></div>
 
     <!-- ─── PROCESS ─── -->
-    <section id="process" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
+    <section id="process" class="px-6 md:px-10 py-32 md:py-48 relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">Process</span>
       <!-- Section-level depth layers -->
       <span class="process-depth-number" data-section-depth="process" aria-hidden="true">P</span>
@@ -376,10 +425,10 @@ const steps = [
 
         <!-- Tagline — typewriter (hidden copy reserves full height) -->
         <div class="process-tagline" data-float="4" style="position: relative;">
-          <p class="font-heading text-lg md:text-xl lg:text-2xl font-bold leading-snug tracking-tight max-w-2xl" aria-hidden="true" style="visibility: hidden; pointer-events: none;">I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers.</p>
-          <p class="process-typewriter font-heading text-lg md:text-xl lg:text-2xl font-bold text-ink leading-snug tracking-tight max-w-2xl" data-process-typewriter aria-label="I design and build fast, modern websites for local businesses across Sydney. Every site is custom-built, SEO-optimised, and designed to turn visitors into customers." style="position: absolute; top: 0; left: 0; right: 0;"></p>
+          <p class="font-heading text-lg md:text-xl lg:text-2xl font-bold leading-snug tracking-tight max-w-2xl" aria-hidden="true" style="visibility: hidden; pointer-events: none;">Every project follows the same discipline. Research the market. Design the interface. Engineer the code. Ship it fast.</p>
+          <p class="process-typewriter font-heading text-lg md:text-xl lg:text-2xl font-bold text-ink leading-snug tracking-tight max-w-2xl" data-process-typewriter aria-label="Every project follows the same discipline. Research the market. Design the interface. Engineer the code. Ship it fast." style="position: absolute; top: 0; left: 0; right: 0;"></p>
           <p class="process-tagline-sub font-body text-sm text-muted mt-4 tracking-wide" data-process-sub style="opacity: 0;">
-            No templates <span class="text-accent">·</span> No WordPress <span class="text-accent">·</span> Just clean, high-performance code.
+            No templates <span class="text-accent">·</span> No WordPress <span class="text-accent">·</span> Hand-coded from an empty file.
           </p>
         </div>
 
@@ -427,7 +476,7 @@ const steps = [
     <div class="section-mark" aria-hidden="true"></div>
 
     <!-- ─── ABOUT ─── -->
-    <section id="about" class="px-6 md:px-10 py-32 md:py-48 relative">
+    <section id="about" class="px-6 md:px-10 py-32 md:py-48 bg-alt relative">
       <span class="section-bg-text" data-bg-parallax aria-hidden="true">About</span>
       <!-- Section-level depth layers -->
       <span class="about-depth-number" data-section-depth="about" aria-hidden="true">A</span>
@@ -448,7 +497,7 @@ const steps = [
           <span class="manifesto-depth-mark" data-depth-layer="deep" aria-hidden="true">&ldquo;</span>
           <div class="manifesto-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <p class="font-heading text-xl md:text-2xl lg:text-[1.75rem] font-bold text-ink leading-[1.3] tracking-tight" data-manifesto>
-            I'm Alister — a web designer in Sydney who believes the best websites don't feel designed. They just work. Fast, modern, and built to turn visitors into customers.
+            Templates are someone else's compromise. I start every project from zero — an empty editor, a blank canvas, and the discipline to make every element earn its place.
           </p>
         </div>
 
@@ -458,22 +507,22 @@ const steps = [
           <div class="stats-depth-block" data-depth-layer="mid" aria-hidden="true"></div>
           <div class="about-stat" data-stat data-stat-target="100" data-stat-suffix="%">
             <span class="about-stat-number" data-stat-number>0%</span>
-            <span class="about-stat-label">Custom Built</span>
+            <span class="about-stat-label">Custom Code</span>
           </div>
-          <div class="about-stat" data-stat data-stat-target="3" data-stat-suffix="s">
-            <span class="about-stat-number" data-stat-number>0s</span>
-            <span class="about-stat-label">Avg Load Time</span>
+          <div class="about-stat" data-stat data-stat-target="95" data-stat-suffix="+">
+            <span class="about-stat-number" data-stat-number>0+</span>
+            <span class="about-stat-label">Lighthouse Score</span>
           </div>
           <div class="about-stat" data-stat data-stat-target="0" data-stat-suffix="">
             <span class="about-stat-number" data-stat-number>0</span>
-            <span class="about-stat-label">Templates Used</span>
+            <span class="about-stat-label">Templates. Ever.</span>
           </div>
         </div>
 
         <!-- Body text -->
         <div class="max-w-2xl mb-14 md:mb-20 about-block" data-about-block data-float="9">
           <p class="font-body text-muted text-[0.8125rem] md:text-[0.875rem] leading-relaxed">
-            No templates. No WordPress. Every project is hand-coded from scratch — clean, semantic HTML, lightning-fast load times, and SEO baked in from day one. I obsess over the details so your customers don't have to think twice.
+            Every project starts from an empty file. Semantic HTML. Minimal JavaScript. Sub-second load times. SEO architecture from day one. I handle the engineering so your customers never have to think.
           </p>
         </div>
 
@@ -487,7 +536,7 @@ const steps = [
             </div>
             <div>
               <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Hand-Coded</h4>
-              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Every line written from scratch. Clean, semantic, performant.</p>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Written from scratch. Clean markup, zero bloat, total control.</p>
             </div>
           </div>
           <div class="approach-item" data-approach>
@@ -496,7 +545,7 @@ const steps = [
             </div>
             <div>
               <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Lightning Fast</h4>
-              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Sub-3 second loads. Optimised images, minimal JS, edge hosting.</p>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Sub-second loads. Optimised assets, minimal JS, edge-deployed.</p>
             </div>
           </div>
           <div class="approach-item" data-approach>
@@ -505,7 +554,7 @@ const steps = [
             </div>
             <div>
               <h4 class="font-heading text-sm font-bold text-ink tracking-tight">SEO-First</h4>
-              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Built for Google from day one. Semantic markup, meta, schema.</p>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Search is architecture, not afterthought. Schema, meta, Core Web Vitals.</p>
             </div>
           </div>
           <div class="approach-item" data-approach>
@@ -514,7 +563,7 @@ const steps = [
             </div>
             <div>
               <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Responsive</h4>
-              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Pixel-perfect on every device. Mobile-first, tested everywhere.</p>
+              <p class="font-body text-muted text-xs mt-1 leading-relaxed">Pixel-accurate on every viewport. Mobile-first, tested everywhere.</p>
             </div>
           </div>
         </div>
@@ -543,23 +592,23 @@ const steps = [
       <!-- Velocity-reactive marquee band -->
       <div class="contact-marquee" data-contact-marquee>
         <div class="marquee-track" data-marquee-track="left">
-          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-text">Let's Build</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-text">Let's Build</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-text">Let's Build</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Let's Work Together</span>
+          <span class="marquee-text">Let's Build</span>
           <span class="marquee-dot" aria-hidden="true"></span>
         </div>
         <div class="marquee-track" data-marquee-track="right">
-          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-text">New Project</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-text">New Project</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-text">New Project</span>
           <span class="marquee-dot" aria-hidden="true"></span>
-          <span class="marquee-text">Start A Project</span>
+          <span class="marquee-text">New Project</span>
           <span class="marquee-dot" aria-hidden="true"></span>
         </div>
       </div>
@@ -576,11 +625,11 @@ const steps = [
         <div class="contact-left" data-contact-left data-float="11">
           <div class="contact-left-inner">
             <p class="contact-cta">
-              <span style="font-weight: 300;">Got a project?</span><br />
-              <span class="contact-cta-accent">Let's make it real.</span>
+              <span style="font-weight: 300;">Have a project?</span><br />
+              <span class="contact-cta-accent">Let's build it.</span>
             </p>
             <p class="contact-sub font-body text-muted text-sm leading-relaxed mt-4 max-w-sm">
-              I'm currently taking on new projects. Drop me a message and I'll get back within 24 hours.
+              Currently accepting new projects. Tell me what you need — I'll respond within 24 hours with a free mockup proposal.
             </p>
           </div>
           <div class="contact-details">
@@ -618,7 +667,7 @@ const steps = [
               </div>
               <div class="contact-field" data-contact-field>
                 <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Tell me about your project..." required rows="4" class="resize-none"></textarea>
+                <textarea id="message" name="message" placeholder="What are you building?" required rows="4" class="resize-none"></textarea>
               </div>
               <button type="submit" class="contact-send" data-cursor-hover>
                 <span class="contact-send-text">Send Message</span>
@@ -629,8 +678,8 @@ const steps = [
             </form>
 
             <div id="form-success" class="hidden py-12 text-center">
-              <p class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight">Message sent!</p>
-              <p class="font-body text-muted text-sm mt-2">I'll be in touch within 24 hours.</p>
+              <p class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight">Received.</p>
+              <p class="font-body text-muted text-sm mt-2">I'll respond within 24 hours.</p>
             </div>
             <div id="form-error" class="hidden font-body text-red-500 text-sm mt-4">
               Something went wrong. Please try emailing me directly.
@@ -702,6 +751,17 @@ const steps = [
       tiltTargetY: number;
       tiltCurrentX: number;
       tiltCurrentY: number;
+      // Zero-G: horizontal drift + subtle rotation
+      xPhase: number;
+      rotPhase: number;
+      xAmp: number;
+      rotAmp: number;
+      xSpeed: number;
+      rotSpeed: number;
+      // Reveal composition — external systems set these, float loop composes them
+      revealOpacity: number;
+      revealX: number;
+      revealY: number;
     }
     const floatItems: FloatItem[] = [];
     document.querySelectorAll('[data-float]').forEach((el) => {
@@ -721,6 +781,17 @@ const steps = [
         tiltTargetY: 0,
         tiltCurrentX: 0,
         tiltCurrentY: 0,
+        // Zero-G: each element drifts on its own orbit
+        xPhase: seed * 2.3 + 0.5,
+        rotPhase: seed * 3.1 + 1.2,
+        xAmp: 3 + (seed % 3) * 1.5,          // 3-7.5px horizontal drift
+        rotAmp: 0.3 + (seed % 4) * 0.15,      // 0.3-0.75° rotation
+        xSpeed: 0.0003 + (seed % 6) * 0.00005, // slightly different from Y
+        rotSpeed: 0.0002 + (seed % 7) * 0.00003,
+        // Reveal composition defaults (fully visible, no offset)
+        revealOpacity: 1,
+        revealX: 0,
+        revealY: 0,
       });
     });
 
@@ -757,35 +828,49 @@ const steps = [
         el.style.transform = `skewY(${skewVal}deg)`;
       }
 
-      // ── Float + compose with skew + tilt (single writer) ──
+      // ── Float + zero-G drift + compose with skew + tilt + reveal (single writer) ──
       for (let i = 0; i < floatItems.length; i++) {
         const f = floatItems[i];
         if (!f.visible) continue;
+        // Vertical float (existing)
         const y = Math.sin(t * f.speed + f.phase) * f.amp
                 + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
         f.currentY = y;
+        // Zero-G: horizontal drift + rotation (different frequencies = organic orbits)
+        const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp
+                + Math.sin(t * f.xSpeed * 1.3 + f.xPhase + 2.0) * (f.xAmp * 0.25);
+        const rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp
+                  + Math.sin(t * f.rotSpeed * 0.6 + f.rotPhase + 1.0) * (f.rotAmp * 0.4);
+
+        // Compose reveal offsets (set by contact reveal or other external systems)
+        const tx = x + f.revealX;
+        const ty = y + f.revealY;
+
+        // Apply reveal opacity (1 = fully visible default, <1 during reveal animation)
+        if (f.revealOpacity < 1) {
+          f.el.style.opacity = `${f.revealOpacity}`;
+        }
 
         // Tilt interpolation (runs in this loop, no separate rAF)
         if (f.hasTilt) {
           f.tiltCurrentX += (f.tiltTargetX - f.tiltCurrentX) * 0.08;
           f.tiltCurrentY += (f.tiltTargetY - f.tiltCurrentY) * 0.08;
-          // Snap to zero when close enough and not hovering
           if (!f.tiltHovering && Math.abs(f.tiltCurrentX) < 0.01 && Math.abs(f.tiltCurrentY) < 0.01) {
             f.tiltCurrentX = 0;
             f.tiltCurrentY = 0;
           }
           const hasTiltValues = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
           if (hasTiltValues) {
-            f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translateY(${y}px)`;
+            f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
           } else if (f.hasSkew) {
-            f.el.style.transform = `translateY(${y}px) skewY(${skewVal}deg)`;
+            f.el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg) skewY(${skewVal}deg)`;
           } else {
-            f.el.style.transform = `translateY(${y}px)`;
+            f.el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
           }
         } else if (f.hasSkew) {
-          f.el.style.transform = `translateY(${y}px) skewY(${skewVal}deg)`;
+          f.el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg) skewY(${skewVal}deg)`;
         } else {
-          f.el.style.transform = `translateY(${y}px)`;
+          f.el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
         }
       }
 
@@ -807,32 +892,42 @@ const steps = [
         // On mobile, amplify scroll multipliers to compensate for no hover
         const isMobile = !hasFineCursor;
 
-        // Index: floats higher, moves opposite on hover (deep background layer)
+        // Index: floats higher, moves opposite on hover + zero-G orbit
         const idxScrollY = offset * (isMobile ? -50 : -35);
         const idxScrollX = isMobile ? offset * 8 : 0;
         const idxHoverX = cl.currentHoverX * -25;
         const idxHoverY = cl.currentHoverY * -20;
-        cl.indexEl.style.transform = `translate(${idxScrollX + idxHoverX}px, ${idxScrollY + idxHoverY}px)`;
+        const idxDriftX = Math.sin(t * 0.00013 + i * 3.7) * 5;
+        const idxDriftY = Math.sin(t * 0.00018 + i * 2.1) * 4;
+        const idxRot = Math.sin(t * 0.00009 + i * 5.4) * 0.6;
+        cl.indexEl.style.transform = `translate(${idxScrollX + idxHoverX + idxDriftX}px, ${idxScrollY + idxHoverY + idxDriftY}px) rotate(${idxRot}deg)`;
 
-        // Color block: drifts subtly, moves with cursor (mid layer)
+        // Color block: drifts subtly, moves with cursor + zero-G orbit
         const blkScrollX = offset * (isMobile ? -10 : -6);
         const blkScrollY = offset * (isMobile ? 25 : 18);
         const blkHoverX = cl.currentHoverX * 15;
         const blkHoverY = cl.currentHoverY * 12;
-        cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX}px, ${blkScrollY + blkHoverY}px)`;
+        const blkDriftX = Math.sin(t * 0.00016 + i * 4.3 + 1.0) * 4;
+        const blkDriftY = Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3;
+        const blkRot = Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35;
+        cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX + blkDriftX}px, ${blkScrollY + blkHoverY + blkDriftY}px) rotate(${blkRot}deg)`;
       }
 
-      // ── Section bg text parallax ──
+      // ── Section bg text parallax + zero-G drift ──
       for (let i = 0; i < bgParallaxEls.length; i++) {
         const bp = bgParallaxEls[i];
         const rect = bp.parentElement!.getBoundingClientRect();
         const viewH = window.innerHeight;
         const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
         const offset = (progress - 0.5) * 2;
-        bp.style.transform = `translateY(${offset * -40}px)`;
+        // Zero-G ambient drift on bg text
+        const bgDriftX = Math.sin(t * 0.00015 + i * 2.5) * 8;
+        const bgDriftY = Math.sin(t * 0.0002 + i * 1.8) * 5;
+        const bgRot = Math.sin(t * 0.0001 + i * 3.2) * 0.4;
+        bp.style.transform = `translate(${bgDriftX}px, ${offset * -40 + bgDriftY}px) rotate(${bgRot}deg)`;
       }
 
-      // ── Section depth layer parallax ──
+      // ── Section depth layer parallax + zero-G drift ──
       for (let i = 0; i < depthLayers.length; i++) {
         const dl = depthLayers[i];
         if (!dl.visible) continue;
@@ -842,38 +937,77 @@ const steps = [
         const offset = (progress - 0.5) * 2; // -1 to 1
         const m = hasFineCursor ? 1 : 1.4; // amplify on mobile
 
-        // Deep layer: moves opposite direction (like card index)
+        // Deep layer: moves opposite + ambient zero-G orbit
         if (dl.deepEl) {
-          dl.deepEl.style.transform = `translateY(${offset * -30 * m}px)`;
+          const driftX = Math.sin(t * 0.00018 + i * 4.1) * 6;
+          const driftY = Math.sin(t * 0.00025 + i * 2.7) * 4;
+          const driftRot = Math.sin(t * 0.00012 + i * 5.3) * 0.5;
+          dl.deepEl.style.transform = `translate(${driftX}px, ${offset * -30 * m + driftY}px) rotate(${driftRot}deg)`;
         }
-        // Mid layer: drifts subtly on scroll (like card color block)
+        // Mid layer: drifts subtly + ambient zero-G orbit (different phase)
         if (dl.midEl) {
-          dl.midEl.style.transform = `translate(${offset * -5 * m}px, ${offset * 15 * m}px)`;
+          const driftX = Math.sin(t * 0.00022 + i * 3.4 + 1.0) * 5;
+          const driftY = Math.sin(t * 0.00016 + i * 1.9 + 2.0) * 3;
+          const driftRot = Math.sin(t * 0.00014 + i * 6.1 + 0.5) * 0.35;
+          dl.midEl.style.transform = `translate(${offset * -5 * m + driftX}px, ${offset * 15 * m + driftY}px) rotate(${driftRot}deg)`;
         }
       }
 
-      // ── Hero layer parallax (multiple depth planes) ──
+      // ── Hero layer parallax + zero-G drift (multiple depth planes) ──
       {
         const heroProgress = Math.min(1, currentScrollY / window.innerHeight);
-        // Deep layers (move opposite/slower)
+        // Deep layers — slow scroll parallax + ambient zero-G orbit
         if (heroLayerOrb) {
-          heroLayerOrb.style.transform = `translateX(10%) translateY(${heroProgress * 60}px)`;
+          const dx = Math.sin(t * 0.00008 + 1.0) * 12;
+          const dy = Math.sin(t * 0.00012 + 2.5) * 8;
+          heroLayerOrb.style.transform = `translateX(calc(10% + ${dx}px)) translateY(${heroProgress * 60 + dy}px)`;
         }
         if (heroLayerWatermark) {
-          heroLayerWatermark.style.transform = `translateY(${heroProgress * -30}px)`;
+          const dx = Math.sin(t * 0.00010 + 3.0) * 6;
+          const dy = Math.sin(t * 0.00014 + 0.7) * 4;
+          const dr = Math.sin(t * 0.00007 + 5.0) * 0.3;
+          heroLayerWatermark.style.transform = `translate(${dx}px, ${heroProgress * -30 + dy}px) rotate(${dr}deg)`;
         }
         if (heroLayerGrid) {
           heroLayerGrid.style.transform = `translateY(${heroProgress * -15}px)`;
         }
         if (heroLayerYear) {
-          heroLayerYear.style.transform = `translateY(${heroProgress * -45}px)`;
+          const dx = Math.sin(t * 0.00013 + 4.2) * 8;
+          const dy = Math.sin(t * 0.00018 + 1.3) * 5;
+          const dr = Math.sin(t * 0.00009 + 6.7) * 0.6;
+          heroLayerYear.style.transform = `translate(${dx}px, ${heroProgress * -45 + dy}px) rotate(${dr}deg)`;
         }
-        // Mid layers (drift subtly)
+        // Mid layers — subtle drift + zero-G orbit
         if (heroLayerBar) {
-          heroLayerBar.style.transform = `translateY(${heroProgress * 25}px)`;
+          const dx = Math.sin(t * 0.00015 + 2.1) * 4;
+          heroLayerBar.style.transform = `translate(${dx}px, ${heroProgress * 25}px)`;
         }
         if (heroLayerRing) {
-          heroLayerRing.style.transform = `translate(${heroProgress * -10}px, ${heroProgress * 35}px)`;
+          const dx = Math.sin(t * 0.00011 + 5.5) * 10;
+          const dy = Math.sin(t * 0.00016 + 3.8) * 7;
+          const dr = Math.sin(t * 0.00008 + 1.6) * 0.8;
+          heroLayerRing.style.transform = `translate(${heroProgress * -10 + dx}px, ${heroProgress * 35 + dy}px) rotate(${dr}deg)`;
+        }
+        // Title depth layers — zero-G orbit behind the name
+        if (heroLayerIndex) {
+          const dx = Math.sin(t * 0.00012 + 7.0) * 5;
+          const dy = Math.sin(t * 0.00017 + 4.4) * 4;
+          const dr = Math.sin(t * 0.00010 + 2.9) * 0.4;
+          heroLayerIndex.style.transform = `translate(${dx}px, ${heroProgress * -40 + dy}px) rotate(${dr}deg)`;
+        }
+        if (heroLayerTitleBlock) {
+          const dx = Math.sin(t * 0.00014 + 8.2) * 4;
+          const dy = Math.sin(t * 0.00019 + 5.6) * 3;
+          const dr = Math.sin(t * 0.00011 + 3.3) * 0.25;
+          heroLayerTitleBlock.style.transform = `translate(${heroProgress * 15 + dx}px, ${heroProgress * 20 + dy}px) rotate(${dr}deg)`;
+        }
+        if (heroLayerTitleLine) {
+          heroLayerTitleLine.style.transform = `scaleX(1) translateY(${heroProgress * 8}px)`;
+          heroLayerTitleLine.style.transformOrigin = 'left';
+        }
+        if (heroLayerDataLine) {
+          const dx = Math.sin(t * 0.00009 + 9.1) * 3;
+          heroLayerDataLine.style.transform = `translateY(${heroProgress * 12 + dx}px)`;
         }
         // Foreground details
         heroLayerCorners.forEach((c) => {
@@ -921,6 +1055,10 @@ const steps = [
     const heroLayerRing = document.querySelector('[data-hero-layer="ring"]') as HTMLElement | null;
     const heroLayerCorners = Array.from(document.querySelectorAll('[data-hero-layer="corner"]')) as HTMLElement[];
     const heroLayerCoords = Array.from(document.querySelectorAll('[data-hero-layer="coord"]')) as HTMLElement[];
+    const heroLayerIndex = document.querySelector('[data-hero-layer="index"]') as HTMLElement | null;
+    const heroLayerTitleBlock = document.querySelector('[data-hero-layer="title-block"]') as HTMLElement | null;
+    const heroLayerTitleLine = document.querySelector('[data-hero-layer="title-line"]') as HTMLElement | null;
+    const heroLayerDataLine = document.querySelector('[data-hero-layer="data-line"]') as HTMLElement | null;
     const contactBgNum = document.querySelector('[data-hero-layer="contact-num"]') as HTMLElement | null;
     const contactBgRing = document.querySelector('[data-hero-layer="contact-ring"]') as HTMLElement | null;
     const contactSection = document.getElementById('contact');
@@ -1122,6 +1260,11 @@ const steps = [
           const heroBarEl = document.querySelector('.hero-accent-bar') as HTMLElement | null;
           const heroRingEl = document.querySelector('.hero-accent-ring') as HTMLElement | null;
           const heroGridEl = document.querySelector('.hero-grid-overlay') as HTMLElement | null;
+          const heroSectionIndex = document.querySelector('.hero-section-index') as HTMLElement | null;
+          const heroTitleBlock = document.querySelector('.hero-title-block') as HTMLElement | null;
+          const heroTitleLine = document.querySelector('.hero-title-line') as HTMLElement | null;
+          const heroCtaEl = document.querySelector('.hero-cta') as HTMLElement | null;
+          const heroDataLine = document.querySelector('.hero-data-line') as HTMLElement | null;
           const heroCoordsEls = Array.from(document.querySelectorAll('.hero-coord')) as HTMLElement[];
 
           // Gate hero float to only run when hero is in viewport
@@ -1142,7 +1285,102 @@ const steps = [
             return r * r * (3 - 2 * r);
           }
 
+          // ── Canvas dot grid with per-dot shimmer ──
+          // Viewport-sized canvas. Parallax + shimmer in draw loop.
+          // Dots drawn as fillRect (integer coords) — no anti-aliasing jitter.
+          const dotCanvas = document.getElementById('dot-grid') as HTMLCanvasElement | null;
+          let dotCtx: CanvasRenderingContext2D | null = null;
+          const DOT_SPACING = 28;
+          // Total grid covers entire document — per-dot properties seeded by grid index
+          const TOTAL_COLS = 200; // enough for any viewport width
+          const TOTAL_ROWS = 600; // enough for full page height with parallax
+          const TOTAL_DOTS = TOTAL_COLS * TOTAL_ROWS;
+          // Pre-compute per-dot properties using deterministic seed from grid index
+          const dotPhases = new Float32Array(TOTAL_DOTS);
+          const dotJitterX = new Float32Array(TOTAL_DOTS);
+          const dotJitterY = new Float32Array(TOTAL_DOTS);
+          const dotSizes = new Float32Array(TOTAL_DOTS);
+          const dotBrightness = new Float32Array(TOTAL_DOTS);
+          // Simple seeded PRNG for deterministic per-dot properties
+          function mulberry32(a: number) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+          for (let i = 0; i < TOTAL_DOTS; i++) {
+            const rng = mulberry32(i * 2654435761);
+            dotPhases[i] = rng() * Math.PI * 2;
+            dotJitterX[i] = (rng() - 0.5) * 10;
+            dotJitterY[i] = (rng() - 0.5) * 10;
+            dotSizes[i] = 1 + Math.round(rng() * 2); // 1, 2, or 3 px squares
+            dotBrightness[i] = 0.2 + rng() * 0.8;
+          }
+          let dotW = 0, dotH = 0, dotDpr = 1;
+          let lastShimmerDraw = 0;
+
+          if (dotCanvas) {
+            dotCtx = dotCanvas.getContext('2d');
+            function resizeDotGrid() {
+              dotDpr = window.devicePixelRatio || 1;
+              dotW = window.innerWidth;
+              dotH = window.innerHeight;
+              dotCanvas!.width = dotW * dotDpr;
+              dotCanvas!.height = dotH * dotDpr;
+              dotCanvas!.style.width = dotW + 'px';
+              dotCanvas!.style.height = dotH + 'px';
+              lastShimmerDraw = 0;
+            }
+            resizeDotGrid();
+            window.addEventListener('resize', resizeDotGrid);
+          }
+
+          let smoothScrollY = window.scrollY || 0;
+
           function heroFloat(now: number) {
+            if (dotCanvas && dotCtx) {
+              const t0 = now - startTime;
+              const revealEase = smoothReveal(t0, subtitleDelay, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              const baseAlpha = isDark ? 0.10 : 0.18;
+              const masterAlpha = revealEase * baseAlpha;
+
+              // Smooth scroll lerp — runs every frame (60fps)
+              const targetScrollY = window.scrollY || 0;
+              smoothScrollY += (targetScrollY - smoothScrollY) * 0.06;
+              dotCanvas.style.opacity = `${revealEase}`;
+
+              // Full redraw every frame — fillRect is fast, no anti-alias jitter
+              dotCtx.setTransform(dotDpr, 0, 0, dotDpr, 0, 0);
+              dotCtx.clearRect(0, 0, dotW, dotH);
+
+              const dotColor = isDark ? '255,255,255' : '0,0,0';
+              const time = now * 0.001;
+
+              // Parallax offset
+              const parallaxY = smoothScrollY * 0.3;
+              const parallaxX = Math.sin(smoothScrollY * 0.0006) * 15;
+
+              // Which grid rows/cols are visible
+              const startRow = Math.max(0, Math.floor((parallaxY - 15) / DOT_SPACING));
+              const endRow = Math.min(TOTAL_ROWS, Math.ceil((parallaxY + dotH + 15) / DOT_SPACING));
+              const startCol = Math.max(0, Math.floor((parallaxX - 15) / DOT_SPACING));
+              const endCol = Math.min(TOTAL_COLS, Math.ceil((parallaxX + dotW + 15) / DOT_SPACING));
+
+              dotCtx.fillStyle = `rgb(${dotColor})`;
+              for (let row = startRow; row < endRow; row++) {
+                for (let col = startCol; col < endCol; col++) {
+                  const idx = row * TOTAL_COLS + col;
+                  const shimmer = 0.5 + 0.35 * Math.sin(time * 3.0 + dotPhases[idx]) + 0.15 * Math.sin(time * 7.0 + dotPhases[idx] * 2.3);
+                  const alpha = masterAlpha * dotBrightness[idx] * (0.1 + 0.9 * shimmer);
+                  if (alpha < 0.01) continue;
+
+                  // World → screen position
+                  const x = col * DOT_SPACING + dotJitterX[idx] - parallaxX;
+                  const y = row * DOT_SPACING + dotJitterY[idx] - parallaxY;
+
+                  dotCtx.globalAlpha = alpha;
+                  dotCtx.fillRect(x, y, dotSizes[idx], dotSizes[idx]);
+                }
+              }
+              dotCtx.globalAlpha = 1;
+            }
+
             if (!heroInView) {
               requestAnimationFrame(heroFloat);
               return;
@@ -1193,6 +1431,19 @@ const steps = [
               heroServicesEl.style.transform = `translateY(${(1 - e) * 16}px)`;
             }
 
+            // Reveal CTA (after services)
+            if (heroCtaEl) {
+              const e = smoothReveal(t, 650, 2000);
+              heroCtaEl.style.opacity = `${e}`;
+              heroCtaEl.style.transform = `translateY(${(1 - e) * 12}px)`;
+            }
+
+            // Reveal data line (mid-depth horizontal accent)
+            if (heroDataLine) {
+              const e = smoothReveal(t, 300, 3000);
+              heroDataLine.style.opacity = `${e}`;
+            }
+
             // Reveal watermark
             if (heroWatermarkEl) {
               const e = smoothReveal(t, watermarkDelay, 3000);
@@ -1236,6 +1487,29 @@ const steps = [
               const e = smoothReveal(t, 200, 3000);
               const isDark = document.documentElement.dataset.theme === 'dark';
               heroGridEl.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
+            }
+
+            // (dot grid parallax handled above, outside heroInView check)
+
+            // Reveal hero title depth layers (timed with typewriter)
+            if (heroSectionIndex) {
+              const e = smoothReveal(t, watermarkDelay, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroSectionIndex.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
+              heroSectionIndex.style.transform = `translateY(${(1 - e) * 25}px)`;
+            }
+            if (heroTitleBlock) {
+              const e = smoothReveal(t, 100, 2500);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroTitleBlock.style.opacity = `${e * (isDark ? 0.04 : 0.025)}`;
+              heroTitleBlock.style.transform = `translateX(${(1 - e) * 20}px)`;
+            }
+            if (heroTitleLine) {
+              const e = smoothReveal(t, subtitleDelay, 2000);
+              const isDark = document.documentElement.dataset.theme === 'dark';
+              heroTitleLine.style.opacity = `${e * (isDark ? 0.15 : 0.1)}`;
+              heroTitleLine.style.transform = `scaleX(${e})`;
+              heroTitleLine.style.transformOrigin = 'left';
             }
 
             // Reveal coordinates
@@ -2118,31 +2392,92 @@ const steps = [
       if (marqueeSection) marqueeObs.observe(marqueeSection);
     }
 
-    // Contact split reveal — staggered fields
-    const contactDivider = document.querySelector('[data-contact-divider]');
-    const contactLeft = document.querySelector('[data-contact-left]');
-    const contactRight = document.querySelector('[data-contact-right]');
-    const contactFields = document.querySelectorAll('[data-contact-field]');
-    const contactSend = document.querySelector('.contact-send');
+    // Contact split reveal — composites with float system via shared FloatItem state
+    const contactDivider = document.querySelector('[data-contact-divider]') as HTMLElement | null;
+    const contactLeft = document.querySelector('[data-contact-left]') as HTMLElement | null;
+    const contactRight = document.querySelector('[data-contact-right]') as HTMLElement | null;
+    const contactFields = Array.from(document.querySelectorAll('[data-contact-field]')) as HTMLElement[];
+    const contactSend = document.querySelector('.contact-send') as HTMLElement | null;
+
+    // Find the FloatItems for contact panels so reveal can compose with float
+    const contactLeftFloat = floatItems.find(f => f.el === contactLeft);
+    const contactRightFloat = floatItems.find(f => f.el === contactRight);
+
+    // Initialize contact panels as hidden (reveal will animate them in)
+    if (contactLeftFloat) { contactLeftFloat.revealOpacity = 0; contactLeftFloat.revealX = -12; contactLeftFloat.revealY = 20; }
+    if (contactRightFloat) { contactRightFloat.revealOpacity = 0; contactRightFloat.revealX = 12; contactRightFloat.revealY = 20; }
+
+    function contactSmooth(t: number, delay: number, dur = 1800) {
+      const r = Math.min(1, Math.max(0, (t - delay) / dur));
+      return r * r * (3 - 2 * r);
+    }
 
     if (contactDivider) {
+      let contactRevealStart = 0;
+      let contactRevealing = false;
+
+      // Remove CSS transitions on non-float elements — JS drives everything
+      [contactSend, ...contactFields].forEach(el => {
+        if (el) el.style.transition = 'none';
+      });
+
+      function contactRevealLoop(now: number) {
+        if (!contactRevealing) return;
+        const t = now - contactRevealStart;
+
+        // Divider line draws over 1.5s
+        if (contactDivider) {
+          const e = contactSmooth(t, 0, 1500);
+          (contactDivider as HTMLElement).style.width = `${e * 100}%`;
+        }
+
+        // Left panel — update FloatItem reveal state (float loop composes the transform)
+        if (contactLeftFloat) {
+          const e = contactSmooth(t, 400, 1800);
+          contactLeftFloat.revealOpacity = e;
+          contactLeftFloat.revealX = (1 - e) * -12;
+          contactLeftFloat.revealY = (1 - e) * 20;
+        }
+
+        // Right panel — update FloatItem reveal state
+        if (contactRightFloat) {
+          const e = contactSmooth(t, 700, 1800);
+          contactRightFloat.revealOpacity = e;
+          contactRightFloat.revealX = (1 - e) * 12;
+          contactRightFloat.revealY = (1 - e) * 20;
+        }
+
+        // Form fields — staggered fade up (no float conflict, direct write OK)
+        contactFields.forEach((field, i) => {
+          const e = contactSmooth(t, 1000 + i * 250, 1500);
+          field.style.opacity = `${e}`;
+          field.style.transform = `translateY(${(1 - e) * 14}px)`;
+        });
+
+        // Send button — last to appear
+        if (contactSend) {
+          const e = contactSmooth(t, 1000 + contactFields.length * 250 + 150, 1500);
+          contactSend.style.opacity = `${e}`;
+          contactSend.style.transform = `translateY(${(1 - e) * 14}px)`;
+        }
+
+        // Keep running until everything is fully revealed
+        const totalDuration = 1000 + contactFields.length * 250 + 150 + 1500;
+        if (t < totalDuration + 100) {
+          requestAnimationFrame(contactRevealLoop);
+        }
+      }
+
       const splitObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            contactDivider.classList.add('drawn');
-            setTimeout(() => contactLeft?.classList.add('revealed'), 600);
-            setTimeout(() => {
-              contactRight?.classList.add('revealed');
-              // Stagger form fields after right panel starts moving in
-              contactFields.forEach((field, i) => {
-                setTimeout(() => field.classList.add('revealed'), 400 + i * 180);
-              });
-              setTimeout(() => contactSend?.classList.add('revealed'), 400 + contactFields.length * 180);
-            }, 800);
+          if (entry.isIntersecting && !contactRevealing) {
+            contactRevealing = true;
+            contactRevealStart = performance.now();
+            requestAnimationFrame(contactRevealLoop);
             splitObs.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.2 });
+      }, { threshold: 0.25 });
       splitObs.observe(contactDivider);
     }
 
@@ -2247,77 +2582,250 @@ const steps = [
     }
 
     // ── Dark mode toggle ──
-    function toggleTheme(button: HTMLElement) {
-      const overlay = document.getElementById('theme-transition');
-      if (!overlay) return;
-      const rect = button.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      const maxRadius = Math.ceil(Math.sqrt(
-        Math.max(x, window.innerWidth - x) ** 2 +
-        Math.max(y, window.innerHeight - y) ** 2
-      ));
-      const isDark = document.documentElement.dataset.theme === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      const newBg = newTheme === 'dark' ? '#0c0c0c' : '#FAFAFA';
-      overlay.style.backgroundColor = newBg;
-      overlay.style.transition = 'none';
-      overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
-      overlay.offsetHeight;
-      const duration = 900;
-      const startTime = performance.now();
-      function animateBlob(now: number) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        const radius = eased * maxRadius;
-        const w1 = Math.sin(progress * Math.PI * 3) * radius * 0.08;
-        const w2 = Math.cos(progress * Math.PI * 2) * radius * 0.06;
-        overlay.style.clipPath = `ellipse(${radius + w1}px ${radius + w2}px at ${x}px ${y}px)`;
-        if (progress < 1) requestAnimationFrame(animateBlob);
-        else overlay.style.clipPath = 'circle(0px at 50% 50%)';
+    // ── Theme switcher (3-way: light / system / dark) ──
+    function getEffectiveTheme(mode: string): string {
+      if (mode === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
-      requestAnimationFrame(animateBlob);
-      setTimeout(() => {
-        document.documentElement.dataset.theme = newTheme;
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcons(newTheme);
-      }, duration * 0.4);
+      return mode;
     }
 
-    function updateThemeIcons(theme: string) {
-      const isDark = theme === 'dark';
-      // Update all moon/sun icons (both rail and mobile)
-      document.querySelectorAll('.icon-moon, #icon-moon').forEach((el) => {
-        (el as HTMLElement).style.display = isDark ? 'none' : 'block';
+    function applyTheme(mode: string, button?: HTMLElement) {
+      const effectiveTheme = getEffectiveTheme(mode);
+      const overlay = document.getElementById('theme-transition');
+
+      if (button && overlay) {
+        const rect = button.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const maxRadius = Math.ceil(Math.sqrt(
+          Math.max(x, window.innerWidth - x) ** 2 +
+          Math.max(y, window.innerHeight - y) ** 2
+        ));
+        const newBg = effectiveTheme === 'dark' ? '#0c0c0c' : '#FAFAFA';
+        overlay.style.backgroundColor = newBg;
+        overlay.style.transition = 'none';
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+        overlay.offsetHeight;
+        const duration = 900;
+        const startTime = performance.now();
+        function animateBlob(now: number) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+          const radius = eased * maxRadius;
+          const w1 = Math.sin(progress * Math.PI * 3) * radius * 0.08;
+          const w2 = Math.cos(progress * Math.PI * 2) * radius * 0.06;
+          overlay.style.clipPath = `ellipse(${radius + w1}px ${radius + w2}px at ${x}px ${y}px)`;
+          if (progress < 1) requestAnimationFrame(animateBlob);
+          else overlay.style.clipPath = 'circle(0px at 50% 50%)';
+        }
+        requestAnimationFrame(animateBlob);
+        setTimeout(() => {
+          document.documentElement.dataset.theme = effectiveTheme;
+          updateThemeMeta(effectiveTheme);
+        }, duration * 0.4);
+      } else {
+        document.documentElement.dataset.theme = effectiveTheme;
+        updateThemeMeta(effectiveTheme);
+      }
+
+      // Persist preference
+      if (mode === 'system') {
+        localStorage.removeItem('theme');
+      } else {
+        localStorage.setItem('theme', mode);
+      }
+
+      // Update active states on all option buttons
+      document.querySelectorAll('.theme-option, .theme-option-mobile').forEach((btn) => {
+        btn.classList.toggle('active', (btn as HTMLElement).dataset.themeValue === mode);
       });
-      document.querySelectorAll('.icon-sun, #icon-sun').forEach((el) => {
-        (el as HTMLElement).style.display = isDark ? 'block' : 'none';
-      });
-      // Update browser theme-color meta
+    }
+
+    function updateThemeMeta(effectiveTheme: string) {
       const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', isDark ? '#0c0c0c' : '#FAFAFA');
+      if (meta) meta.setAttribute('content', effectiveTheme === 'dark' ? '#0c0c0c' : '#FAFAFA');
     }
 
-    updateThemeIcons(document.documentElement.dataset.theme || 'light');
-
-    // Listen for system theme changes (if user hasn't manually toggled)
+    // Listen for system theme changes (applies only when mode is 'system')
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (localStorage.getItem('theme')) return; // user has manual preference
-      const newTheme = e.matches ? 'dark' : 'light';
-      document.documentElement.dataset.theme = newTheme;
-      updateThemeIcons(newTheme);
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', newTheme === 'dark' ? '#0c0c0c' : '#FAFAFA');
+      if (localStorage.getItem('theme')) return; // user chose light or dark explicitly
+      const effectiveTheme = e.matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = effectiveTheme;
+      updateThemeMeta(effectiveTheme);
     });
 
-    // Both theme toggles (rail + mobile)
-    document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
-      toggleTheme(e.currentTarget as HTMLElement);
+    // Determine initial mode from localStorage
+    const storedTheme = localStorage.getItem('theme');
+    const initialMode = storedTheme || 'system';
+    // Apply effective theme on load (no animation) to ensure system mode works
+    const effectiveOnLoad = getEffectiveTheme(initialMode);
+    document.documentElement.dataset.theme = effectiveOnLoad;
+    updateThemeMeta(effectiveOnLoad);
+    // Set correct active button on load
+    document.querySelectorAll('.theme-option, .theme-option-mobile').forEach((btn) => {
+      btn.classList.toggle('active', (btn as HTMLElement).dataset.themeValue === initialMode);
     });
-    document.getElementById('theme-toggle-mobile')?.addEventListener('click', (e) => {
-      toggleTheme(e.currentTarget as HTMLElement);
+
+    // Bind click handlers for all theme option buttons
+    document.querySelectorAll('.theme-option, .theme-option-mobile').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const mode = target.dataset.themeValue || 'system';
+        applyTheme(mode, target);
+      });
     });
+
+    // ── JS-driven pill expand/collapse with smoothstep easing ──
+    const pillEl = document.querySelector('.theme-switcher-options') as HTMLElement | null;
+    const labelEls = document.querySelectorAll('.theme-option-label') as NodeListOf<HTMLElement>;
+    const themeSwitcherEl = document.getElementById('theme-switcher');
+    const themePromptEl = document.getElementById('theme-prompt');
+
+    if (pillEl && themeSwitcherEl) {
+      const allOptions = pillEl.querySelectorAll('.theme-option') as NodeListOf<HTMLElement>;
+      let pillAnim: number | null = null;
+      let pillOpen = false;
+      let introHolding = false;
+
+      function smoothstep(t: number): number {
+        return t * t * (3 - 2 * t);
+      }
+
+      function animatePill(open: boolean, duration = 550) {
+        if (pillAnim) cancelAnimationFrame(pillAnim);
+        const startTime = performance.now();
+        // Snapshot current state of each non-active option
+        const inactiveOpts: HTMLElement[] = [];
+        allOptions.forEach(o => { if (!o.classList.contains('active')) inactiveOpts.push(o); });
+
+        // Show inactive options and labels for animation (they start as display:none)
+        if (open) {
+          inactiveOpts.forEach(o => { o.style.display = 'flex'; });
+          labelEls.forEach(l => { l.style.display = 'inline'; });
+        }
+
+        // Set overflow hidden during animation
+        pillEl!.style.overflow = 'hidden';
+
+        function tick(now: number) {
+          const elapsed = now - startTime;
+          const raw = Math.min(elapsed / duration, 1);
+          const t = smoothstep(raw);
+          const val = open ? t : 1 - t;
+
+          // Animate non-active options height + opacity
+          inactiveOpts.forEach(o => {
+            o.style.height = (val * 26) + 'px';
+            o.style.opacity = String(val);
+          });
+
+          // All options stretch to fill width when expanded
+          allOptions.forEach(o => {
+            o.style.width = val > 0.01 ? '100%' : '';
+            o.style.justifyContent = val > 0.01 ? 'flex-start' : 'center';
+            o.style.paddingLeft = (val * 8) + 'px';
+          });
+
+          // Container: circle (32×32) → pill (auto height, wider)
+          const r = 50 - val * 32; // 50% → 18%
+          pillEl!.style.borderRadius = r + '%';
+          pillEl!.style.width = (32 + val * 50) + 'px'; // 32px → 82px
+          pillEl!.style.height = 'auto';
+          pillEl!.style.gap = (val * 2) + 'px';
+          pillEl!.style.justifyContent = val < 0.01 ? 'center' : 'flex-start';
+          pillEl!.style.boxShadow = `0 ${8 * val}px 28px rgba(0,0,0,${val * 0.2})`;
+
+          // Labels
+          const labelDelay = open ? 0.25 : 0;
+          const labelRaw = open
+            ? Math.max(0, (raw - labelDelay) / (1 - labelDelay))
+            : Math.min(raw / 0.4, 1);
+          const labelVal = open ? smoothstep(labelRaw) : 1 - smoothstep(labelRaw);
+          labelEls.forEach(l => {
+            l.style.opacity = String(labelVal);
+            l.style.maxWidth = (labelVal * 50) + 'px';
+          });
+
+          if (raw < 1) {
+            pillAnim = requestAnimationFrame(tick);
+          } else {
+            pillAnim = null;
+            if (!open) {
+              // Clean collapsed: perfect circle, hide inactive
+              inactiveOpts.forEach(o => {
+                o.style.height = '0';
+                o.style.opacity = '0';
+                o.style.display = 'none';
+              });
+              // Reset active option to centered circle state
+              allOptions.forEach(o => {
+                if (o.classList.contains('active')) {
+                  o.style.width = '24px';
+                  o.style.height = '24px';
+                  o.style.justifyContent = 'center';
+                  o.style.paddingLeft = '0';
+                }
+              });
+              labelEls.forEach(l => { l.style.opacity = '0'; l.style.maxWidth = '0'; l.style.display = 'none'; });
+              pillEl!.style.borderRadius = '50%';
+              pillEl!.style.width = '32px';
+              pillEl!.style.height = '32px';
+              pillEl!.style.overflow = 'visible';
+            } else {
+              pillEl!.style.overflow = 'visible';
+            }
+          }
+        }
+        pillAnim = requestAnimationFrame(tick);
+      }
+
+      // Hover handlers
+      themeSwitcherEl.addEventListener('mouseenter', () => {
+        if (!pillOpen && !introHolding) {
+          pillOpen = true;
+          animatePill(true);
+        }
+      });
+      themeSwitcherEl.addEventListener('mouseleave', () => {
+        if (pillOpen && !introHolding) {
+          pillOpen = false;
+          animatePill(false, 650); // slower close
+        }
+      });
+
+      // ── Intro animation — tooltip + pill expand ──
+      if (themePromptEl && !sessionStorage.getItem('theme-prompt-shown')) {
+        sessionStorage.setItem('theme-prompt-shown', '1');
+
+        // Step 1: tooltip + curly arrow fade in (2.5s after load)
+        setTimeout(() => {
+          themePromptEl.classList.add('visible');
+          themeSwitcherEl.classList.add('intro-glow');
+
+          // Step 2: pill expands smoothly (1s later)
+          setTimeout(() => {
+            introHolding = true;
+            pillOpen = true;
+            animatePill(true, 800);
+
+            // Step 3: hold for 3s, then collapse
+            setTimeout(() => {
+              pillOpen = false;
+              animatePill(false, 900);
+
+              // Step 4: dismiss tooltip after pill starts closing
+              setTimeout(() => {
+                themePromptEl.classList.remove('visible');
+                themeSwitcherEl.classList.remove('intro-glow');
+                introHolding = false;
+              }, 500);
+            }, 3000);
+          }, 1000);
+        }, 2500);
+      }
+    }
 
     // ── Live Sydney time + analog clock ──
     const clockHour = document.getElementById('clock-hour');
