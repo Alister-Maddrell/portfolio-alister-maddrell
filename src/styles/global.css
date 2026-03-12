@@ -1679,6 +1679,85 @@ body.loaded .hero-corner {
 }
 [data-theme="dark"] .work-depth-coord { opacity: 0.07; }
 
+/* Deep: Diagonal structural line cutting across section */
+.work-depth-diagonal {
+  position: absolute;
+  top: 8%;
+  left: 15%;
+  width: 1px;
+  height: clamp(200px, 35vh, 500px);
+  background: linear-gradient(to bottom, transparent, var(--color-accent) 30%, var(--color-accent) 70%, transparent);
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  transform: rotate(25deg);
+  transform-origin: top center;
+  will-change: transform;
+}
+[data-theme="dark"] .work-depth-diagonal { opacity: 0.06; }
+
+/* Grid reference dots — structural position markers */
+.work-depth-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.work-depth-dot--1 {
+  top: 25%;
+  right: 18%;
+  opacity: 0.06;
+}
+.work-depth-dot--2 {
+  top: 60%;
+  left: 6%;
+  opacity: 0.04;
+}
+.work-depth-dot--3 {
+  bottom: 20%;
+  right: 8%;
+  opacity: 0.05;
+}
+[data-theme="dark"] .work-depth-dot--1 { opacity: 0.1; }
+[data-theme="dark"] .work-depth-dot--2 { opacity: 0.07; }
+[data-theme="dark"] .work-depth-dot--3 { opacity: 0.08; }
+
+@media (max-width: 768px) {
+  .work-depth-diagonal { display: none; }
+  .work-depth-dot { display: none; }
+}
+
+/* ─── Project list connector line ─── */
+.project-list {
+  position: relative;
+}
+.project-list::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-accent) 15%,
+    var(--color-accent) 85%,
+    transparent
+  );
+  opacity: 0.05;
+  pointer-events: none;
+}
+[data-theme="dark"] .project-list::before { opacity: 0.08; }
+
+@media (max-width: 768px) {
+  .project-list::before { display: none; }
+}
+
 /* ─── Per-card depth layers ─── */
 
 /* Deepest: Stroke-outlined index number */
@@ -1910,6 +1989,43 @@ body.loaded .hero-corner {
   overflow: hidden;
   border: none;
   background: none;
+  position: relative;
+}
+
+/* Corner bracket on browser frame — echoes hero brackets */
+.browser-corner {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.browser-corner::before,
+.browser-corner::after {
+  content: '';
+  position: absolute;
+  background: var(--card-color);
+  opacity: 0.3;
+}
+.browser-corner::before {
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+}
+.browser-corner::after {
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 1px;
+}
+.project-card-v:hover .browser-corner { opacity: 1; }
+@media (pointer: coarse) {
+  .project-card-v.scroll-active .browser-corner { opacity: 1; }
 }
 
 .browser-bar {
@@ -2056,8 +2172,101 @@ body.loaded .hero-corner {
 
 /* Project details — always visible below image */
 .project-details {
-  padding: 1.5rem 0.25rem 0;
+  position: relative;
+  padding: 1.5rem 0.25rem 0 1.25rem;
   will-change: transform;
+}
+
+/* Vertical accent bar — editorial pull-quote marker */
+.details-accent-bar {
+  position: absolute;
+  top: 1.5rem;
+  left: 0;
+  width: 2px;
+  height: 0;
+  background: var(--card-color);
+  opacity: 0;
+  transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
+              opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 1px;
+}
+.project-card-v:hover .details-accent-bar {
+  height: calc(100% - 1.5rem);
+  opacity: 0.35;
+}
+[data-theme="dark"] .project-card-v:hover .details-accent-bar { opacity: 0.5; }
+
+/* Depth block behind details — subtle background plane */
+.details-depth-block {
+  position: absolute;
+  top: 0.75rem;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: var(--card-color);
+  border-radius: 8px;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card-v:hover .details-depth-block { opacity: 0.02; }
+[data-theme="dark"] .project-card-v:hover .details-depth-block { opacity: 0.04; }
+
+/* Title accent underline */
+.project-title {
+  position: relative;
+}
+.project-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--card-color);
+  opacity: 0.4;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 1px;
+}
+.project-card-v:hover .project-title::after { width: 100%; }
+[data-theme="dark"] .project-title::after { opacity: 0.5; }
+
+/* Status dot — pulsing live indicator */
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  opacity: 0.3;
+  flex-shrink: 0;
+  transition: background 0.3s ease, opacity 0.3s ease;
+}
+.project-card-v:hover .status-dot {
+  background: #28C840;
+  opacity: 1;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+@keyframes statusPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(40, 200, 64, 0); }
+}
+
+/* Mobile scroll-active states for details */
+@media (pointer: coarse) {
+  .project-card-v.scroll-active .details-accent-bar {
+    height: calc(100% - 1.5rem);
+    opacity: 0.35;
+  }
+  [data-theme="dark"] .project-card-v.scroll-active .details-accent-bar { opacity: 0.5; }
+  .project-card-v.scroll-active .details-depth-block { opacity: 0.02; }
+  [data-theme="dark"] .project-card-v.scroll-active .details-depth-block { opacity: 0.04; }
+  .project-card-v.scroll-active .project-title::after { width: 100%; }
+  .project-card-v.scroll-active .status-dot {
+    background: #28C840;
+    opacity: 1;
+    animation: statusPulse 2s ease-in-out infinite;
+  }
 }
 
 .project-tag {

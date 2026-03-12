@@ -332,6 +332,10 @@ const steps = [
         <span class="work-rule-tick"></span>
       </div>
       <span class="work-depth-coord" data-depth-layer="deep" aria-hidden="true">05 / SELECTED</span>
+      <div class="work-depth-diagonal" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--1" data-depth-layer="mid" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--2" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-dot work-depth-dot--3" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="container-main" data-depth-container>
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
           <span class="work-heading-depth" data-depth-layer="deep" aria-hidden="true">/05</span>
@@ -343,7 +347,7 @@ const steps = [
           <div class="section-heading-line w-full max-w-[120px]"></div>
         </div>
 
-        <div class="flex flex-col gap-32 md:gap-40">
+        <div class="project-list flex flex-col gap-32 md:gap-40">
           {projects.map((project, i) => (
             <a
               href={project.link}
@@ -362,6 +366,7 @@ const steps = [
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
               <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
               <div class="browser-frame" data-skew data-parallax-container>
+                <span class="browser-corner" aria-hidden="true"></span>
                 <div class="browser-bar" aria-hidden="true">
                   <span class="browser-dot"></span>
                   <span class="browser-dot"></span>
@@ -390,11 +395,14 @@ const steps = [
                 </div>
               </div>
               <div class="project-details" data-reveal data-skew>
+                <div class="details-depth-block" aria-hidden="true"></div>
+                <div class="details-accent-bar" aria-hidden="true"></div>
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
+                  <h3 class="project-title font-heading text-xl md:text-2xl font-bold text-ink tracking-tight" data-scramble>
                     {project.name}
                   </h3>
                   <span class="link-hover inline-flex items-center gap-2 font-heading text-sm font-semibold text-ink group-hover:text-accent tracking-wide transition-colors">
+                    <span class="status-dot" aria-hidden="true"></span>
                     View Site
                     <span class="inline-block transition-transform group-hover:translate-x-1.5">&rarr;</span>
                   </span>
@@ -1132,6 +1140,10 @@ const steps = [
       { selector: '.work-depth-crosshair', tx: 5, ty: -35 },
       { selector: '.work-depth-rule', tx: -3, ty: 18 },
       { selector: '.work-depth-coord', tx: 6, ty: -40 },
+      { selector: '.work-depth-diagonal', tx: -4, ty: -55 },
+      { selector: '.work-depth-dot--1', tx: 3, ty: 20 },
+      { selector: '.work-depth-dot--2', tx: -5, ty: -30 },
+      { selector: '.work-depth-dot--3', tx: 4, ty: 15 },
     ]);
     addSectionDepth('process', [
       { selector: '.process-depth-number', tx: 0, ty: -45 },
