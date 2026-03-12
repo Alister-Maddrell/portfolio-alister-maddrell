@@ -2492,7 +2492,11 @@ const steps = [
       function animateMarquee() {
         if (!marqueeActive) return;
 
-        const speedMultiplier = 1 + Math.abs(lenisVelocity) * 0.15;
+        // Decay velocity smoothly and clamp to prevent jumps from anchor-link scrolls
+        lenisVelocity *= 0.92;
+        if (Math.abs(lenisVelocity) < 0.01) lenisVelocity = 0;
+        const clampedVel = Math.min(Math.abs(lenisVelocity), 20);
+        const speedMultiplier = 1 + clampedVel * 0.05;
         const speed = baseSpeed * speedMultiplier;
 
         const leftReset = getResetWidth(leftTrack);
