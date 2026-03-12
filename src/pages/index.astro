@@ -754,6 +754,8 @@ const steps = [
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
+    const grainOverlay = document.querySelector('.grain-overlay') as HTMLElement | null;
+    const grainBase = document.documentElement.dataset.theme === 'dark' ? 0.1 : 0.06;
     const skewElements = document.querySelectorAll('[data-skew]');
 
     // Skew visibility — only transform elements in viewport
@@ -862,6 +864,13 @@ const steps = [
           if (!skewVisible.has(el)) continue;
           el.style.transform = `skewY(${skewVal}deg)`;
         }
+      }
+
+      // ── Grain reactivity — opacity pulses with scroll velocity ──
+      if (grainOverlay) {
+        const absVel = Math.abs(scrollVelocity);
+        const grainBoost = Math.min(0.06, absVel * 0.004);
+        grainOverlay.style.opacity = String(grainBase + grainBoost);
       }
 
       // ── Float + zero-G drift + compose with skew + tilt + reveal (single writer) ──
@@ -2052,6 +2061,12 @@ const steps = [
           : `translate(${circleX}px, ${circleY}px)`;
 
         if (trailDots.length && mouseOnPage) {
+          // Velocity-based trail visibility — faster = more visible
+          const dx = mouseX - dotX;
+          const dy = mouseY - dotY;
+          const velocity = Math.sqrt(dx * dx + dy * dy);
+          const trailIntensity = Math.min(1, velocity / 30);
+
           trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
           trailPositions[0].y += (mouseY - trailPositions[0].y) * 0.3;
           for (let i = 1; i < TRAIL_COUNT; i++) {
@@ -2060,7 +2075,7 @@ const steps = [
           }
           trailDots.forEach((dot, i) => {
             dot.style.transform = `translate(${trailPositions[i].x - 2}px, ${trailPositions[i].y - 2}px)`;
-            dot.style.opacity = `${0.3 - i * 0.035}`;
+            dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
           });
         }
 

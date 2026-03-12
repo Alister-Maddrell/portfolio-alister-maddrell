@@ -1091,6 +1091,14 @@ body.loaded .hero-corner {
   transform: translateY(20px);
 }
 
+body.loaded .scroll-indicator {
+  animation: scrollIndicatorIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2s forwards;
+}
+
+@keyframes scrollIndicatorIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Site-wide zero-g float — driven by JS ─── */
 
 .scroll-line {
@@ -1107,15 +1115,16 @@ body.loaded .hero-corner {
   top: -100%;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: var(--color-ink);
-  animation: scrollPulse 2s ease-in-out infinite;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  animation: scrollPulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes scrollPulse {
-  0% { top: -100%; }
-  50% { top: 0%; }
-  100% { top: 100%; }
+  0% { top: -40%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
 @keyframes fadeInUp {
