@@ -323,6 +323,15 @@ const steps = [
       <span class="work-depth-number" data-depth-layer="deep" aria-hidden="true">W</span>
       <div class="work-depth-line" data-depth-layer="mid" aria-hidden="true"></div>
       <div class="work-depth-ring" data-depth-layer="mid" aria-hidden="true"></div>
+      <div class="work-depth-crosshair" data-depth-layer="deep" aria-hidden="true"></div>
+      <div class="work-depth-rule" data-depth-layer="mid" aria-hidden="true">
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+        <span class="work-rule-tick"></span>
+      </div>
+      <span class="work-depth-coord" data-depth-layer="deep" aria-hidden="true">05 / SELECTED</span>
       <div class="container-main" data-depth-container>
         <div class="section-heading-wrap mb-16 md:mb-24" data-heading-reveal data-float="1" data-depth-container>
           <span class="work-heading-depth" data-depth-layer="deep" aria-hidden="true">/05</span>
@@ -347,8 +356,11 @@ const steps = [
               data-float={String(20 + i * 3)}
               style={`--card-color: ${project.color}; --card-index: ${i};`}
             >
+              <span class="project-index-stroke" data-card-layer="stroke" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div class="project-accent-line" data-card-layer="line" aria-hidden="true"></div>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
+              <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
               <div class="browser-frame" data-skew data-parallax-container>
                 <div class="browser-bar" aria-hidden="true">
                   <span class="browser-dot"></span>
@@ -913,6 +925,37 @@ const steps = [
         const blkDriftY = Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3;
         const blkRot = Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35;
         cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX + blkDriftX}px, ${blkScrollY + blkHoverY + blkDriftY}px) rotate(${blkRot}deg)`;
+
+        // Stroke index: deepest plane — moves opposite, slower orbit, larger amplitude
+        if (cl.strokeEl) {
+          const stkScrollY = offset * (isMobile ? -65 : -48);
+          const stkScrollX = isMobile ? offset * 12 : 0;
+          const stkHoverX = cl.currentHoverX * -35;
+          const stkHoverY = cl.currentHoverY * -28;
+          const stkDriftX = Math.sin(t * 0.0001 + i * 2.9) * 7;
+          const stkDriftY = Math.sin(t * 0.00014 + i * 1.5) * 5;
+          const stkRot = Math.sin(t * 0.00007 + i * 4.8) * 0.8;
+          cl.strokeEl.style.transform = `translate(${stkScrollX + stkHoverX + stkDriftX}px, ${stkScrollY + stkHoverY + stkDriftY}px) rotate(${stkRot}deg)`;
+        }
+
+        // Accent line: mid-plane, subtle horizontal drift
+        if (cl.lineEl) {
+          const lnScrollX = offset * (isMobile ? 6 : 4);
+          const lnScrollY = offset * (isMobile ? 12 : 8);
+          const lnDriftX = Math.sin(t * 0.00019 + i * 5.2 + 1.5) * 3;
+          const lnHoverX = cl.currentHoverX * 8;
+          cl.lineEl.style.transform = `translate(${lnScrollX + lnDriftX + lnHoverX}px, ${lnScrollY}px)`;
+        }
+
+        // Project label: deep plane, moves opposite like index
+        if (cl.labelEl) {
+          const lblScrollY = offset * (isMobile ? -28 : -20);
+          const lblHoverX = cl.currentHoverX * -12;
+          const lblHoverY = cl.currentHoverY * -10;
+          const lblDriftX = Math.sin(t * 0.00015 + i * 3.1 + 2.5) * 4;
+          const lblDriftY = Math.sin(t * 0.0002 + i * 2.4 + 1.8) * 3;
+          cl.labelEl.style.transform = `translate(${lblHoverX + lblDriftX}px, ${lblScrollY + lblHoverY + lblDriftY}px)`;
+        }
       }
 
       // ── Section bg text parallax + zero-G drift ──
@@ -1086,6 +1129,9 @@ const steps = [
       { selector: '.work-depth-number', tx: 0, ty: -50 },
       { selector: '.work-depth-line', tx: 0, ty: 30 },
       { selector: '.work-depth-ring', tx: -8, ty: 25 },
+      { selector: '.work-depth-crosshair', tx: 5, ty: -35 },
+      { selector: '.work-depth-rule', tx: -3, ty: 18 },
+      { selector: '.work-depth-coord', tx: 6, ty: -40 },
     ]);
     addSectionDepth('process', [
       { selector: '.process-depth-number', tx: 0, ty: -45 },
@@ -1102,6 +1148,9 @@ const steps = [
       card: HTMLElement;
       indexEl: HTMLElement;
       blockEl: HTMLElement;
+      strokeEl: HTMLElement | null;
+      lineEl: HTMLElement | null;
+      labelEl: HTMLElement | null;
       visible: boolean;
       hoverX: number;
       hoverY: number;
@@ -1113,9 +1162,12 @@ const steps = [
     document.querySelectorAll('.project-card-v').forEach((card) => {
       const indexEl = card.querySelector('[data-card-layer="index"]') as HTMLElement;
       const blockEl = card.querySelector('[data-card-layer="block"]') as HTMLElement;
+      const strokeEl = card.querySelector('[data-card-layer="stroke"]') as HTMLElement | null;
+      const lineEl = card.querySelector('[data-card-layer="line"]') as HTMLElement | null;
+      const labelEl = card.querySelector('[data-card-layer="label"]') as HTMLElement | null;
       if (!indexEl || !blockEl) return;
       const cl: CardLayer = {
-        card: card as HTMLElement, indexEl, blockEl, visible: false,
+        card: card as HTMLElement, indexEl, blockEl, strokeEl, lineEl, labelEl, visible: false,
         hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
       };
       cardLayers.push(cl);
