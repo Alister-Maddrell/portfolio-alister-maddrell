@@ -864,17 +864,6 @@ const steps = [
         }
       }
 
-      // ── Work card inner-image parallax (image scrolls within clipped container) ──
-      for (let i = 0; i < workCardImgs.length; i++) {
-        const wc = workCardImgs[i];
-        if (!wc.visible) continue;
-        const rect = wc.media.getBoundingClientRect();
-        if (rect.bottom < -50 || rect.top > viewH + 50) continue;
-        const progress = (rect.top + rect.height / 2) / viewH; // 0 at top, 1 at bottom
-        const offset = (progress - 0.5) * 2; // -1 to 1
-        wc.img.style.transform = `scale(1.15) translateY(${offset * -30}px)`;
-      }
-
       // ── Section bg text parallax + zero-G drift (visibility-gated) ──
       for (let i = 0; i < bgParallaxEls.length; i++) {
         const bp = bgParallaxEls[i];
@@ -1060,29 +1049,6 @@ const steps = [
       { selector: '.about-depth-line', tx: 0, ty: 28 },
       { selector: '.about-depth-ring', tx: -6, ty: 22 },
     ]);
-
-    // ── Work card inner-image parallax setup ──
-    interface WorkCardImg {
-      media: HTMLElement;
-      img: HTMLElement;
-      visible: boolean;
-    }
-    const workCardImgs: WorkCardImg[] = [];
-    document.querySelectorAll('[data-work-card]').forEach((card) => {
-      const media = card.querySelector('.work-card-media') as HTMLElement;
-      const img = card.querySelector('.work-card-img') as HTMLElement;
-      if (!media || !img) return;
-      workCardImgs.push({ media, img, visible: false });
-    });
-    if (workCardImgs.length > 0) {
-      const wcVis = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const wc = workCardImgs.find(w => w.media === entry.target);
-          if (wc) wc.visible = entry.isIntersecting;
-        });
-      }, { threshold: 0, rootMargin: '100px 0px 100px 0px' });
-      workCardImgs.forEach(wc => wcVis.observe(wc.media));
-    }
 
     // ── Section depth layer parallax setup ──
     interface DepthLayer {
