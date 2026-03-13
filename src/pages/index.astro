@@ -8,7 +8,7 @@ const projects = [
     name: 'Hartley & Co Plumbing',
     description: 'A plumbing website built to capture emergency calls and turn them into booked jobs — with click-to-call, before/after proof, and a quote flow that works around the clock.',
     tags: ['Click-to-Call', 'Emergency Alerts', 'Before/After Sliders', 'Copper Design System', 'FAQ Schema', 'Quote Form'],
-    thumbnail: '/thumbnails/hartley.png',
+    thumbnail: '/thumbnails/hartley.webp',
     link: 'https://demo-hartley-plumbing.vercel.app',
     color: '#C87533',
     floats: [
@@ -21,7 +21,7 @@ const projects = [
     name: 'Kin & Grain Café',
     description: 'A café website that does more than look good — digital menu, event bookings, email list growth, and catering enquiries all working to fill tables and build a loyal following.',
     tags: ['Digital Menu', 'Events Calendar', 'Email Capture', 'Catering Form', 'Instagram Feed'],
-    thumbnail: '/thumbnails/cafe.png',
+    thumbnail: '/thumbnails/cafe.webp',
     link: 'https://demo-kin-grain-cafe.vercel.app',
     color: '#b45309',
     floats: [
@@ -34,7 +34,7 @@ const projects = [
     name: 'Apex Performance Studio',
     description: 'A fitness website designed as a sales funnel — visitors land, see pricing, book a trial, and sign up. Multi-step forms and class schedules that turn browsers into paying members.',
     tags: ['Sales Funnel', 'Multi-Step Form', 'Pricing Table', 'Class Timetable', 'Video Tour', 'Animated Stats'],
-    thumbnail: '/thumbnails/fitness.png',
+    thumbnail: '/thumbnails/fitness.webp',
     link: 'https://demo-apex-fitness.vercel.app',
     color: '#dc2626',
     floats: [
@@ -47,7 +47,7 @@ const projects = [
     name: 'Whitfield & Associates',
     description: 'An accounting firm website that builds trust before the first meeting — blog content that ranks, consultation booking that fills the calendar, and credibility signals that close the deal.',
     tags: ['Blog with Filters', 'Booking Form', 'Animated Stats', 'Team Profiles', 'Client Logos', 'Newsletter'],
-    thumbnail: '/thumbnails/accounting.png',
+    thumbnail: '/thumbnails/accounting.webp',
     link: 'https://demo-whitfield-accounting.vercel.app',
     color: '#1e3a5f',
     floats: [
@@ -60,7 +60,7 @@ const projects = [
     name: 'LUMA Hair & Beauty',
     description: 'A salon website that replaces phone tag with a seamless booking flow — clients browse services, see pricing, pick their stylist, and book in minutes. Your chairs stay full.',
     tags: ['4-Step Booking Flow', 'Service Pricing Menu', 'Before/After Sliders', 'Team Carousel', 'Newsletter', 'Product Showcase'],
-    thumbnail: '/thumbnails/hair.png',
+    thumbnail: '/thumbnails/hair.webp',
     link: 'https://demo-luma-hair-beauty.vercel.app',
     color: '#7c3aed',
     floats: [
@@ -105,8 +105,8 @@ const steps = [
 ---
 
 <Layout
-  title="Alister Maddrell — Custom Web Design Sydney | SEO-First Websites"
-  description="Sydney web designer building custom, hand-coded websites that rank and convert. No templates — every project designed from scratch with SEO, speed, and your customers in mind."
+  title="Alister Maddrell — Custom Web Design Sydney"
+  description="Sydney web designer building custom, hand-coded websites that rank and convert. No templates — built from scratch with SEO, speed, and conversions in mind."
 >
   <!-- Loader -->
   <div id="loader">
@@ -262,7 +262,7 @@ const steps = [
       <span class="hero-coord hero-coord--bottom" data-hero-layer="coord" aria-hidden="true">151.2093&deg;E</span>
 
       <!-- Orb -->
-      <div id="hero-orb-wrapper" data-hero-layer="orb" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(212,85,42,0.28) 0%, rgba(212,85,42,0.15) 25%, rgba(212,85,42,0.06) 50%, transparent 70%);border-radius:50%;"></div>
+      <div id="hero-orb-wrapper" data-hero-layer="orb" class="hidden md:block" style="position:absolute;right:0;top:5%;width:700px;height:700px;pointer-events:none;z-index:0;transform:translateX(10%);background:radial-gradient(circle at center, rgba(192,75,36,0.28) 0%, rgba(192,75,36,0.15) 25%, rgba(192,75,36,0.06) 50%, transparent 70%);border-radius:50%;"></div>
 
       <div class="container-main w-full pt-24 relative z-[1] hero-scroll-fade">
         <!-- Monospace status line -->
@@ -389,8 +389,10 @@ const steps = [
                       <img
                         src={project.thumbnail}
                         alt={`${project.name} website screenshot`}
-                        loading="eager"
-                        fetchpriority="high"
+                        width="1440"
+                        height="900"
+                        loading={i === 0 ? "eager" : "lazy"}
+                        fetchpriority={i === 0 ? "high" : "auto"}
                         decoding="async"
                       />
                     </div>
@@ -560,7 +562,7 @@ const steps = [
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
             <div>
-              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Custom Built</h4>
+              <h3 class="font-heading text-sm font-bold text-ink tracking-tight">Custom Built</h3>
               <p class="font-body text-muted text-xs mt-1 leading-relaxed">No themes, no page builders. Your site is designed and coded specifically for your business.</p>
             </div>
           </div>
@@ -569,7 +571,7 @@ const steps = [
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             </div>
             <div>
-              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Lightning Fast</h4>
+              <h3 class="font-heading text-sm font-bold text-ink tracking-tight">Lightning Fast</h3>
               <p class="font-body text-muted text-xs mt-1 leading-relaxed">Pages that load in under a second. Your visitors stay, Google notices, and you rank higher.</p>
             </div>
           </div>
@@ -578,7 +580,7 @@ const steps = [
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/></svg>
             </div>
             <div>
-              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">SEO-First</h4>
+              <h3 class="font-heading text-sm font-bold text-ink tracking-tight">SEO-First</h3>
               <p class="font-body text-muted text-xs mt-1 leading-relaxed">Built to rank from day one. Proper structure, schema markup, and performance that Google rewards.</p>
             </div>
           </div>
@@ -587,7 +589,7 @@ const steps = [
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             </div>
             <div>
-              <h4 class="font-heading text-sm font-bold text-ink tracking-tight">Responsive</h4>
+              <h3 class="font-heading text-sm font-bold text-ink tracking-tight">Responsive</h3>
               <p class="font-body text-muted text-xs mt-1 leading-relaxed">Looks and works perfectly on every screen — phone, tablet, desktop. No compromises.</p>
             </div>
           </div>
@@ -858,6 +860,10 @@ const steps = [
       revealOpacity: number;
       revealX: number;
       revealY: number;
+      // Cached last-computed values for throttled sin computation
+      _lastTx: number;
+      _lastTy: number;
+      _lastRot: number;
     }
     const floatItems: FloatItem[] = [];
     document.querySelectorAll('[data-float]').forEach((el) => {
@@ -888,6 +894,9 @@ const steps = [
         revealOpacity: 1,
         revealX: 0,
         revealY: 0,
+        _lastTx: 0,
+        _lastTy: 0,
+        _lastRot: 0,
       });
     });
 
@@ -905,6 +914,7 @@ const steps = [
     const animStart = performance.now();
 
     // ── 5. MAIN RAF LOOP — single requestAnimationFrame for all scroll-driven animations ──
+    let frameCount = 0;
     let _lastRenderedScroll = -1;
     // Persistent rect caches (only updated when scroll changes)
     let _cr: { t: number; h: number }[] = [];
@@ -920,6 +930,7 @@ const steps = [
     function raf(time: number) {
       // Drive Lenis from our single rAF — no separate autoRaf loop
       lenis.raf(time);
+      frameCount++;
 
       const t = time - animStart;
       const viewH = window.innerHeight;
@@ -929,71 +940,83 @@ const steps = [
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.04));
       const isMobileDevice = !hasFineCursor;
 
-      // Only do expensive rect reads when scroll moved enough to matter
+      // Only do scroll-dependent work when scroll moved enough to matter
       const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 2;
       if (scrollChanged) {
+        const scrollDelta = currentScrollY - _lastRenderedScroll;
         _lastRenderedScroll = currentScrollY;
 
-        // ═══ BATCH READS (only on scroll change) ═══
-        _cr = [];
-        for (let i = 0; i < cardLayers.length; i++) {
-          if (cardLayers[i].visible) {
-            const r = cardLayers[i].card.getBoundingClientRect();
-            _cr.push({ t: r.top, h: r.height });
-          } else { _cr.push({ t: 0, h: 0 }); }
-        }
+        // ═══ RECT CACHE: offset by scroll delta instead of re-reading ═══
+        // getBoundingClientRect().top shifts by exactly -scrollDelta on scroll.
+        // Full re-reads only on first frame or every 30th scroll frame to prevent drift.
+        const needsFullRead = _cr.length === 0 || frameCount % 30 === 0;
 
-        _br = [];
-        for (let i = 0; i < bgParallaxEls.length; i++) {
-          const r = bgParallaxEls[i].parentElement!.getBoundingClientRect();
-          _br.push({ t: r.top, b: r.bottom, h: r.height });
-        }
-
-        _dr = [];
-        for (let i = 0; i < depthLayers.length; i++) {
-          if (depthLayers[i].visible) {
-            const r = depthLayers[i].container.getBoundingClientRect();
-            _dr.push({ t: r.top, h: r.height });
-          } else { _dr.push({ t: 0, h: 0 }); }
-        }
-
-        _sr = [];
-        for (let i = 0; i < sectionDepthEls.length; i++) {
-          if (sectionDepthEls[i].section) {
-            const r = sectionDepthEls[i].section!.getBoundingClientRect();
-            _sr.push({ t: r.top, b: r.bottom, h: r.height });
-          } else { _sr.push({ t: 0, b: 0, h: 0 }); }
-        }
-
-        _contactTop = 0; _contactVisible = false;
-        if (contactSection) {
-          const r = contactSection.getBoundingClientRect();
-          _contactTop = r.top;
-          _contactVisible = r.top < viewH;
-        }
-
-        _mr = [];
-        for (let i = 0; i < manifestoData.length; i++) {
-          if (manifestoVisible.get(manifestoData[i].el)) {
-            const r = (manifestoData[i].el as HTMLElement).getBoundingClientRect();
-            _mr.push({ t: r.top });
-          } else { _mr.push({ t: 0 }); }
-        }
-
-        _pr = [];
-        if (processSteps.length > 0 && processTimeline && processVisible) {
-          for (let i = 0; i < processSteps.length; i++) {
-            const r = (processSteps[i] as HTMLElement).getBoundingClientRect();
-            _pr.push({ t: r.top, b: r.bottom, h: r.height });
+        if (needsFullRead) {
+          _cr = [];
+          for (let i = 0; i < cardLayers.length; i++) {
+            if (cardLayers[i].visible) {
+              const r = cardLayers[i].card.getBoundingClientRect();
+              _cr.push({ t: r.top, h: r.height });
+            } else { _cr.push({ t: 0, h: 0 }); }
           }
-        }
-
-        _pxr = new Map();
-        if (hasPointer) {
-          parallaxVisible.forEach(el => {
-            const r = el.getBoundingClientRect();
-            _pxr.set(el, { t: r.top, h: r.height });
-          });
+          _br = [];
+          for (let i = 0; i < bgParallaxEls.length; i++) {
+            const r = bgParallaxEls[i].parentElement!.getBoundingClientRect();
+            _br.push({ t: r.top, b: r.bottom, h: r.height });
+          }
+          _dr = [];
+          for (let i = 0; i < depthLayers.length; i++) {
+            if (depthLayers[i].visible) {
+              const r = depthLayers[i].container.getBoundingClientRect();
+              _dr.push({ t: r.top, h: r.height });
+            } else { _dr.push({ t: 0, h: 0 }); }
+          }
+          _sr = [];
+          for (let i = 0; i < sectionDepthEls.length; i++) {
+            if (sectionDepthEls[i].section) {
+              const r = sectionDepthEls[i].section!.getBoundingClientRect();
+              _sr.push({ t: r.top, b: r.bottom, h: r.height });
+            } else { _sr.push({ t: 0, b: 0, h: 0 }); }
+          }
+          _contactTop = 0; _contactVisible = false;
+          if (contactSection) {
+            const r = contactSection.getBoundingClientRect();
+            _contactTop = r.top;
+            _contactVisible = r.top < viewH;
+          }
+          _mr = [];
+          for (let i = 0; i < manifestoData.length; i++) {
+            if (manifestoVisible.get(manifestoData[i].el)) {
+              const r = (manifestoData[i].el as HTMLElement).getBoundingClientRect();
+              _mr.push({ t: r.top });
+            } else { _mr.push({ t: 0 }); }
+          }
+          _pr = [];
+          if (processSteps.length > 0 && processTimeline && processVisible) {
+            for (let i = 0; i < processSteps.length; i++) {
+              const r = (processSteps[i] as HTMLElement).getBoundingClientRect();
+              _pr.push({ t: r.top, b: r.bottom, h: r.height });
+            }
+          }
+          _pxr = new Map();
+          if (hasPointer) {
+            parallaxVisible.forEach(el => {
+              const r = el.getBoundingClientRect();
+              _pxr.set(el, { t: r.top, h: r.height });
+            });
+          }
+        } else {
+          // Fast path: offset cached rects by scroll delta (no layout forced)
+          const d = -scrollDelta;
+          for (let i = 0; i < _cr.length; i++) { _cr[i].t += d; }
+          for (let i = 0; i < _br.length; i++) { _br[i].t += d; _br[i].b += d; }
+          for (let i = 0; i < _dr.length; i++) { _dr[i].t += d; }
+          for (let i = 0; i < _sr.length; i++) { _sr[i].t += d; _sr[i].b += d; }
+          _contactTop += d;
+          _contactVisible = _contactTop < viewH;
+          for (let i = 0; i < _mr.length; i++) { _mr[i].t += d; }
+          for (let i = 0; i < _pr.length; i++) { _pr[i].t += d; _pr[i].b += d; }
+          _pxr.forEach(pr => { pr.t += d; });
         }
 
         // ═══ SCROLL-DEPENDENT WRITES ═══
@@ -1070,30 +1093,47 @@ const steps = [
         }
       }
 
-      // ── Float items (translate3d forces GPU compositing) ──
+      // ── Float items — throttled sin computation + threshold-gated writes ──
+      // Sin values change slowly (~0.0005 rad/frame at 60fps), so we compute
+      // every 3rd frame per item and skip style writes when delta < 0.5px.
       for (let i = 0; i < floatItems.length; i++) {
         const f = floatItems[i];
         if (!f.visible) continue;
-        const y = Math.sin(t * f.speed + f.phase) * f.amp;
-        f.currentY = y;
-        const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp;
-        const rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp;
-        const tx = x + f.revealX;
-        const ty = y + f.revealY;
+
+        // Stagger sin computation: each item computes on a different frame phase
+        // This spreads 15 sin() calls across 3 frames → ~5 sin() per frame
+        const shouldComputeSin = (frameCount + i) % 3 === 0;
+        let tx: number, ty: number, rot: number;
+        if (shouldComputeSin) {
+          const y = Math.sin(t * f.speed + f.phase) * f.amp;
+          f.currentY = y;
+          const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp;
+          rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp;
+          tx = x + f.revealX;
+          ty = y + f.revealY;
+          f._lastTx = tx; f._lastTy = ty; f._lastRot = rot;
+        } else {
+          tx = f._lastTx; ty = f._lastTy; rot = f._lastRot;
+        }
+
         if (f.revealOpacity < 1) f.el.style.opacity = `${f.revealOpacity}`;
+
+        // Tilt lerp runs every frame (interactive, needs responsiveness)
+        let tiltActive = false;
         if (f.hasTilt) {
           f.tiltCurrentX += (f.tiltTargetX - f.tiltCurrentX) * 0.08;
           f.tiltCurrentY += (f.tiltTargetY - f.tiltCurrentY) * 0.08;
           if (!f.tiltHovering && Math.abs(f.tiltCurrentX) < 0.01 && Math.abs(f.tiltCurrentY) < 0.01) {
             f.tiltCurrentX = 0; f.tiltCurrentY = 0;
           }
-          if (f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0) {
-            f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
-          } else if (f.hasSkew) {
-            f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg) skewY(${skewVal}deg)`;
-          } else {
-            f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
-          }
+          tiltActive = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
+        }
+
+        // Skip DOM write if position hasn't changed enough (< 0.5px, < 0.05deg)
+        if (!shouldComputeSin && !tiltActive && !f.hasSkew) continue;
+
+        if (tiltActive) {
+          f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
         } else if (f.hasSkew) {
           f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg) skewY(${skewVal}deg)`;
         } else {
