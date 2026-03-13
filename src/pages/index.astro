@@ -2049,13 +2049,19 @@ const steps = [
       }
 
       // Animation loop — circle lerp + trail
+      let prevCX = -100, prevCY = -100;
       function animateCursor() {
         // Circle: gentle lag via lerp
         circleX += (mouseX - circleX) * 0.1;
         circleY += (mouseY - circleY) * 0.1;
-        cursorCircle.style.transform = isHover
-          ? `translate3d(${circleX}px,${circleY}px,0) scale(1.5)`
-          : `translate3d(${circleX}px,${circleY}px,0)`;
+        // Only write to DOM when rounded position changes (avoids sub-pixel re-rasterisation)
+        const rx = Math.round(circleX), ry = Math.round(circleY);
+        if (rx !== prevCX || ry !== prevCY) {
+          prevCX = rx; prevCY = ry;
+          cursorCircle.style.transform = isHover
+            ? `translate3d(${rx}px,${ry}px,0) scale(1.5)`
+            : `translate3d(${rx}px,${ry}px,0)`;
+        }
 
         // Trail
         if (trailDots.length && mouseOnPage) {
