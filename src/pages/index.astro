@@ -2021,14 +2021,15 @@ const steps = [
     let mouseY = -100;
 
     if (window.matchMedia('(pointer: fine)').matches && cursorDot && cursorCircle) {
-      let circleX = -100, circleY = -100;
-      let dotX = -100, dotY = -100;
       let mouseOnPage = true;
 
+      // Dot follows mouse instantly, circle follows via CSS transition
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-      });
+        cursorDot.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
+        cursorCircle.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
+      }, { passive: true });
 
       // Build trail dots
       const trailContainer = document.getElementById('cursor-trail');
@@ -2046,52 +2047,12 @@ const steps = [
         }
       }
 
-      // Sub-pixel rounding helper — snap to half-pixels to avoid rendering jitter
-      const r = (v: number) => Math.round(v * 2) / 2;
-
-      // Single unified animation loop for dot + circle + trail
-      let prevDotX = -100, prevDotY = -100;
-      let prevCircleX = -100, prevCircleY = -100;
-
-      function animateCursor() {
-        // Dot: fast follow with adaptive lerp — snappier at speed, settled when still
-        const ddx = mouseX - dotX;
-        const ddy = mouseY - dotY;
-        const dotDist = Math.abs(ddx) + Math.abs(ddy);
-        const dotLerp = dotDist < 1 ? 1 : 0.45 + Math.min(dotDist / 60, 0.45);
-        dotX += ddx * dotLerp;
-        dotY += ddy * dotLerp;
-
-        const rdx = r(dotX), rdy = r(dotY);
-        if (rdx !== prevDotX || rdy !== prevDotY) {
-          cursorDot.style.transform = `translate3d(${rdx}px,${rdy}px,0)`;
-          prevDotX = rdx;
-          prevDotY = rdy;
-        }
-
-        // Circle: smooth lag with dead-zone snap
-        const cdx = mouseX - circleX;
-        const cdy = mouseY - circleY;
-        if (Math.abs(cdx) < 0.5 && Math.abs(cdy) < 0.5) {
-          circleX = mouseX;
-          circleY = mouseY;
-        } else {
-          circleX += cdx * 0.14;
-          circleY += cdy * 0.14;
-        }
-
-        const rcx = Math.round(circleX), rcy = Math.round(circleY);
-        if (rcx !== prevCircleX || rcy !== prevCircleY) {
-          const isHover = cursorCircle.classList.contains('hover');
-          cursorCircle.style.transform = isHover
-            ? `translate3d(${rcx}px,${rcy}px,0) scale(1.5)`
-            : `translate3d(${rcx}px,${rcy}px,0)`;
-          prevCircleX = rcx;
-          prevCircleY = rcy;
-        }
-
+      // Trail animation loop (only needed for the trail dots)
+      function animateTrail() {
         if (trailDots.length && mouseOnPage) {
-          const velocity = Math.sqrt(ddx * ddx + ddy * ddy);
+          const dx = mouseX - trailPositions[0].x;
+          const dy = mouseY - trailPositions[0].y;
+          const velocity = Math.sqrt(dx * dx + dy * dy);
           const trailIntensity = Math.min(1, velocity / 30);
 
           trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
@@ -2101,14 +2062,13 @@ const steps = [
             trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
           }
           trailDots.forEach((dot, i) => {
-            dot.style.transform = `translate3d(${r(trailPositions[i].x - 2)}px,${r(trailPositions[i].y - 2)}px,0)`;
+            dot.style.transform = `translate3d(${Math.round(trailPositions[i].x - 2)}px,${Math.round(trailPositions[i].y - 2)}px,0)`;
             dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
           });
         }
-
-        requestAnimationFrame(animateCursor);
+        requestAnimationFrame(animateTrail);
       }
-      animateCursor();
+      animateTrail();
 
       document.querySelectorAll('a, button, [data-cursor-hover]').forEach((el) => {
         el.addEventListener('mouseenter', () => cursorCircle.classList.add('hover'));
