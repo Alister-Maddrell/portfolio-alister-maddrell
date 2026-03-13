@@ -1059,6 +1059,7 @@ section[id] {
    All compositor-friendly (opacity + transform only). */
 
 /* Shared transition for all hero reveal targets */
+/* Deep decorative — gentle fade, no vertical shift */
 .hero-watermark,
 .hero-year,
 .hero-section-index,
@@ -1068,7 +1069,14 @@ section[id] {
 .hero-accent-ring,
 .hero-data-line,
 .hero-corner,
-.hero-coord,
+.hero-coord {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Primary content — slightly more vertical travel, snappy ease-out with overshoot */
 .hero-status,
 .hero-rule,
 #hero-subtitle .subtitle-line,
@@ -1076,9 +1084,9 @@ section[id] {
 .hero-cta,
 .scroll-indicator {
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(14px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Deep decorative — reveal first (0–80ms) */
@@ -1099,7 +1107,7 @@ section[id] {
 .loaded .hero-status         { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
 .loaded .hero-rule           { opacity: 1; transform: scaleX(1); transform-origin: left; transition-delay: 160ms; }
 .loaded #hero-subtitle .subtitle-line:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 180ms; }
-.loaded #hero-subtitle .subtitle-line:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 220ms; }
+.loaded #hero-subtitle .subtitle-line:nth-child(2) { opacity: 0.5; transform: translateY(0); transition-delay: 220ms; }
 .loaded .hero-services       { opacity: 1; transform: translateY(0); transition-delay: 260ms; }
 .loaded .hero-cta            { opacity: 1; transform: translateY(0); transition-delay: 300ms; }
 .loaded .scroll-indicator    { opacity: 1; transform: translateY(0); transition-delay: 350ms; }
