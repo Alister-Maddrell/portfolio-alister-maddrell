@@ -1993,28 +1993,42 @@ const steps = [
       }
     });
 
-    // ── Magnetic hover elements (rAF-throttled) ──
+    // ── Magnetic hover elements (lerp-smoothed) ──
     if (hasFineCursor) {
+      const magEls: { el: HTMLElement; strength: number; targetX: number; targetY: number; currentX: number; currentY: number; active: boolean }[] = [];
       document.querySelectorAll('[data-magnetic]').forEach((el) => {
         const htmlEl = el as HTMLElement;
-        const strength = parseFloat(htmlEl.dataset.magnetic || '0.3');
-        let magRaf = 0;
+        const m = { el: htmlEl, strength: parseFloat(htmlEl.dataset.magnetic || '0.3'), targetX: 0, targetY: 0, currentX: 0, currentY: 0, active: false };
+        magEls.push(m);
         htmlEl.addEventListener('mousemove', (e: Event) => {
-          if (magRaf) return;
           const me = e as MouseEvent;
-          magRaf = requestAnimationFrame(() => {
-            magRaf = 0;
-            const rect = htmlEl.getBoundingClientRect();
-            const dx = (me.clientX - rect.left - rect.width / 2) * strength;
-            const dy = (me.clientY - rect.top - rect.height / 2) * strength;
-            htmlEl.style.transform = `translate(${dx}px, ${dy}px)`;
-          });
+          const rect = htmlEl.getBoundingClientRect();
+          m.targetX = (me.clientX - rect.left - rect.width / 2) * m.strength;
+          m.targetY = (me.clientY - rect.top - rect.height / 2) * m.strength;
+          m.active = true;
         }, { passive: true });
         htmlEl.addEventListener('mouseleave', () => {
-          if (magRaf) { cancelAnimationFrame(magRaf); magRaf = 0; }
-          htmlEl.style.transform = '';
+          m.targetX = 0;
+          m.targetY = 0;
         }, { passive: true });
       });
+      // Single rAF loop for all magnetic elements
+      function animateMagnetic() {
+        for (const m of magEls) {
+          m.currentX += (m.targetX - m.currentX) * 0.15;
+          m.currentY += (m.targetY - m.currentY) * 0.15;
+          if (m.active || Math.abs(m.currentX) > 0.1 || Math.abs(m.currentY) > 0.1) {
+            m.el.style.transform = `translate(${m.currentX}px, ${m.currentY}px)`;
+            if (Math.abs(m.currentX) < 0.1 && Math.abs(m.currentY) < 0.1 && m.targetX === 0) {
+              m.currentX = 0; m.currentY = 0;
+              m.el.style.transform = '';
+              m.active = false;
+            }
+          }
+        }
+        requestAnimationFrame(animateMagnetic);
+      }
+      animateMagnetic();
     }
 
     // ── Custom cursor ──
