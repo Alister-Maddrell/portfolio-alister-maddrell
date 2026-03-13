@@ -527,7 +527,7 @@ section[id] {
   font-weight: 900;
   line-height: 1;
   color: var(--color-ink);
-  opacity: 0;
+  opacity: 0.018;
   pointer-events: none;
   user-select: none;
   letter-spacing: -0.05em;
