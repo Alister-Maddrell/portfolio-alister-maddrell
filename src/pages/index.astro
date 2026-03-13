@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
-import 'lenis/dist/lenis.css';
 
 const projects = [
   {
@@ -750,23 +749,7 @@ const steps = [
 
   <!-- ─── SCRIPTS ─── -->
   <script>
-    import Lenis from 'lenis';
-
-    // ── Lenis smooth scroll (manual raf — single loop with our animations) ──
-    const lenis = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-    });
-
-    // Feed Lenis velocity into scroll effects
-    lenis.on('scroll', ({ velocity, scroll }: { velocity: number; scroll: number }) => {
-      scrollVelocity = velocity * 0.15;
-      if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
-      lastScrollY = scroll;
-    });
-
-    // ── Animation setup (skew + float, run in standalone rAF) ──
+    // ── Animation setup ──
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
@@ -873,7 +856,6 @@ const steps = [
     let _contactVisible = false;
 
     function raf(time: number) {
-      lenis.raf(time);
       const t = time - animStart;
       const viewH = window.innerHeight;
       const currentScrollY = window.scrollY;
@@ -881,6 +863,12 @@ const steps = [
       const scrollPct = docHeight > 0 ? currentScrollY / docHeight : 0;
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
       const isMobileDevice = !hasFineCursor;
+
+      // Track scroll velocity
+      const delta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+      scrollVelocity += (delta - scrollVelocity) * 0.15;
+      if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
 
       // Only do expensive reads when scroll position actually changed
       const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 0.5;
@@ -1312,7 +1300,7 @@ const steps = [
       depthLayers.forEach(dl => depthVis.observe(dl.container));
     }
 
-    // Handle anchor clicks with Lenis smooth scroll
+    // Handle anchor clicks with native smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1320,12 +1308,11 @@ const steps = [
         if (!href) return;
         const target = document.querySelector(href);
         if (target) {
-          lenis.scrollTo(target as HTMLElement, { offset: 0 });
+          target.scrollIntoView({ behavior: 'smooth' });
           const mobileMenu = document.getElementById('mobile-menu');
           if (mobileMenu?.classList.contains('open')) {
             mobileMenu.classList.remove('open');
             document.body.style.overflow = '';
-            lenis.start();
           }
         }
       });
@@ -1935,13 +1922,11 @@ const steps = [
       if (isOpen) {
         mobileMenu?.classList.remove('open');
         document.body.style.overflow = '';
-        lenis.start();
         if (menuLine1) menuLine1.style.transform = '';
         if (menuLine2) menuLine2.style.transform = '';
       } else {
         mobileMenu?.classList.add('open');
         document.body.style.overflow = 'hidden';
-        lenis.stop();
         if (menuLine1) menuLine1.style.transform = 'translateY(3.25px) rotate(45deg)';
         if (menuLine2) menuLine2.style.transform = 'translateY(-3.25px) rotate(-45deg)';
       }
@@ -2488,10 +2473,13 @@ const steps = [
       let marqueeActive = false;
       let lenisVelocity = 0;
 
-      // Track scroll velocity for marquee speed (from Lenis)
-      lenis.on('scroll', ({ velocity }: { velocity: number }) => {
-        lenisVelocity = velocity * 0.5;
-      });
+      // Track scroll velocity for marquee speed
+      let lastMarqueeScroll = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const now = window.scrollY;
+        lenisVelocity = (now - lastMarqueeScroll) * 0.5;
+        lastMarqueeScroll = now;
+      }, { passive: true });
 
       // Get the width of one full repeat unit (half the track since we duplicated content)
       function getResetWidth(track: HTMLElement) {
