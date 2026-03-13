@@ -1676,9 +1676,7 @@ body.loaded #nav-rail {
   position: relative;
   display: block;
   text-decoration: none;
-  contain: layout style paint;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
+  contain: layout style;
 }
 
 /* ─── Work section depth layers ─── */
