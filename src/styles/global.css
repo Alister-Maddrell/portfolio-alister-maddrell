@@ -2284,7 +2284,7 @@ body.loaded #nav-rail {
 
 .project-card-v:hover .card-work-capsule {
   background: color-mix(in srgb, var(--color-ink) 85%, transparent);
-  color: #d4d4d4;
+  color: #fff;
   border-color: color-mix(in srgb, var(--color-ink) 85%, transparent);
 }
 
