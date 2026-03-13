@@ -915,6 +915,8 @@ const steps = [
 
     // ── 5. MAIN RAF LOOP — single requestAnimationFrame for all scroll-driven animations ──
     let frameCount = 0;
+    let _lastSkew = 0;
+    let _cardLayerActive = false;
     let _lastRenderedScroll = -1;
     // Persistent rect caches (only updated when scroll changes)
     let _cr: { t: number; h: number }[] = [];
@@ -1083,13 +1085,26 @@ const steps = [
         }
       } // end scrollChanged
 
-      // ── Skew ──
-      if (skewVal !== 0) {
-        for (let i = 0; i < skewElements.length; i++) {
-          const el = skewElements[i] as HTMLElement;
-          if (el.hasAttribute('data-float')) continue;
-          if (!skewVisible.has(el)) continue;
-          el.style.transform = `skewY(${skewVal}deg)`;
+      // ── Skew — only write when value actually changes ──
+      const roundedSkew = Math.round(skewVal * 100) / 100;
+      const skewDidChange = roundedSkew !== _lastSkew;
+      if (skewDidChange) {
+        _lastSkew = roundedSkew;
+        if (roundedSkew !== 0) {
+          for (let i = 0; i < skewElements.length; i++) {
+            const el = skewElements[i] as HTMLElement;
+            if (el.hasAttribute('data-float')) continue;
+            if (!skewVisible.has(el)) continue;
+            el.style.transform = `skewY(${roundedSkew}deg)`;
+          }
+        } else {
+          // Clear skew when velocity settles
+          for (let i = 0; i < skewElements.length; i++) {
+            const el = skewElements[i] as HTMLElement;
+            if (el.hasAttribute('data-float')) continue;
+            if (!skewVisible.has(el)) continue;
+            el.style.transform = '';
+          }
         }
       }
 
@@ -1129,24 +1144,31 @@ const steps = [
           tiltActive = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
         }
 
-        // Skip DOM write if position hasn't changed enough (< 0.5px, < 0.05deg)
-        if (!shouldComputeSin && !tiltActive && !f.hasSkew) continue;
+        // Skip DOM write if nothing changed this frame
+        const skewChanged = f.hasSkew && skewDidChange;
+        if (!shouldComputeSin && !tiltActive && !skewChanged) continue;
 
         if (tiltActive) {
           f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
-        } else if (f.hasSkew) {
-          f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg) skewY(${skewVal}deg)`;
+        } else if (f.hasSkew && roundedSkew !== 0) {
+          f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg) skewY(${roundedSkew}deg)`;
         } else {
           f.el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
         }
       }
 
       // ── Card layer parallax (3 layers: index, block, stroke) ──
-      // Only update cards when scroll changed or a card is being hovered
-      if (scrollChanged || cardLayers.some(cl => cl.hovering || cl.currentHoverX !== 0 || cl.currentHoverY !== 0)) {
+      // Each card only updates when scroll changed OR that specific card is animating hover
+      if (scrollChanged || _cardLayerActive) {
+        let anyActive = false;
         for (let i = 0; i < cardLayers.length; i++) {
           const cl = cardLayers[i];
           if (!cl.visible) continue;
+          // Skip this card if scroll didn't change and it has no hover animation
+          const cardAnimating = cl.hovering || cl.currentHoverX !== 0 || cl.currentHoverY !== 0;
+          if (!scrollChanged && !cardAnimating) continue;
+          if (cardAnimating) anyActive = true;
+
           const progress = 1 - (_cr[i].t + _cr[i].h / 2) / (viewH + _cr[i].h);
           const offset = (progress - 0.5) * 2;
           const targetHX = cl.hovering ? cl.hoverX : 0;
@@ -1162,6 +1184,7 @@ const steps = [
             cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28}px, 0)`;
           }
         }
+        _cardLayerActive = anyActive;
       }
 
       // ── Scroll-dependent parallax writes (skip when scroll idle) ──
