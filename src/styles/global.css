@@ -1052,16 +1052,68 @@ section[id] {
 }
 
 /* ─── Hero subtitle reveal ─── */
-/* Subtitle is visible by default for fast LCP — JS adds .loaded to body
-   which then triggers the entrance animation only if loader was shown */
+/* ─── Hero reveal system ───
+   Before .loaded: all hero elements hidden (opacity 0, offset down).
+   On .loaded (after loader exits): CSS transitions stagger them in.
+   Title excluded — typewriter handles it.
+   All compositor-friendly (opacity + transform only). */
+
+/* Shared transition for all hero reveal targets */
+.hero-watermark,
+.hero-year,
+.hero-section-index,
+.hero-title-block,
+.hero-title-line,
+.hero-accent-bar,
+.hero-accent-ring,
+.hero-data-line,
+.hero-corner,
+.hero-coord,
+.hero-status,
+.hero-rule,
+#hero-subtitle .subtitle-line,
+.hero-services,
+.hero-cta,
+.scroll-indicator {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Deep decorative — reveal first (0–80ms) */
+.loaded .hero-watermark     { opacity: 0.018; transform: translateY(0); transition-delay: 0ms; }
+.loaded .hero-year           { opacity: var(--depth-2); transform: translateY(0); transition-delay: 20ms; }
+.loaded .hero-section-index  { opacity: 0.03; transform: translateY(0); transition-delay: 30ms; }
+.loaded .hero-title-block    { opacity: var(--depth-1); transform: translateY(0); transition-delay: 40ms; }
+.loaded .hero-title-line     { opacity: var(--depth-4); transform: scaleX(1); transform-origin: left; transition-delay: 50ms; }
+.loaded .hero-accent-bar     { opacity: var(--depth-3); transform: translateY(0); transition-delay: 60ms; }
+.loaded .hero-accent-ring    { opacity: var(--depth-3); transform: translateY(0); transition-delay: 70ms; }
+.loaded .hero-data-line      { opacity: var(--depth-2); transform: translateY(0); transition-delay: 80ms; }
+
+/* Structural accents — corners & coords (80–120ms) */
+.loaded .hero-corner         { opacity: 1; transform: translateY(0); transition-delay: 80ms; }
+.loaded .hero-coord          { opacity: 0.4; transform: translateY(0); transition-delay: 100ms; }
+
+/* Primary content — stagger in (120–350ms) */
+.loaded .hero-status         { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
+.loaded .hero-rule           { opacity: 1; transform: scaleX(1); transform-origin: left; transition-delay: 160ms; }
+.loaded #hero-subtitle .subtitle-line:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 180ms; }
+.loaded #hero-subtitle .subtitle-line:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 220ms; }
+.loaded .hero-services       { opacity: 1; transform: translateY(0); transition-delay: 260ms; }
+.loaded .hero-cta            { opacity: 1; transform: translateY(0); transition-delay: 300ms; }
+.loaded .scroll-indicator    { opacity: 1; transform: translateY(0); transition-delay: 350ms; }
+
+/* Dark mode opacity overrides for deep layers */
+[data-theme="dark"] .loaded .hero-watermark    { opacity: 0.03; }
+[data-theme="dark"] .loaded .hero-section-index { opacity: 0.05; }
+
+/* Elements that use scaleX need custom initial transform */
+.hero-title-line { transform: scaleX(0); transform-origin: left; }
+.hero-rule       { transform: scaleX(0); transform-origin: left; }
 
 #hero-subtitle {
   opacity: 1;
-}
-
-#hero-subtitle .subtitle-line {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* ─── Scroll indicator ─── */
@@ -1069,11 +1121,6 @@ section[id] {
 /* Hero scroll-fade — content dims and lifts as user scrolls away */
 .hero-scroll-fade {
   transition: none;
-}
-
-.scroll-indicator {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @keyframes scrollIndicatorIn {
