@@ -2022,13 +2022,14 @@ const steps = [
 
     if (window.matchMedia('(pointer: fine)').matches && cursorDot && cursorCircle) {
       let mouseOnPage = true;
+      let circleX = -100, circleY = -100;
+      let isHover = false;
 
-      // Dot follows mouse instantly, circle follows via CSS transition
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        // Dot: instant follow — set directly in the event for zero-lag
         cursorDot.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
-        cursorCircle.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
       }, { passive: true });
 
       // Build trail dots
@@ -2047,8 +2048,16 @@ const steps = [
         }
       }
 
-      // Trail animation loop (only needed for the trail dots)
-      function animateTrail() {
+      // Animation loop — circle lerp + trail
+      function animateCursor() {
+        // Circle: gentle lag via lerp
+        circleX += (mouseX - circleX) * 0.1;
+        circleY += (mouseY - circleY) * 0.1;
+        cursorCircle.style.transform = isHover
+          ? `translate3d(${circleX}px,${circleY}px,0) scale(1.5)`
+          : `translate3d(${circleX}px,${circleY}px,0)`;
+
+        // Trail
         if (trailDots.length && mouseOnPage) {
           const dx = mouseX - trailPositions[0].x;
           const dy = mouseY - trailPositions[0].y;
@@ -2062,17 +2071,18 @@ const steps = [
             trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
           }
           trailDots.forEach((dot, i) => {
-            dot.style.transform = `translate3d(${Math.round(trailPositions[i].x - 2)}px,${Math.round(trailPositions[i].y - 2)}px,0)`;
+            dot.style.transform = `translate3d(${trailPositions[i].x - 2}px,${trailPositions[i].y - 2}px,0)`;
             dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
           });
         }
-        requestAnimationFrame(animateTrail);
+
+        requestAnimationFrame(animateCursor);
       }
-      animateTrail();
+      animateCursor();
 
       document.querySelectorAll('a, button, [data-cursor-hover]').forEach((el) => {
-        el.addEventListener('mouseenter', () => cursorCircle.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursorCircle.classList.remove('hover'));
+        el.addEventListener('mouseenter', () => { isHover = true; cursorCircle.classList.add('hover'); });
+        el.addEventListener('mouseleave', () => { isHover = false; cursorCircle.classList.remove('hover'); });
       });
 
       document.addEventListener('mouseleave', () => {
