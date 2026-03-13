@@ -798,8 +798,19 @@ const steps = [
     });
 
     let scrollVelocity = 0;
+    let _scrollingTimeout = 0;
     lenis.on('scroll', ({ velocity }: { velocity: number }) => {
       scrollVelocity = velocity;
+      // Toggle .scrolling class on body — disables hover effects during scroll
+      if (Math.abs(velocity) > 0.1) {
+        if (!document.body.classList.contains('scrolling')) {
+          document.body.classList.add('scrolling');
+        }
+        clearTimeout(_scrollingTimeout);
+        _scrollingTimeout = window.setTimeout(() => {
+          document.body.classList.remove('scrolling');
+        }, 150);
+      }
     });
 
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
@@ -918,8 +929,8 @@ const steps = [
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.04));
       const isMobileDevice = !hasFineCursor;
 
-      // Only do expensive reads when scroll position actually changed
-      const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 0.5;
+      // Only do expensive rect reads when scroll moved enough to matter
+      const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 2;
       if (scrollChanged) {
         _lastRenderedScroll = currentScrollY;
 
@@ -1091,110 +1102,110 @@ const steps = [
       }
 
       // ── Card layer parallax (3 layers: index, block, stroke) ──
-      for (let i = 0; i < cardLayers.length; i++) {
-        const cl = cardLayers[i];
-        if (!cl.visible) continue;
-        const progress = 1 - (_cr[i].t + _cr[i].h / 2) / (viewH + _cr[i].h);
-        const offset = (progress - 0.5) * 2;
-        const targetHX = cl.hovering ? cl.hoverX : 0;
-        const targetHY = cl.hovering ? cl.hoverY : 0;
-        cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
-        cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
-        // Skip transform writes when hover is idle (already at 0)
-        if (Math.abs(cl.currentHoverX) < 0.001 && !cl.hovering) cl.currentHoverX = 0;
-        if (Math.abs(cl.currentHoverY) < 0.001 && !cl.hovering) cl.currentHoverY = 0;
-        const mob = isMobileDevice;
-        const cardSin = Math.sin(t * 0.00013 + i * 3.7);
-        cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + cardSin * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + cardSin * 4}px, 0)`;
-        cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + cardSin * -4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + cardSin * 3}px, 0)`;
-        if (cl.strokeEl) {
-          cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + cardSin * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + cardSin * -5}px, 0)`;
+      // Only update cards when scroll changed or a card is being hovered
+      if (scrollChanged || cardLayers.some(cl => cl.hovering || cl.currentHoverX !== 0 || cl.currentHoverY !== 0)) {
+        for (let i = 0; i < cardLayers.length; i++) {
+          const cl = cardLayers[i];
+          if (!cl.visible) continue;
+          const progress = 1 - (_cr[i].t + _cr[i].h / 2) / (viewH + _cr[i].h);
+          const offset = (progress - 0.5) * 2;
+          const targetHX = cl.hovering ? cl.hoverX : 0;
+          const targetHY = cl.hovering ? cl.hoverY : 0;
+          cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
+          cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
+          if (Math.abs(cl.currentHoverX) < 0.001 && !cl.hovering) cl.currentHoverX = 0;
+          if (Math.abs(cl.currentHoverY) < 0.001 && !cl.hovering) cl.currentHoverY = 0;
+          const mob = isMobileDevice;
+          const cardSin = Math.sin(t * 0.00013 + i * 3.7);
+          cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + cardSin * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + cardSin * 4}px, 0)`;
+          cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + cardSin * -4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + cardSin * 3}px, 0)`;
+          if (cl.strokeEl) {
+            cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + cardSin * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + cardSin * -5}px, 0)`;
+          }
         }
       }
 
-      // ── Bg text parallax (translate3d for GPU) ──
-      for (let i = 0; i < bgParallaxEls.length; i++) {
-        if (_br[i].b < -50 || _br[i].t > viewH + 50) continue;
-        const progress = 1 - (_br[i].t + _br[i].h / 2) / (viewH + _br[i].h);
-        const offset = (progress - 0.5) * 2;
-        const bgSin = Math.sin(t * 0.00015 + i * 2.5);
-        bgParallaxEls[i].style.transform = `translate3d(${bgSin * 8}px, ${offset * -40 + bgSin * 5}px, 0)`;
-      }
+      // ── Scroll-dependent parallax writes (skip when scroll idle) ──
+      if (scrollChanged) {
+        // Bg text parallax
+        for (let i = 0; i < bgParallaxEls.length; i++) {
+          if (_br[i].b < -50 || _br[i].t > viewH + 50) continue;
+          const progress = 1 - (_br[i].t + _br[i].h / 2) / (viewH + _br[i].h);
+          const offset = (progress - 0.5) * 2;
+          bgParallaxEls[i].style.transform = `translate3d(0, ${offset * -40}px, 0)`;
+        }
 
-      // ── Depth layer parallax (translate3d for GPU) ──
-      for (let i = 0; i < depthLayers.length; i++) {
-        const dl = depthLayers[i];
-        if (!dl.visible) continue;
-        const progress = 1 - (_dr[i].t + _dr[i].h / 2) / (viewH + _dr[i].h);
-        const offset = (progress - 0.5) * 2;
-        const m = hasFineCursor ? 1 : 1.4;
-        const dlSin = Math.sin(t * 0.00018 + i * 4.1);
-        if (dl.deepEl) {
-          dl.deepEl.style.transform = `translate3d(${dlSin * 6}px, ${offset * -30 * m + dlSin * 4}px, 0)`;
+        // Depth layer parallax
+        for (let i = 0; i < depthLayers.length; i++) {
+          const dl = depthLayers[i];
+          if (!dl.visible) continue;
+          const progress = 1 - (_dr[i].t + _dr[i].h / 2) / (viewH + _dr[i].h);
+          const offset = (progress - 0.5) * 2;
+          const m = hasFineCursor ? 1 : 1.4;
+          if (dl.deepEl) {
+            dl.deepEl.style.transform = `translate3d(0, ${offset * -30 * m}px, 0)`;
+          }
+          if (dl.midEl) {
+            dl.midEl.style.transform = `translate3d(${offset * -5 * m}px, ${offset * 15 * m}px, 0)`;
+          }
         }
-        if (dl.midEl) {
-          dl.midEl.style.transform = `translate3d(${offset * -5 * m + dlSin * -5}px, ${offset * 15 * m + dlSin * 3}px, 0)`;
-        }
-      }
 
-      // ── Hero layer parallax (translate3d, skip when hero off-screen) ──
-      if (currentScrollY < viewH * 1.5) {
-        const heroProgress = Math.min(1, currentScrollY / viewH);
-        // Two shared sin values for all hero layers (~16 sin calls → 2)
-        const hSinA = Math.sin(t * 0.00010 + 1.0);
-        const hSinB = Math.sin(t * 0.00015 + 3.0);
-        if (heroLayerOrb) {
-          heroLayerOrb.style.transform = `translate3d(calc(10% + ${hSinA * 12}px), ${heroProgress * 60 + hSinB * 8}px, 0)`;
+        // Hero layer parallax (scroll-driven positioning only)
+        if (currentScrollY < viewH * 1.5) {
+          const heroProgress = Math.min(1, currentScrollY / viewH);
+          if (heroLayerOrb) {
+            heroLayerOrb.style.transform = `translate3d(10%, ${heroProgress * 60}px, 0)`;
+          }
+          if (heroLayerWatermark) {
+            heroLayerWatermark.style.transform = `translate3d(0, ${heroProgress * -30}px, 0)`;
+          }
+          if (heroLayerYear) {
+            heroLayerYear.style.transform = `translate3d(0, ${heroProgress * -45}px, 0)`;
+          }
+          if (heroLayerBar) heroLayerBar.style.transform = `translate3d(0, ${heroProgress * 25}px, 0)`;
+          if (heroLayerRing) {
+            heroLayerRing.style.transform = `translate3d(${heroProgress * -10}px, ${heroProgress * 35}px, 0)`;
+          }
+          if (heroLayerIndex) {
+            heroLayerIndex.style.transform = `translate3d(0, ${heroProgress * -40}px, 0)`;
+          }
+          if (heroLayerTitleBlock) {
+            heroLayerTitleBlock.style.transform = `translate3d(${heroProgress * 15}px, ${heroProgress * 20}px, 0)`;
+          }
+          if (heroLayerTitleLine) {
+            heroLayerTitleLine.style.transform = `scaleX(1) translate3d(0, ${heroProgress * 8}px, 0)`;
+            heroLayerTitleLine.style.transformOrigin = 'left';
+          }
+          if (heroLayerDataLine) {
+            heroLayerDataLine.style.transform = `translate3d(0, ${heroProgress * 12}px, 0)`;
+          }
+          heroLayerCorners.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * 20}px, 0)`; });
+          heroLayerCoords.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * -12}px, 0)`; });
         }
-        if (heroLayerWatermark) {
-          heroLayerWatermark.style.transform = `translate3d(${hSinA * 6}px, ${heroProgress * -30 + hSinB * 4}px, 0)`;
-        }
-if (heroLayerYear) {
-          heroLayerYear.style.transform = `translate3d(${hSinB * 8}px, ${heroProgress * -45 + hSinA * 5}px, 0)`;
-        }
-        if (heroLayerBar) heroLayerBar.style.transform = `translate3d(${hSinA * 4}px, ${heroProgress * 25}px, 0)`;
-        if (heroLayerRing) {
-          heroLayerRing.style.transform = `translate3d(${heroProgress * -10 + hSinB * 10}px, ${heroProgress * 35 + hSinA * 7}px, 0)`;
-        }
-        if (heroLayerIndex) {
-          heroLayerIndex.style.transform = `translate3d(${hSinA * 5}px, ${heroProgress * -40 + hSinB * 4}px, 0)`;
-        }
-        if (heroLayerTitleBlock) {
-          heroLayerTitleBlock.style.transform = `translate3d(${heroProgress * 15 + hSinB * 4}px, ${heroProgress * 20 + hSinA * 3}px, 0)`;
-        }
-        if (heroLayerTitleLine) {
-          heroLayerTitleLine.style.transform = `scaleX(1) translate3d(0, ${heroProgress * 8}px, 0)`;
-          heroLayerTitleLine.style.transformOrigin = 'left';
-        }
-        if (heroLayerDataLine) {
-          heroLayerDataLine.style.transform = `translate3d(0, ${heroProgress * 12 + hSinA * 3}px, 0)`;
-        }
-        heroLayerCorners.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * 20}px, 0)`; });
-        heroLayerCoords.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * -12}px, 0)`; });
-      }
 
-      // Contact bg layers (using pre-read rect)
-      if (contactBgNum && _contactVisible) {
-        const cp = 1 - _contactTop / viewH;
-        contactBgNum.style.transform = `translate3d(0, ${cp * -40}px, 0)`;
-        if (contactBgRing) contactBgRing.style.transform = `translate3d(${cp * 15}px, ${cp * -25}px, 0)`;
-      }
-
-      // Section depth layers (translate3d for GPU)
-      for (let si = 0; si < sectionDepthEls.length; si++) {
-        const sd = sectionDepthEls[si];
-        if (!sd.section) continue;
-        if (_sr[si].b < -100 || _sr[si].t > viewH + 100) continue;
-        const sp = 1 - (_sr[si].t + _sr[si].h / 2) / (viewH + _sr[si].h);
-        const so = (sp - 0.5) * 2;
-        for (let ei = 0; ei < sd.els.length; ei++) {
-          sd.els[ei].el.style.transform = `translate3d(${so * sd.els[ei].tx}px, ${so * sd.els[ei].ty}px, 0)`;
+        // Contact bg layers
+        if (contactBgNum && _contactVisible) {
+          const cp = 1 - _contactTop / viewH;
+          contactBgNum.style.transform = `translate3d(0, ${cp * -40}px, 0)`;
+          if (contactBgRing) contactBgRing.style.transform = `translate3d(${cp * 15}px, ${cp * -25}px, 0)`;
         }
-      }
 
-      // ── Dot grid subtle parallax ──
-      if (dotGrid) {
-        dotGrid.style.transform = `translate3d(0, ${currentScrollY * -0.03}px, 0)`;
+        // Section depth layers
+        for (let si = 0; si < sectionDepthEls.length; si++) {
+          const sd = sectionDepthEls[si];
+          if (!sd.section) continue;
+          if (_sr[si].b < -100 || _sr[si].t > viewH + 100) continue;
+          const sp = 1 - (_sr[si].t + _sr[si].h / 2) / (viewH + _sr[si].h);
+          const so = (sp - 0.5) * 2;
+          for (let ei = 0; ei < sd.els.length; ei++) {
+            sd.els[ei].el.style.transform = `translate3d(${so * sd.els[ei].tx}px, ${so * sd.els[ei].ty}px, 0)`;
+          }
+        }
+
+        // Dot grid parallax
+        if (dotGrid) {
+          dotGrid.style.transform = `translate3d(0, ${currentScrollY * -0.03}px, 0)`;
+        }
       }
 
       // ── Merged sub-loops (hero float, magnetic, cursor, marquee) ──

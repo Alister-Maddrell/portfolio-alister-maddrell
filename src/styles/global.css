@@ -3242,10 +3242,15 @@ body.loaded #nav-rail {
   user-select: none;
 }
 
-.marquee-track:hover .marquee-text {
+/* Hover disabled during scroll via .scrolling class on body */
+body:not(.scrolling) .marquee-track:hover .marquee-text {
   color: var(--color-accent);
   -webkit-text-stroke-color: var(--color-accent);
-  text-shadow: 0 4px 30px var(--color-accent-soft);
+}
+
+/* Disable pointer events on marquee during scroll to prevent hover thrashing */
+body.scrolling .contact-marquee {
+  pointer-events: none;
 }
 
 .marquee-dot {
