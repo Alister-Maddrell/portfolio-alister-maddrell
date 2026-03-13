@@ -2041,6 +2041,10 @@ const steps = [
       let mouseOnPage = true;
       let dotX = -100, dotY = -100;
       let circleX = -100, circleY = -100;
+      let isHovering = false;
+      let isClicking = false;
+      let circleScale = 1;
+      let dotScale = 1;
 
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
@@ -2063,17 +2067,24 @@ const steps = [
         }
       }
 
-      // Animation loop — dot + circle lerp + trail
+      // Animation loop — dot + circle lerp + trail + scale
       function animateCursor() {
         dotX += (mouseX - dotX) * 0.5;
         dotY += (mouseY - dotY) * 0.5;
-        cursorDot.style.transform = `translate3d(${dotX}px,${dotY}px,0)`;
 
         circleX += (mouseX - circleX) * 0.1;
         circleY += (mouseY - circleY) * 0.1;
-        cursorCircle.style.transform = `translate3d(${circleX}px,${circleY}px,0)`;
 
-        // Trail
+        // Smooth scale transitions via lerp
+        const targetCircleScale = isHovering ? 1.35 : 1;
+        const targetDotScale = isClicking ? 0.5 : (isHovering ? 0.75 : 1);
+        circleScale += (targetCircleScale - circleScale) * 0.15;
+        dotScale += (targetDotScale - dotScale) * 0.2;
+
+        cursorDot.style.transform = `translate3d(${dotX}px,${dotY}px,0) scale(${dotScale})`;
+        cursorCircle.style.transform = `translate3d(${circleX}px,${circleY}px,0) scale(${circleScale})`;
+
+        // Trail — only write DOM when moving
         if (trailDots.length && mouseOnPage) {
           const dx = mouseX - trailPositions[0].x;
           const dy = mouseY - trailPositions[0].y;
@@ -2086,20 +2097,34 @@ const steps = [
             trailPositions[i].x += (trailPositions[i - 1].x - trailPositions[i].x) * 0.25;
             trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
           }
-          trailDots.forEach((dot, i) => {
-            dot.style.transform = `translate3d(${trailPositions[i].x - 2}px,${trailPositions[i].y - 2}px,0)`;
-            dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
-          });
+          // Skip trail DOM writes when stationary
+          if (velocity > 0.5) {
+            trailDots.forEach((dot, i) => {
+              dot.style.transform = `translate3d(${trailPositions[i].x - 2}px,${trailPositions[i].y - 2}px,0)`;
+              dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
+            });
+          }
         }
 
         requestAnimationFrame(animateCursor);
       }
       animateCursor();
 
+      // Hover state — scale circle up, shrink dot
       document.querySelectorAll('a, button, [data-cursor-hover]').forEach((el) => {
-        el.addEventListener('mouseenter', () => cursorCircle.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursorCircle.classList.remove('hover'));
+        el.addEventListener('mouseenter', () => {
+          isHovering = true;
+          cursorCircle.classList.add('hover');
+        });
+        el.addEventListener('mouseleave', () => {
+          isHovering = false;
+          cursorCircle.classList.remove('hover');
+        });
       });
+
+      // Click feedback — squeeze dot
+      document.addEventListener('mousedown', () => { isClicking = true; });
+      document.addEventListener('mouseup', () => { isClicking = false; });
 
       document.addEventListener('mouseleave', () => {
         mouseOnPage = false;
