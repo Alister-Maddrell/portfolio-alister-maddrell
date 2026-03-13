@@ -541,7 +541,7 @@ section[id] {
   height: 40px;
   pointer-events: none;
   z-index: 1;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1s;
 }
 
@@ -558,33 +558,21 @@ section[id] {
   left: 2rem;
 }
 .hero-corner--tl::before {
-  top: 0; left: 0; width: 1px; height: 0;
-  transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
+  top: 0; left: 0; width: 1px; height: 100%;
 }
 .hero-corner--tl::after {
-  top: 0; left: 0; width: 0; height: 1px;
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.4s;
+  top: 0; left: 0; width: 100%; height: 1px;
 }
-body.loaded .hero-corner--tl::before { height: 100%; }
-body.loaded .hero-corner--tl::after { width: 100%; }
 
 .hero-corner--br {
   bottom: 2rem;
   right: 2rem;
 }
 .hero-corner--br::before {
-  bottom: 0; right: 0; width: 1px; height: 0;
-  transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.3s;
+  bottom: 0; right: 0; width: 1px; height: 100%;
 }
 .hero-corner--br::after {
-  bottom: 0; right: 0; width: 0; height: 1px;
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.5s;
-}
-body.loaded .hero-corner--br::before { height: 100%; }
-body.loaded .hero-corner--br::after { width: 100%; }
-
-body.loaded .hero-corner {
-  opacity: 1;
+  bottom: 0; right: 0; width: 100%; height: 1px;
 }
 
 /* Scan line — thin horizontal accent sweep */
@@ -632,7 +620,7 @@ body.loaded .hero-corner {
   );
   z-index: 0;
   pointer-events: none;
-  opacity: 0;
+  opacity: var(--depth-2);
 
 }
 
@@ -648,7 +636,7 @@ body.loaded .hero-corner {
   text-transform: uppercase;
   color: var(--color-accent);
   text-decoration: none;
-  opacity: 0;
+  opacity: 1;
   padding: 0.75rem 1.5rem;
   border: 1px solid transparent;
   border-radius: 100px;
@@ -791,7 +779,7 @@ body.loaded .hero-corner {
   font-weight: 900;
   line-height: 1;
   color: var(--color-accent);
-  opacity: 0;
+  opacity: var(--depth-2);
   z-index: 0;
   pointer-events: none;
   user-select: none;
@@ -814,7 +802,7 @@ body.loaded .hero-corner {
   font-weight: 900;
   line-height: 1;
   color: var(--color-accent);
-  opacity: 0;
+  opacity: 0.03;
   z-index: -1;
   pointer-events: none;
   user-select: none;
@@ -823,7 +811,7 @@ body.loaded .hero-corner {
 }
 
 [data-theme="dark"] .hero-section-index {
-  opacity: 0; /* JS controls reveal */
+  opacity: 0.05;
 }
 
 /* Hero title block — accent rectangle behind name */
@@ -835,7 +823,7 @@ body.loaded .hero-corner {
   left: 35%;
   background: var(--color-accent);
   border-radius: 12px;
-  opacity: 0;
+  opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
 
@@ -849,7 +837,7 @@ body.loaded .hero-corner {
   width: 60%;
   height: 2px;
   background: linear-gradient(to right, var(--color-accent), transparent);
-  opacity: 0;
+  opacity: var(--depth-4);
   z-index: -1;
   pointer-events: none;
 
@@ -875,7 +863,7 @@ body.loaded .hero-corner {
   bottom: 25%;
   width: 2px;
   background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
-  opacity: 0;
+  opacity: var(--depth-3);
   z-index: 0;
   pointer-events: none;
 
@@ -890,7 +878,7 @@ body.loaded .hero-corner {
   height: clamp(120px, 18vw, 250px);
   border: 1.5px solid var(--color-accent);
   border-radius: 50%;
-  opacity: 0;
+  opacity: var(--depth-3);
   z-index: 0;
   pointer-events: none;
 
@@ -903,7 +891,7 @@ body.loaded .hero-corner {
   font-size: 0.5625rem;
   letter-spacing: 0.12em;
   color: var(--color-muted);
-  opacity: 0;
+  opacity: 0.4;
   z-index: 1;
   pointer-events: none;
 
@@ -936,7 +924,7 @@ body.loaded .hero-corner {
   text-transform: uppercase;
   color: var(--color-muted);
   margin-bottom: 2.5rem;
-  opacity: 0;
+  opacity: 1;
 }
 
 .hero-status-dot {
@@ -972,8 +960,8 @@ body.loaded .hero-corner {
   height: 1.5px;
   background: linear-gradient(90deg, var(--color-accent), var(--color-accent-glow));
   margin-top: 2rem;
-  opacity: 0;
-  transform: scaleX(0);
+  opacity: 1;
+  transform: scaleX(1);
   transform-origin: left;
   position: relative;
 }
@@ -1001,7 +989,7 @@ body.loaded .hero-corner {
   text-transform: uppercase;
   color: var(--color-muted);
   margin-top: 3rem;
-  opacity: 0;
+  opacity: 1;
 }
 
 .hero-services-dot {
@@ -1086,12 +1074,8 @@ body.loaded .hero-corner {
 }
 
 .scroll-indicator {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-body.loaded .scroll-indicator {
-  animation: scrollIndicatorIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2s forwards;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @keyframes scrollIndicatorIn {
