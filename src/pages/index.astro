@@ -1993,24 +1993,27 @@ const steps = [
       }
     });
 
-    // ── Magnetic hover elements ──
+    // ── Magnetic hover elements (rAF-throttled) ──
     if (hasFineCursor) {
-      const magneticEls = document.querySelectorAll('[data-magnetic]');
-      magneticEls.forEach((el) => {
+      document.querySelectorAll('[data-magnetic]').forEach((el) => {
         const htmlEl = el as HTMLElement;
         const strength = parseFloat(htmlEl.dataset.magnetic || '0.3');
+        let magRaf = 0;
         htmlEl.addEventListener('mousemove', (e: Event) => {
+          if (magRaf) return;
           const me = e as MouseEvent;
-          const rect = htmlEl.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const dx = (me.clientX - cx) * strength;
-          const dy = (me.clientY - cy) * strength;
-          htmlEl.style.transform = `translate(${dx}px, ${dy}px)`;
-        });
+          magRaf = requestAnimationFrame(() => {
+            magRaf = 0;
+            const rect = htmlEl.getBoundingClientRect();
+            const dx = (me.clientX - rect.left - rect.width / 2) * strength;
+            const dy = (me.clientY - rect.top - rect.height / 2) * strength;
+            htmlEl.style.transform = `translate(${dx}px, ${dy}px)`;
+          });
+        }, { passive: true });
         htmlEl.addEventListener('mouseleave', () => {
+          if (magRaf) { cancelAnimationFrame(magRaf); magRaf = 0; }
           htmlEl.style.transform = '';
-        });
+        }, { passive: true });
       });
     }
 
@@ -2082,14 +2085,15 @@ const steps = [
 
       document.addEventListener('mouseleave', () => {
         mouseOnPage = false;
-        cursorDot.style.opacity = '0';
-        cursorCircle.style.opacity = '0';
-        trailDots.forEach((dot) => { dot.style.opacity = '0'; });
+        cursorDot.style.visibility = 'hidden';
+        cursorCircle.style.visibility = 'hidden';
+        trailDots.forEach((dot) => { dot.style.visibility = 'hidden'; });
       });
       document.addEventListener('mouseenter', () => {
         mouseOnPage = true;
-        cursorDot.style.opacity = '1';
-        cursorCircle.style.opacity = '0.4';
+        cursorDot.style.visibility = '';
+        cursorCircle.style.visibility = '';
+        trailDots.forEach((dot) => { dot.style.visibility = ''; });
       });
 
       // Nav rail nodes magnetic pull toward cursor Y
@@ -2424,19 +2428,7 @@ const steps = [
       });
     }
 
-    // ── Magnetic effect ──
-    if (window.matchMedia('(pointer: fine)').matches) {
-      document.querySelectorAll('[data-magnetic]').forEach((el) => {
-        const element = el as HTMLElement;
-        element.addEventListener('mousemove', (e: MouseEvent) => {
-          const rect = element.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          element.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
-        }, { passive: true });
-        element.addEventListener('mouseleave', () => { element.style.transform = ''; }, { passive: true });
-      });
-    }
+    // ── Magnetic effect — REMOVED (duplicate of lines 1996-2014) ──
 
     // ── Text scramble on project name — on scroll + hover ──
     if (window.matchMedia('(pointer: fine)').matches) {

@@ -475,7 +475,6 @@ body {
   border: 1px solid color-mix(in srgb, var(--color-ink) 30%, transparent);
   pointer-events: none;
   z-index: 9998;
-  will-change: transform;
   transform: translate3d(-100px, -100px, 0);
   transition: border-color 0.3s ease;
 }
@@ -497,7 +496,6 @@ body {
   pointer-events: none;
   z-index: 9997;
   opacity: 0;
-  will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
@@ -513,7 +511,7 @@ body {
 /* ─── Magnetic hover elements ─── */
 [data-magnetic] {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+
 }
 
 /* ─── Hero detail layers ─── */
@@ -633,7 +631,7 @@ body.loaded .hero-corner {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  will-change: transform;
+
 }
 
 /* Hero CTA — monospace, accent, with bordered capsule hover */
@@ -779,7 +777,7 @@ body.loaded .hero-corner {
   opacity: 0;
   background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
   background-size: 40px 40px;
-  will-change: transform;
+
 }
 
 /* Hero year marker — deep layer */
@@ -797,7 +795,7 @@ body.loaded .hero-corner {
   pointer-events: none;
   user-select: none;
   letter-spacing: -0.03em;
-  will-change: transform;
+
 }
 
 /* Hero title wrap — contains depth layers behind the name */
@@ -820,7 +818,7 @@ body.loaded .hero-corner {
   pointer-events: none;
   user-select: none;
   letter-spacing: -0.05em;
-  will-change: transform;
+
 }
 
 [data-theme="dark"] .hero-section-index {
@@ -839,7 +837,7 @@ body.loaded .hero-corner {
   opacity: 0;
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Hero title line — horizontal accent stroke */
@@ -853,7 +851,7 @@ body.loaded .hero-corner {
   opacity: 0;
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 @media (max-width: 768px) {
@@ -879,7 +877,7 @@ body.loaded .hero-corner {
   opacity: 0;
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Hero accent ring — mid layer */
@@ -894,7 +892,7 @@ body.loaded .hero-corner {
   opacity: 0;
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Hero coordinate marks */
@@ -907,7 +905,7 @@ body.loaded .hero-corner {
   opacity: 0;
   z-index: 1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 .hero-coord--top {
@@ -1082,7 +1080,6 @@ body.loaded .hero-corner {
 /* Hero scroll-fade — content dims and lifts as user scrolls away */
 .hero-scroll-fade {
   transition: none;
-  will-change: opacity, transform;
 }
 
 .scroll-indicator {
@@ -1718,7 +1715,7 @@ body.loaded #nav-rail {
   pointer-events: none;
   user-select: none;
   letter-spacing: -0.05em;
-  will-change: transform;
+
 }
 
 /* Mid: Vertical accent line running down left edge */
@@ -1732,7 +1729,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-4);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Mid: Accent ring floating in the section */
@@ -1747,7 +1744,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-2);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Heading depth: Large /05 behind heading */
@@ -1765,7 +1762,7 @@ body.loaded #nav-rail {
   pointer-events: none;
   user-select: none;
   letter-spacing: 0.05em;
-  will-change: transform;
+
 }
 
 /* Heading depth: accent block behind heading */
@@ -1780,7 +1777,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 @media (max-width: 768px) {
@@ -1808,7 +1805,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-3);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 .work-depth-crosshair::before,
 .work-depth-crosshair::after {
@@ -1841,7 +1838,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-3);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1871,7 +1868,7 @@ body.loaded #nav-rail {
   z-index: 0;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 /* Deep: Diagonal structural line cutting across section */
@@ -1887,7 +1884,7 @@ body.loaded #nav-rail {
   pointer-events: none;
   transform: rotate(25deg);
   transform-origin: top center;
-  will-change: transform;
+
 }
 
 /* Grid reference dots — structural position markers */
@@ -1899,7 +1896,7 @@ body.loaded #nav-rail {
   background: var(--color-accent);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
   opacity: var(--depth-3);
 }
 .work-depth-dot--1 {
@@ -1963,7 +1960,7 @@ body.loaded #nav-rail {
   z-index: -2;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 /* Mid: Horizontal accent line behind card — always visible */
@@ -1977,7 +1974,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-4);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Deep: Monospace project label — always visible */
@@ -1994,7 +1991,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 @media (max-width: 768px) {
@@ -2118,7 +2115,7 @@ body.loaded #nav-rail {
 
 /* Parallax layers — smooth transform */
 .card-work [data-card-depth] {
-  will-change: transform;
+
   transition: transform 0.1s ease-out;
 }
 
@@ -2354,7 +2351,7 @@ body.loaded #nav-rail {
 .project-details {
   position: relative;
   padding: 1rem 0 0 1rem;
-  will-change: transform;
+
 }
 
 @media (min-width: 769px) {
@@ -2571,7 +2568,7 @@ body.loaded #nav-rail {
   background: var(--color-accent);
   transform-origin: top;
   transform: scaleY(0);
-  will-change: transform;
+
 }
 
 /* Individual step */
@@ -2741,7 +2738,7 @@ body.loaded #nav-rail {
   pointer-events: none;
   user-select: none;
   letter-spacing: 0.05em;
-  will-change: transform;
+
 }
 
 .section-heading-block {
@@ -2755,7 +2752,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Process section-level depth */
@@ -2772,7 +2769,7 @@ body.loaded #nav-rail {
   z-index: 0;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .process-depth-ring {
@@ -2786,7 +2783,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-2);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* About section-level depth */
@@ -2803,7 +2800,7 @@ body.loaded #nav-rail {
   z-index: 0;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .about-depth-line {
@@ -2816,7 +2813,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-4);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 .about-depth-ring {
@@ -2830,7 +2827,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-2);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Approach grid depth */
@@ -2851,7 +2848,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .approach-depth-block {
@@ -2865,7 +2862,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Skill pills depth */
@@ -2881,7 +2878,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 /* Footer depth */
@@ -2928,7 +2925,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .process-step.active .step-depth-number {
@@ -2946,7 +2943,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 .process-step.active .step-depth-block {
@@ -2967,7 +2964,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .manifesto-depth-block {
@@ -2981,7 +2978,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Stats depth layers */
@@ -2999,7 +2996,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .stats-depth-block {
@@ -3013,7 +3010,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 @media (max-width: 768px) {
@@ -3231,7 +3228,7 @@ body.loaded #nav-rail {
   z-index: 0;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .contact-bg-ring {
@@ -3245,7 +3242,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-3);
   z-index: 0;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 .contact-bg-text {
@@ -3264,7 +3261,7 @@ body.loaded #nav-rail {
   pointer-events: none;
   user-select: none;
   z-index: 0;
-  will-change: transform;
+
 }
 
 /* Marquee band */
@@ -3286,7 +3283,7 @@ body.loaded #nav-rail {
   align-items: center;
   gap: 0;
   white-space: nowrap;
-  will-change: transform;
+
   padding: 0.5rem 0;
 }
 
@@ -3356,7 +3353,7 @@ body.loaded #nav-rail {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .contact-split-block {
@@ -3370,7 +3367,7 @@ body.loaded #nav-rail {
   opacity: var(--depth-1);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Left side — CTA + details */
@@ -3628,7 +3625,7 @@ a.contact-detail-link:hover .contact-detail-value {
   z-index: -1;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
+
 }
 
 .form-card-accent {
@@ -3642,7 +3639,7 @@ a.contact-detail-link:hover .contact-detail-value {
   opacity: var(--depth-2);
   z-index: -1;
   pointer-events: none;
-  will-change: transform;
+
 }
 
 /* Contact subtitle */
