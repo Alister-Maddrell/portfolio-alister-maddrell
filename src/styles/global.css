@@ -258,22 +258,6 @@ section[id] {
   color: #FDFCFA;
 }
 
-/* ─── Film grain texture ─── */
-
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9996;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-}
-
-[data-theme="dark"] .grain-overlay {
-  opacity: 0.1;
-}
 
 /* ─── Geometric section marks ─── */
 
@@ -767,6 +751,12 @@ body.loaded .hero-corner {
     border-color: var(--color-accent-glow);
     box-shadow: 0 0 30px 5px color-mix(in srgb, var(--color-accent) 6%, transparent);
   }
+}
+
+/* Pause all CSS animations when hero is off-screen */
+#hero.hero-offscreen,
+#hero.hero-offscreen * {
+  animation-play-state: paused !important;
 }
 
 /* Reduced motion */

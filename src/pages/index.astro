@@ -806,8 +806,6 @@ const steps = [
     });
 
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
-    const grainOverlay = document.querySelector('.grain-overlay') as HTMLElement | null;
-    const grainBase = document.documentElement.dataset.theme === 'dark' ? 0.1 : 0.06;
     const skewElements = document.querySelectorAll('[data-skew]');
 
     // ── 3. DATA STRUCTURES — parsed element collections ──
@@ -1063,22 +1061,14 @@ const steps = [
         }
       }
 
-      // ── Grain ──
-      if (grainOverlay) {
-        grainOverlay.style.opacity = String(grainBase + Math.min(0.06, Math.abs(scrollVelocity) * 0.004));
-      }
-
       // ── Float items (translate3d forces GPU compositing) ──
       for (let i = 0; i < floatItems.length; i++) {
         const f = floatItems[i];
         if (!f.visible) continue;
-        const y = Math.sin(t * f.speed + f.phase) * f.amp
-                + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
+        const y = Math.sin(t * f.speed + f.phase) * f.amp;
         f.currentY = y;
-        const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp
-                + Math.sin(t * f.xSpeed * 1.3 + f.xPhase + 2.0) * (f.xAmp * 0.25);
-        const rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp
-                  + Math.sin(t * f.rotSpeed * 0.6 + f.rotPhase + 1.0) * (f.rotAmp * 0.4);
+        const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp;
+        const rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp;
         const tx = x + f.revealX;
         const ty = y + f.revealY;
         if (f.revealOpacity < 1) f.el.style.opacity = `${f.revealOpacity}`;
@@ -1113,16 +1103,18 @@ const steps = [
         cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
         cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
         const mob = isMobileDevice;
-        cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + Math.sin(t * 0.00013 + i * 3.7) * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + Math.sin(t * 0.00018 + i * 2.1) * 4}px, 0) rotate(${Math.sin(t * 0.00009 + i * 5.4) * 0.6}deg)`;
-        cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + Math.sin(t * 0.00016 + i * 4.3 + 1.0) * 4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3}px, 0) rotate(${Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35}deg)`;
+        // One sin per card, reused across layers
+        const cardSin = Math.sin(t * 0.00013 + i * 3.7);
+        cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + cardSin * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + cardSin * 4}px, 0)`;
+        cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + cardSin * -4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + cardSin * 3}px, 0)`;
         if (cl.strokeEl) {
-          cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + Math.sin(t * 0.0001 + i * 2.9) * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + Math.sin(t * 0.00014 + i * 1.5) * 5}px, 0) rotate(${Math.sin(t * 0.00007 + i * 4.8) * 0.8}deg)`;
+          cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + cardSin * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + cardSin * -5}px, 0)`;
         }
         if (cl.lineEl) {
-          cl.lineEl.style.transform = `translate3d(${offset * (mob ? 6 : 4) + Math.sin(t * 0.00019 + i * 5.2 + 1.5) * 3 + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px, 0)`;
+          cl.lineEl.style.transform = `translate3d(${offset * (mob ? 6 : 4) + cardSin * 3 + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px, 0)`;
         }
         if (cl.labelEl) {
-          cl.labelEl.style.transform = `translate3d(${cl.currentHoverX * -12 + Math.sin(t * 0.00015 + i * 3.1 + 2.5) * 4}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10 + Math.sin(t * 0.0002 + i * 2.4 + 1.8) * 3}px, 0)`;
+          cl.labelEl.style.transform = `translate3d(${cl.currentHoverX * -12 + cardSin * -4}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10 + cardSin * 3}px, 0)`;
         }
       }
 
@@ -1131,7 +1123,8 @@ const steps = [
         if (_br[i].b < -50 || _br[i].t > viewH + 50) continue;
         const progress = 1 - (_br[i].t + _br[i].h / 2) / (viewH + _br[i].h);
         const offset = (progress - 0.5) * 2;
-        bgParallaxEls[i].style.transform = `translate3d(${Math.sin(t * 0.00015 + i * 2.5) * 8}px, ${offset * -40 + Math.sin(t * 0.0002 + i * 1.8) * 5}px, 0) rotate(${Math.sin(t * 0.0001 + i * 3.2) * 0.4}deg)`;
+        const bgSin = Math.sin(t * 0.00015 + i * 2.5);
+        bgParallaxEls[i].style.transform = `translate3d(${bgSin * 8}px, ${offset * -40 + bgSin * 5}px, 0)`;
       }
 
       // ── Depth layer parallax (translate3d for GPU) ──
@@ -1141,43 +1134,47 @@ const steps = [
         const progress = 1 - (_dr[i].t + _dr[i].h / 2) / (viewH + _dr[i].h);
         const offset = (progress - 0.5) * 2;
         const m = hasFineCursor ? 1 : 1.4;
+        const dlSin = Math.sin(t * 0.00018 + i * 4.1);
         if (dl.deepEl) {
-          dl.deepEl.style.transform = `translate3d(${Math.sin(t * 0.00018 + i * 4.1) * 6}px, ${offset * -30 * m + Math.sin(t * 0.00025 + i * 2.7) * 4}px, 0) rotate(${Math.sin(t * 0.00012 + i * 5.3) * 0.5}deg)`;
+          dl.deepEl.style.transform = `translate3d(${dlSin * 6}px, ${offset * -30 * m + dlSin * 4}px, 0)`;
         }
         if (dl.midEl) {
-          dl.midEl.style.transform = `translate3d(${offset * -5 * m + Math.sin(t * 0.00022 + i * 3.4 + 1.0) * 5}px, ${offset * 15 * m + Math.sin(t * 0.00016 + i * 1.9 + 2.0) * 3}px, 0) rotate(${Math.sin(t * 0.00014 + i * 6.1 + 0.5) * 0.35}deg)`;
+          dl.midEl.style.transform = `translate3d(${offset * -5 * m + dlSin * -5}px, ${offset * 15 * m + dlSin * 3}px, 0)`;
         }
       }
 
       // ── Hero layer parallax (translate3d, skip when hero off-screen) ──
       if (currentScrollY < viewH * 1.5) {
         const heroProgress = Math.min(1, currentScrollY / viewH);
+        // Two shared sin values for all hero layers (~16 sin calls → 2)
+        const hSinA = Math.sin(t * 0.00010 + 1.0);
+        const hSinB = Math.sin(t * 0.00015 + 3.0);
         if (heroLayerOrb) {
-          heroLayerOrb.style.transform = `translate3d(calc(10% + ${Math.sin(t * 0.00008 + 1.0) * 12}px), ${heroProgress * 60 + Math.sin(t * 0.00012 + 2.5) * 8}px, 0)`;
+          heroLayerOrb.style.transform = `translate3d(calc(10% + ${hSinA * 12}px), ${heroProgress * 60 + hSinB * 8}px, 0)`;
         }
         if (heroLayerWatermark) {
-          heroLayerWatermark.style.transform = `translate3d(${Math.sin(t * 0.00010 + 3.0) * 6}px, ${heroProgress * -30 + Math.sin(t * 0.00014 + 0.7) * 4}px, 0) rotate(${Math.sin(t * 0.00007 + 5.0) * 0.3}deg)`;
+          heroLayerWatermark.style.transform = `translate3d(${hSinA * 6}px, ${heroProgress * -30 + hSinB * 4}px, 0)`;
         }
         if (heroLayerGrid) heroLayerGrid.style.transform = `translate3d(0, ${heroProgress * -15}px, 0)`;
         if (heroLayerYear) {
-          heroLayerYear.style.transform = `translate3d(${Math.sin(t * 0.00013 + 4.2) * 8}px, ${heroProgress * -45 + Math.sin(t * 0.00018 + 1.3) * 5}px, 0) rotate(${Math.sin(t * 0.00009 + 6.7) * 0.6}deg)`;
+          heroLayerYear.style.transform = `translate3d(${hSinB * 8}px, ${heroProgress * -45 + hSinA * 5}px, 0)`;
         }
-        if (heroLayerBar) heroLayerBar.style.transform = `translate3d(${Math.sin(t * 0.00015 + 2.1) * 4}px, ${heroProgress * 25}px, 0)`;
+        if (heroLayerBar) heroLayerBar.style.transform = `translate3d(${hSinA * 4}px, ${heroProgress * 25}px, 0)`;
         if (heroLayerRing) {
-          heroLayerRing.style.transform = `translate3d(${heroProgress * -10 + Math.sin(t * 0.00011 + 5.5) * 10}px, ${heroProgress * 35 + Math.sin(t * 0.00016 + 3.8) * 7}px, 0) rotate(${Math.sin(t * 0.00008 + 1.6) * 0.8}deg)`;
+          heroLayerRing.style.transform = `translate3d(${heroProgress * -10 + hSinB * 10}px, ${heroProgress * 35 + hSinA * 7}px, 0)`;
         }
         if (heroLayerIndex) {
-          heroLayerIndex.style.transform = `translate3d(${Math.sin(t * 0.00012 + 7.0) * 5}px, ${heroProgress * -40 + Math.sin(t * 0.00017 + 4.4) * 4}px, 0) rotate(${Math.sin(t * 0.00010 + 2.9) * 0.4}deg)`;
+          heroLayerIndex.style.transform = `translate3d(${hSinA * 5}px, ${heroProgress * -40 + hSinB * 4}px, 0)`;
         }
         if (heroLayerTitleBlock) {
-          heroLayerTitleBlock.style.transform = `translate3d(${heroProgress * 15 + Math.sin(t * 0.00014 + 8.2) * 4}px, ${heroProgress * 20 + Math.sin(t * 0.00019 + 5.6) * 3}px, 0) rotate(${Math.sin(t * 0.00011 + 3.3) * 0.25}deg)`;
+          heroLayerTitleBlock.style.transform = `translate3d(${heroProgress * 15 + hSinB * 4}px, ${heroProgress * 20 + hSinA * 3}px, 0)`;
         }
         if (heroLayerTitleLine) {
           heroLayerTitleLine.style.transform = `scaleX(1) translate3d(0, ${heroProgress * 8}px, 0)`;
           heroLayerTitleLine.style.transformOrigin = 'left';
         }
         if (heroLayerDataLine) {
-          heroLayerDataLine.style.transform = `translate3d(0, ${heroProgress * 12 + Math.sin(t * 0.00009 + 9.1) * 3}px, 0)`;
+          heroLayerDataLine.style.transform = `translate3d(0, ${heroProgress * 12 + hSinA * 3}px, 0)`;
         }
         heroLayerCorners.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * 20}px, 0)`; });
         heroLayerCoords.forEach(c => { c.style.transform = `translate3d(0, ${heroProgress * -12}px, 0)`; });
@@ -1201,6 +1198,11 @@ const steps = [
           sd.els[ei].el.style.transform = `translate3d(${so * sd.els[ei].tx}px, ${so * sd.els[ei].ty}px, 0)`;
         }
       }
+
+      // ── Merged sub-loops (hero float, magnetic, cursor) ──
+      if ((window as any).__heroFloatTick) (window as any).__heroFloatTick(time);
+      if ((window as any).__magneticTick) (window as any).__magneticTick();
+      if ((window as any).__cursorTick) (window as any).__cursorTick();
 
       requestAnimationFrame(raf);
     }
@@ -1461,6 +1463,8 @@ const steps = [
             const heroVis = new IntersectionObserver((entries) => {
               entries.forEach((entry) => {
                 heroInView = entry.isIntersecting;
+                // Pause/resume CSS animations when hero is off-screen
+                entry.target.classList.toggle('hero-offscreen', !entry.isIntersecting);
               });
             }, { threshold: 0 });
             heroVis.observe(heroSection);
@@ -1469,11 +1473,9 @@ const steps = [
           // Alias shared easing for hero reveals
           const smoothReveal = easedReveal;
 
-          function heroFloat(now: number) {
-            if (!heroInView) {
-              requestAnimationFrame(heroFloat);
-              return;
-            }
+          // Register heroFloat as a tick function called from the main rAF
+          (window as any).__heroFloatTick = function heroFloat(now: number) {
+            if (!heroInView) return;
             const t = now - startTime;
             const ramp = Math.min(1, t / rampDuration);
             const easedRamp = smoothstep(ramp);
@@ -1481,9 +1483,12 @@ const steps = [
             // Cache theme once per frame (avoids repeated DOM reads in reveal blocks below)
             const isDark = document.documentElement.dataset.theme === 'dark';
 
+            // Shared sin for hero float (~10 sin calls → 2)
+            const heroSinA = Math.sin(t * 0.0008) * easedRamp;
+            const heroSinB = Math.sin(t * 0.0006 + 2) * easedRamp;
+
             // Float the title
-            const titleY = (Math.sin(t * 0.0008) * 12 + Math.sin(t * 0.00056 + 1) * 4.8) * easedRamp;
-            heroName.style.transform = `translate3d(0, ${titleY}px, 0)`;
+            heroName.style.transform = `translate3d(0, ${heroSinA * 14}px, 0)`;
 
             // Reveal + float subtitle
             if (heroSubtitle) {
@@ -1492,10 +1497,9 @@ const steps = [
                 subLines.forEach((line, i) => {
                   const delay = i === 0 ? subtitleDelay : sub2Delay;
                   const eased = smoothReveal(t, delay);
-                  const floatY = (Math.sin(t * 0.0006 + 2) * 10 + Math.sin(t * 0.00042 + 3) * 4) * easedRamp;
                   const revealY = (1 - eased) * 24;
                   line.style.opacity = `${eased}`;
-                  line.style.transform = `translate3d(0, ${revealY + floatY}px, 0)`;
+                  line.style.transform = `translate3d(0, ${revealY + heroSinB * 12}px, 0)`;
                 });
               }
             }
@@ -1503,10 +1507,9 @@ const steps = [
             // Reveal + float scroll indicator
             if (scrollIndicator) {
               const sEased = smoothReveal(t, scrollDelay);
-              const sFloatY = (Math.sin(t * 0.0005 + 4) * 8 + Math.sin(t * 0.00035 + 5) * 3.2) * easedRamp;
               const sRevealY = (1 - sEased) * 20;
               scrollIndicator.style.opacity = `${sEased}`;
-              scrollIndicator.style.transform = `translate3d(0, ${sRevealY + sFloatY}px, 0)`;
+              scrollIndicator.style.transform = `translate3d(0, ${sRevealY + heroSinA * 8}px, 0)`;
             }
 
             // Reveal status line
@@ -1601,9 +1604,7 @@ const steps = [
               c.style.transform = `translate3d(0, ${(1 - e) * 10}px, 0)`;
             });
 
-            requestAnimationFrame(heroFloat);
-          }
-          requestAnimationFrame(heroFloat); // initial kick-off
+          };
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);
@@ -1891,8 +1892,8 @@ const steps = [
           m.targetY = 0;
         }, { passive: true });
       });
-      // Single rAF loop for all magnetic elements
-      function animateMagnetic() {
+      // Magnetic tick — called from main rAF
+      (window as any).__magneticTick = function() {
         for (const m of magEls) {
           m.currentX += (m.targetX - m.currentX) * 0.15;
           m.currentY += (m.targetY - m.currentY) * 0.15;
@@ -1905,9 +1906,7 @@ const steps = [
             }
           }
         }
-        requestAnimationFrame(animateMagnetic);
-      }
-      animateMagnetic();
+      };
     }
 
     // ── Custom cursor ──
@@ -1946,8 +1945,8 @@ const steps = [
         }
       }
 
-      // Animation loop — dot + circle lerp + trail + scale
-      function animateCursor() {
+      // Cursor tick — called from main rAF
+      (window as any).__cursorTick = function animateCursor() {
         dotX += (mouseX - dotX) * 0.5;
         dotY += (mouseY - dotY) * 0.5;
 
@@ -1985,9 +1984,7 @@ const steps = [
           }
         }
 
-        requestAnimationFrame(animateCursor);
-      }
-      animateCursor();
+      };
 
       // Hover state — scale circle up, shrink dot
       document.querySelectorAll('a, button, [data-cursor-hover]').forEach((el) => {
