@@ -752,10 +752,9 @@ const steps = [
   <script>
     import Lenis from 'lenis';
 
-    // ── Lenis smooth scroll ──
+    // ── Lenis smooth scroll (manual raf — single loop with our animations) ──
     const lenis = new Lenis({
-      autoRaf: true,
-      lerp: 0.1,
+      lerp: 0.12,
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
@@ -860,8 +859,9 @@ const steps = [
 
     const animStart = performance.now();
 
-    // ── Unified animation loop (batched reads → writes to prevent layout thrashing) ──
+    // ── Unified animation loop (single rAF — Lenis + all animations) ──
     function raf(time: number) {
+      lenis.raf(time);
       const t = time - animStart;
       const viewH = window.innerHeight;
       const currentScrollY = window.scrollY;
