@@ -754,7 +754,7 @@ const steps = [
 
     // ── Lenis smooth scroll (manual raf — single loop with our animations) ──
     const lenis = new Lenis({
-      lerp: 0.12,
+      lerp: 0.08,
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
@@ -860,6 +860,18 @@ const steps = [
     const animStart = performance.now();
 
     // ── Unified animation loop (single rAF — Lenis + all animations) ──
+    let _lastRenderedScroll = -1;
+    // Persistent rect caches (only updated when scroll changes)
+    let _cr: { t: number; h: number }[] = [];
+    let _br: { t: number; b: number; h: number }[] = [];
+    let _dr: { t: number; h: number }[] = [];
+    let _sr: { t: number; b: number; h: number }[] = [];
+    let _mr: { t: number }[] = [];
+    let _pr: { t: number; b: number; h: number }[] = [];
+    let _pxr = new Map<Element, { t: number; h: number }>();
+    let _contactTop = 0;
+    let _contactVisible = false;
+
     function raf(time: number) {
       lenis.raf(time);
       const t = time - animStart;
@@ -870,142 +882,136 @@ const steps = [
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
       const isMobileDevice = !hasFineCursor;
 
-      // ═══ PHASE 1: BATCH ALL READS (no layout thrashing) ═══
+      // Only do expensive reads when scroll position actually changed
+      const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 0.5;
+      if (scrollChanged) {
+        _lastRenderedScroll = currentScrollY;
 
-      // Card layer rects
-      const _cr: { t: number; h: number }[] = [];
-      for (let i = 0; i < cardLayers.length; i++) {
-        if (cardLayers[i].visible) {
-          const r = cardLayers[i].card.getBoundingClientRect();
-          _cr.push({ t: r.top, h: r.height });
-        } else { _cr.push({ t: 0, h: 0 }); }
-      }
-
-      // Bg parallax parent rects
-      const _br: { t: number; b: number; h: number }[] = [];
-      for (let i = 0; i < bgParallaxEls.length; i++) {
-        const r = bgParallaxEls[i].parentElement!.getBoundingClientRect();
-        _br.push({ t: r.top, b: r.bottom, h: r.height });
-      }
-
-      // Depth layer container rects
-      const _dr: { t: number; h: number }[] = [];
-      for (let i = 0; i < depthLayers.length; i++) {
-        if (depthLayers[i].visible) {
-          const r = depthLayers[i].container.getBoundingClientRect();
-          _dr.push({ t: r.top, h: r.height });
-        } else { _dr.push({ t: 0, h: 0 }); }
-      }
-
-      // Section depth rects
-      const _sr: { t: number; b: number; h: number }[] = [];
-      for (let i = 0; i < sectionDepthEls.length; i++) {
-        if (sectionDepthEls[i].section) {
-          const r = sectionDepthEls[i].section!.getBoundingClientRect();
-          _sr.push({ t: r.top, b: r.bottom, h: r.height });
-        } else { _sr.push({ t: 0, b: 0, h: 0 }); }
-      }
-
-      // Contact rect (only near hero)
-      let _contactTop = 0;
-      let _contactVisible = false;
-      if (contactSection) {
-        const r = contactSection.getBoundingClientRect();
-        _contactTop = r.top;
-        _contactVisible = r.top < viewH;
-      }
-
-      // Manifesto rects (merged from onScrollFrame)
-      const _mr: { t: number }[] = [];
-      for (let i = 0; i < manifestoData.length; i++) {
-        if (manifestoVisible.get(manifestoData[i].el)) {
-          const r = (manifestoData[i].el as HTMLElement).getBoundingClientRect();
-          _mr.push({ t: r.top });
-        } else { _mr.push({ t: 0 }); }
-      }
-
-      // Process step rects
-      const _pr: { t: number; b: number; h: number }[] = [];
-      if (processSteps.length > 0 && processTimeline && processVisible) {
-        for (let i = 0; i < processSteps.length; i++) {
-          const r = (processSteps[i] as HTMLElement).getBoundingClientRect();
-          _pr.push({ t: r.top, b: r.bottom, h: r.height });
+        // ═══ BATCH READS (only on scroll change) ═══
+        _cr = [];
+        for (let i = 0; i < cardLayers.length; i++) {
+          if (cardLayers[i].visible) {
+            const r = cardLayers[i].card.getBoundingClientRect();
+            _cr.push({ t: r.top, h: r.height });
+          } else { _cr.push({ t: 0, h: 0 }); }
         }
-      }
 
-      // Parallax element rects
-      const _pxr = new Map<Element, { t: number; h: number }>();
-      if (hasPointer) {
-        parallaxVisible.forEach(el => {
-          const r = el.getBoundingClientRect();
-          _pxr.set(el, { t: r.top, h: r.height });
-        });
-      }
+        _br = [];
+        for (let i = 0; i < bgParallaxEls.length; i++) {
+          const r = bgParallaxEls[i].parentElement!.getBoundingClientRect();
+          _br.push({ t: r.top, b: r.bottom, h: r.height });
+        }
 
-      // ═══ PHASE 2: ALL WRITES (no more reads after this point) ═══
+        _dr = [];
+        for (let i = 0; i < depthLayers.length; i++) {
+          if (depthLayers[i].visible) {
+            const r = depthLayers[i].container.getBoundingClientRect();
+            _dr.push({ t: r.top, h: r.height });
+          } else { _dr.push({ t: 0, h: 0 }); }
+        }
 
-      // ── Scroll UI (merged from onScrollFrame) ──
-      if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
+        _sr = [];
+        for (let i = 0; i < sectionDepthEls.length; i++) {
+          if (sectionDepthEls[i].section) {
+            const r = sectionDepthEls[i].section!.getBoundingClientRect();
+            _sr.push({ t: r.top, b: r.bottom, h: r.height });
+          } else { _sr.push({ t: 0, b: 0, h: 0 }); }
+        }
 
-      if (heroScrollFade) {
-        const fadeEnd = viewH * 0.6;
-        const fadeProg = Math.min(1, Math.max(0, currentScrollY / fadeEnd));
-        heroScrollFade.style.opacity = String(1 - fadeProg);
-        heroScrollFade.style.transform = `translateY(${fadeProg * -40}px)`;
-      }
+        _contactTop = 0; _contactVisible = false;
+        if (contactSection) {
+          const r = contactSection.getBoundingClientRect();
+          _contactTop = r.top;
+          _contactVisible = r.top < viewH;
+        }
 
-      const shouldScrollNav = currentScrollY > 80;
-      if (shouldScrollNav !== navTop?.classList.contains('scrolled')) {
-        navTop?.classList.toggle('scrolled', shouldScrollNav);
-      }
+        _mr = [];
+        for (let i = 0; i < manifestoData.length; i++) {
+          if (manifestoVisible.get(manifestoData[i].el)) {
+            const r = (manifestoData[i].el as HTMLElement).getBoundingClientRect();
+            _mr.push({ t: r.top });
+          } else { _mr.push({ t: 0 }); }
+        }
 
-      if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
-
-      if (currentSection !== lastActiveSection) {
-        lastActiveSection = currentSection;
-        navNodes.forEach(node => { node.classList.toggle('active', (node as HTMLElement).dataset.navSection === currentSection); });
-        navMobileLinks.forEach(link => { link.classList.toggle('active', (link as HTMLElement).dataset.navSection === currentSection); });
-      }
-
-      // Manifesto word reveal
-      for (let mi = 0; mi < manifestoData.length; mi++) {
-        if (!manifestoVisible.get(manifestoData[mi].el)) continue;
-        const mrt = _mr[mi].t;
-        const mStart = viewH * 0.85;
-        const mEnd = viewH * 0.15;
-        const mProg = Math.max(0, Math.min(1, (mStart - mrt) / (mStart - mEnd)));
-        const litCount = Math.floor(mProg * manifestoData[mi].totalWords);
-        manifestoData[mi].wordSpans.forEach((w, j) => { w.classList.toggle('lit', j < litCount); });
-      }
-
-      // Process step highlighting
-      if (_pr.length > 0) {
-        const viewCenter = viewH * 0.5;
-        let closestStep: Element | null = null;
-        let closestDist = Infinity;
-        let activeIndex = 0;
-        processSteps.forEach((step, si) => {
-          const sr = _pr[si];
-          const stepCenter = sr.t + sr.h / 2;
-          const dist = Math.abs(stepCenter - viewCenter);
-          if (dist < closestDist && sr.t < viewH && sr.b > 0) {
-            closestDist = dist; closestStep = step; activeIndex = si;
+        _pr = [];
+        if (processSteps.length > 0 && processTimeline && processVisible) {
+          for (let i = 0; i < processSteps.length; i++) {
+            const r = (processSteps[i] as HTMLElement).getBoundingClientRect();
+            _pr.push({ t: r.top, b: r.bottom, h: r.height });
           }
-        });
-        processSteps.forEach(step => step.classList.toggle('active', step === closestStep));
-        if (processRailFill) processRailFill.style.transform = `scaleY(${(activeIndex + 1) / processSteps.length})`;
-      }
+        }
 
-      // Parallax depth layers
-      if (hasPointer) {
-        _pxr.forEach((pr, el) => {
-          const htmlEl = el as HTMLElement;
-          if (htmlEl.id === 'hero-name') return;
-          const speed = parseFloat(htmlEl.dataset.parallax || '0');
-          const offset = (pr.t + pr.h / 2 - viewH / 2) * speed;
-          htmlEl.style.transform = `translateY(${offset}px)`;
-        });
-      }
+        _pxr = new Map();
+        if (hasPointer) {
+          parallaxVisible.forEach(el => {
+            const r = el.getBoundingClientRect();
+            _pxr.set(el, { t: r.top, h: r.height });
+          });
+        }
+
+        // ═══ SCROLL-DEPENDENT WRITES ═══
+        if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
+
+        if (heroScrollFade) {
+          const fadeEnd = viewH * 0.6;
+          const fadeProg = Math.min(1, Math.max(0, currentScrollY / fadeEnd));
+          heroScrollFade.style.opacity = String(1 - fadeProg);
+          heroScrollFade.style.transform = `translateY(${fadeProg * -40}px)`;
+        }
+
+        const shouldScrollNav = currentScrollY > 80;
+        if (shouldScrollNav !== navTop?.classList.contains('scrolled')) {
+          navTop?.classList.toggle('scrolled', shouldScrollNav);
+        }
+
+        if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
+
+        if (currentSection !== lastActiveSection) {
+          lastActiveSection = currentSection;
+          navNodes.forEach(node => { node.classList.toggle('active', (node as HTMLElement).dataset.navSection === currentSection); });
+          navMobileLinks.forEach(link => { link.classList.toggle('active', (link as HTMLElement).dataset.navSection === currentSection); });
+        }
+
+        // Manifesto word reveal
+        for (let mi = 0; mi < manifestoData.length; mi++) {
+          if (!manifestoVisible.get(manifestoData[mi].el)) continue;
+          const mrt = _mr[mi].t;
+          const mStart = viewH * 0.85;
+          const mEnd = viewH * 0.15;
+          const mProg = Math.max(0, Math.min(1, (mStart - mrt) / (mStart - mEnd)));
+          const litCount = Math.floor(mProg * manifestoData[mi].totalWords);
+          manifestoData[mi].wordSpans.forEach((w, j) => { w.classList.toggle('lit', j < litCount); });
+        }
+
+        // Process step highlighting
+        if (_pr.length > 0) {
+          const viewCenter = viewH * 0.5;
+          let closestStep: Element | null = null;
+          let closestDist = Infinity;
+          let activeIndex = 0;
+          processSteps.forEach((step, si) => {
+            const sr = _pr[si];
+            const stepCenter = sr.t + sr.h / 2;
+            const dist = Math.abs(stepCenter - viewCenter);
+            if (dist < closestDist && sr.t < viewH && sr.b > 0) {
+              closestDist = dist; closestStep = step; activeIndex = si;
+            }
+          });
+          processSteps.forEach(step => step.classList.toggle('active', step === closestStep));
+          if (processRailFill) processRailFill.style.transform = `scaleY(${(activeIndex + 1) / processSteps.length})`;
+        }
+
+        // Parallax depth layers
+        if (hasPointer) {
+          _pxr.forEach((pr, el) => {
+            const htmlEl = el as HTMLElement;
+            if (htmlEl.id === 'hero-name') return;
+            const speed = parseFloat(htmlEl.dataset.parallax || '0');
+            const offset = (pr.t + pr.h / 2 - viewH / 2) * speed;
+            htmlEl.style.transform = `translateY(${offset}px)`;
+          });
+        }
+      } // end scrollChanged
 
       // ── Skew ──
       if (skewVal !== 0) {
