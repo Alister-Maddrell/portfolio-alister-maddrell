@@ -749,13 +749,53 @@ const steps = [
 
   <!-- ─── SCRIPTS ─── -->
   <script>
-    // ── Animation setup ──
+    /* ═══════════════════════════════════════════════════════════════════════════
+     * ANIMATION ENGINE
+     * ═══════════════════════════════════════════════════════════════════════════
+     * Single-file animation system for the portfolio site. Architecture:
+     *
+     * 1. UTILITIES        — Shared easing, observer factories, DOM helpers
+     * 2. STATE             — Global animation state (scroll, velocity, theme)
+     * 3. DATA STRUCTURES   — Parsed element collections (floats, cards, depths)
+     * 4. OBSERVERS         — Consolidated IntersectionObservers (visibility + reveal)
+     * 5. MAIN RAF LOOP     — Single requestAnimationFrame driving all scroll animations
+     * 6. HERO              — Typewriter, dot grid canvas, hero float/reveal
+     * 7. INTERACTIONS      — Cursor, magnetic, tilt, scramble, card hover scroll
+     * 8. CONTACT           — Marquee, split reveal, form submit
+     * 9. THEME             — 3-way theme switcher with blob transition
+     * 10. CLOCK            — Live Sydney time in footer
+     *
+     * Performance notes:
+     * - All getBoundingClientRect() reads are batched before any style writes
+     * - Expensive reads gated behind scroll-change threshold (0.5px)
+     * - Canvas dot grid throttled to ~30fps via frame skipping
+     * - IntersectionObservers gate all per-element work to visible elements only
+     * - content-visibility: auto in CSS skips paint for off-screen sections
+     * ═══════════════════════════════════════════════════════════════════════════ */
+
+    // ── 1. UTILITIES ──
+
+    /** Attempt-smoothstep easing: t² × (3 - 2t). Used for all reveal animations. */
+    function smoothstep(t: number): number {
+      return t * t * (3 - 2 * t);
+    }
+
+    /** Clamped smoothstep with delay and duration. Progress-based reveal easing. */
+    function easedReveal(elapsed: number, delay: number, duration = 2000): number {
+      const raw = Math.min(1, Math.max(0, (elapsed - delay) / duration));
+      return smoothstep(raw);
+    }
+
+    // ── 2. STATE ──
+
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
     const grainOverlay = document.querySelector('.grain-overlay') as HTMLElement | null;
     const grainBase = document.documentElement.dataset.theme === 'dark' ? 0.1 : 0.06;
     const skewElements = document.querySelectorAll('[data-skew]');
+
+    // ── 3. DATA STRUCTURES — parsed element collections ──
 
     // Skew visibility — only transform elements in viewport
     const skewVisible = new Set<Element>();
@@ -842,7 +882,7 @@ const steps = [
 
     const animStart = performance.now();
 
-    // ── Unified animation loop (single rAF — Lenis + all animations) ──
+    // ── 5. MAIN RAF LOOP — single requestAnimationFrame for all scroll-driven animations ──
     let _lastRenderedScroll = -1;
     // Persistent rect caches (only updated when scroll changes)
     let _cr: { t: number; h: number }[] = [];
@@ -1154,6 +1194,8 @@ const steps = [
     }
     requestAnimationFrame(raf);
 
+    // ── 4. OBSERVERS + ELEMENT SETUP (below main rAF, referenced by hoisting) ──
+
     // ── Section bg text parallax setup ──
     const bgParallaxEls = Array.from(document.querySelectorAll('[data-bg-parallax]')) as HTMLElement[];
 
@@ -1243,7 +1285,7 @@ const steps = [
       cardLayers.push(cl);
 
       // Hover tracking for layer parallax
-      if (window.matchMedia('(pointer: fine)').matches) {
+      if (hasFineCursor) {
         card.addEventListener('mouseenter', () => { cl.hovering = true; }, { passive: true });
         card.addEventListener('mousemove', (e: Event) => {
           if (Math.abs(scrollVelocity) > 0.5) return;
@@ -1412,11 +1454,8 @@ const steps = [
             heroVis.observe(heroSection);
           }
 
-          // Helper: smoothstep reveal (same as subtitle)
-          function smoothReveal(t: number, delay: number, duration = 2000) {
-            const r = Math.min(1, Math.max(0, (t - delay) / duration));
-            return r * r * (3 - 2 * r);
-          }
+          // Alias shared easing for hero reveals
+          const smoothReveal = easedReveal;
 
           // ── Canvas dot grid with per-dot shimmer ──
           // Viewport-sized canvas. Parallax + shimmer in draw loop.
@@ -1528,7 +1567,10 @@ const steps = [
             }
             const t = now - startTime;
             const ramp = Math.min(1, t / rampDuration);
-            const easedRamp = ramp * ramp * (3 - 2 * ramp);
+            const easedRamp = smoothstep(ramp);
+
+            // Cache theme once per frame (avoids repeated DOM reads in reveal blocks below)
+            const isDark = document.documentElement.dataset.theme === 'dark';
 
             // Float the title
             const titleY = (Math.sin(t * 0.0008) * 12 + Math.sin(t * 0.00056 + 1) * 4.8) * easedRamp;
@@ -1588,7 +1630,6 @@ const steps = [
             // Reveal watermark
             if (heroWatermarkEl) {
               const e = smoothReveal(t, watermarkDelay, 3000);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroWatermarkEl.style.opacity = `${e * (isDark ? 0.03 : 0.018)}`;
               heroWatermarkEl.style.transform = `translateY(${(1 - e) * 30}px)`;
             }
@@ -1603,7 +1644,6 @@ const steps = [
             // Reveal year marker (deep layer)
             if (heroYearEl) {
               const e = smoothReveal(t, 300, 2500);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroYearEl.style.opacity = `${e * (isDark ? 0.06 : 0.04)}`;
               heroYearEl.style.transform = `translateY(${(1 - e) * 20}px)`;
             }
@@ -1611,14 +1651,12 @@ const steps = [
             // Reveal accent bar (mid layer)
             if (heroBarEl) {
               const e = smoothReveal(t, 400, 2500);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroBarEl.style.opacity = `${e * (isDark ? 0.12 : 0.08)}`;
             }
 
             // Reveal accent ring (mid layer)
             if (heroRingEl) {
               const e = smoothReveal(t, 350, 2500);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroRingEl.style.opacity = `${e * (isDark ? 0.08 : 0.05)}`;
               heroRingEl.style.transform = `scale(${0.8 + e * 0.2})`;
             }
@@ -1626,7 +1664,6 @@ const steps = [
             // Reveal grid overlay (deep layer)
             if (heroGridEl) {
               const e = smoothReveal(t, 200, 3000);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroGridEl.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
             }
 
@@ -1635,19 +1672,16 @@ const steps = [
             // Reveal hero title depth layers (timed with typewriter)
             if (heroSectionIndex) {
               const e = smoothReveal(t, watermarkDelay, 2500);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroSectionIndex.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
               heroSectionIndex.style.transform = `translateY(${(1 - e) * 25}px)`;
             }
             if (heroTitleBlock) {
               const e = smoothReveal(t, 100, 2500);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroTitleBlock.style.opacity = `${e * (isDark ? 0.04 : 0.025)}`;
               heroTitleBlock.style.transform = `translateX(${(1 - e) * 20}px)`;
             }
             if (heroTitleLine) {
               const e = smoothReveal(t, subtitleDelay, 2000);
-              const isDark = document.documentElement.dataset.theme === 'dark';
               heroTitleLine.style.opacity = `${e * (isDark ? 0.15 : 0.1)}`;
               heroTitleLine.style.transform = `scaleX(${e})`;
               heroTitleLine.style.transformOrigin = 'left';
@@ -1662,7 +1696,7 @@ const steps = [
 
             requestAnimationFrame(heroFloat);
           }
-          requestAnimationFrame(heroFloat);
+          requestAnimationFrame(heroFloat); // initial kick-off
           return;
         }
         heroName.textContent = text.slice(0, charIdx + 1);
@@ -1675,7 +1709,7 @@ const steps = [
       typeNext();
     }
 
-    // ── Scroll-triggered reveals ──
+    // ── 6. SCROLL-TRIGGERED REVEALS ──
     const revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -1695,25 +1729,21 @@ const steps = [
       revealObserver.observe(el);
     });
 
-    // (Float moved to Lenis rAF loop above — uses style.transform instead of style.translate)
+    // (Float animation runs in main rAF loop above)
 
-    // ── Section dividers ──
-    document.querySelectorAll('[data-divider]').forEach((el) => {
-      const obs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setTimeout(() => (entry.target as HTMLElement).classList.add('animate-in'), 200);
-              obs.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      obs.observe(el);
-    });
+    // ── Section dividers (shared observer — one for all dividers) ──
+    const dividerObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => (entry.target as HTMLElement).classList.add('animate-in'), 200);
+          dividerObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-divider]').forEach((el) => dividerObs.observe(el));
 
-    // ── Section heading char reveal ──
+    // ── Section heading char reveal (shared observers) ──
+    const headingWraps: { wrap: Element; heading: HTMLElement }[] = [];
     document.querySelectorAll('[data-heading-reveal]').forEach((wrap) => {
       const heading = wrap.querySelector('.section-heading') as HTMLElement;
       if (!heading) return;
@@ -1726,22 +1756,9 @@ const steps = [
         span.style.transitionDelay = `${i * 0.04}s`;
         heading.appendChild(span);
       });
+      headingWraps.push({ wrap, heading });
 
-      const obs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              heading.classList.add('revealed');
-              (entry.target as HTMLElement).classList.add('revealed');
-              obs.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
-      obs.observe(wrap);
-
-      // Hover bounce on heading chars (desktop) / scroll-triggered bounce (mobile)
+      // Hover bounce on heading chars (desktop only)
       if (hasFineCursor) {
         heading.addEventListener('mouseenter', () => {
           heading.querySelectorAll('.heading-char').forEach((ch, i) => {
@@ -1749,32 +1766,46 @@ const steps = [
             setTimeout(() => {
               (ch as HTMLElement).style.animation = ``;
               (ch as HTMLElement).style.transform = 'translateY(-8px)';
-              setTimeout(() => {
-                (ch as HTMLElement).style.transform = '';
-              }, 150);
+              setTimeout(() => { (ch as HTMLElement).style.transform = ''; }, 150);
             }, i * 30);
           });
         });
-      } else {
-        // On mobile, bounce chars when section heading scrolls into view
-        const bounceObs = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              heading.querySelectorAll('.heading-char').forEach((ch, i) => {
-                setTimeout(() => {
-                  (ch as HTMLElement).style.transform = 'translateY(-6px)';
-                  setTimeout(() => {
-                    (ch as HTMLElement).style.transform = '';
-                  }, 150);
-                }, i * 30);
-              });
-              bounceObs.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.8 });
-        bounceObs.observe(wrap);
       }
     });
+
+    // Single observer for heading reveal (replaces N per-heading observers)
+    const headingRevealObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const match = headingWraps.find(h => h.wrap === entry.target);
+        if (match) {
+          match.heading.classList.add('revealed');
+          (entry.target as HTMLElement).classList.add('revealed');
+        }
+        headingRevealObs.unobserve(entry.target);
+      });
+    }, { threshold: 0.2 });
+    headingWraps.forEach(h => headingRevealObs.observe(h.wrap));
+
+    // Mobile: single observer for heading bounce (replaces N per-heading bounce observers)
+    if (!hasFineCursor && headingWraps.length > 0) {
+      const headingBounceObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const match = headingWraps.find(h => h.wrap === entry.target);
+          if (match) {
+            match.heading.querySelectorAll('.heading-char').forEach((ch, i) => {
+              setTimeout(() => {
+                (ch as HTMLElement).style.transform = 'translateY(-6px)';
+                setTimeout(() => { (ch as HTMLElement).style.transform = ''; }, 150);
+              }, i * 30);
+            });
+          }
+          headingBounceObs.unobserve(entry.target);
+        });
+      }, { threshold: 0.8 });
+      headingWraps.forEach(h => headingBounceObs.observe(h.wrap));
+    }
 
     // ── Manifesto word-by-word scroll reveal (setup) ──
     const manifestoData: { el: Element; wordSpans: NodeListOf<Element>; totalWords: number }[] = [];
@@ -1892,10 +1923,10 @@ const steps = [
       processObs.observe(processTimeline);
     }
 
-    // ── Skew (variables — logic runs in Lenis rAF above) ──
+    // ── Skew (variables — logic runs in main rAF above) ──
 
     // ── Parallax (setup) ──
-    const hasPointer = window.matchMedia('(pointer: fine)').matches;
+    const hasPointer = hasFineCursor;
     const parallaxElements = hasPointer ? document.querySelectorAll('[data-parallax]') : [];
     const parallaxVisible = new Set<Element>();
     if (hasPointer && parallaxElements.length > 0) {
@@ -1908,7 +1939,7 @@ const steps = [
       parallaxElements.forEach((el) => parObs.observe(el));
     }
 
-    // (Scroll handler merged into main raf() loop — batched reads eliminate layout thrashing)
+    // (Scroll reads batched in main rAF loop — no separate scroll handler needed)
     const heroScrollFade = document.querySelector('.hero-scroll-fade') as HTMLElement | null;
 
     // ── Mobile menu ──
@@ -1932,7 +1963,9 @@ const steps = [
       }
     });
 
-    // ── Magnetic hover elements (lerp-smoothed) ──
+    // ── 7. INTERACTIONS — magnetic, cursor, tilt, scramble ──
+
+    // Magnetic hover elements (lerp-smoothed)
     if (hasFineCursor) {
       const magEls: { el: HTMLElement; strength: number; targetX: number; targetY: number; currentX: number; currentY: number; active: boolean }[] = [];
       document.querySelectorAll('[data-magnetic]').forEach((el) => {
@@ -1976,7 +2009,7 @@ const steps = [
     let mouseX = -100;
     let mouseY = -100;
 
-    if (window.matchMedia('(pointer: fine)').matches && cursorDot && cursorCircle) {
+    if (hasFineCursor && cursorDot && cursorCircle) {
       let mouseOnPage = true;
       let dotX = -100, dotY = -100;
       let circleX = -100, circleY = -100;
@@ -2099,7 +2132,7 @@ const steps = [
     }
 
     // ── Smooth image scroll on project card hover ──
-    if (window.matchMedia('(pointer: fine)').matches) {
+    if (hasFineCursor) {
       document.querySelectorAll('.project-card-v').forEach((card) => {
         const img = card.querySelector('.card-work-img img') as HTMLImageElement;
         const container = card.querySelector('.project-image') as HTMLElement;
@@ -2202,110 +2235,83 @@ const steps = [
       });
     }
 
-    // ── Mobile: scroll-triggered card effects (replaces hover) ──
-    if (!window.matchMedia('(pointer: fine)').matches) {
-      // Scroll-triggered image auto-scroll on mobile
+    // ── Mobile: scroll-triggered card effects (single shared observer) ──
+    if (!hasFineCursor) {
+      interface MobileCardState {
+        card: HTMLElement; img: HTMLImageElement; container: HTMLElement;
+        scrollPos: number; scrollRaf: number | null; active: boolean;
+        currentStop: number; pauseCounter: number; isPaused: boolean;
+        delayCounter: number; isDelaying: boolean; cachedMaxScroll: number;
+      }
+      const mobileCards: MobileCardState[] = [];
+      const MOBILE_STOPS = [0, 0.25, 0.5, 0.75, 1];
+
+      function animateMobileCard(state: MobileCardState) {
+        if (state.cachedMaxScroll <= 0) { state.scrollRaf = null; return; }
+        if (state.active) {
+          if (state.isDelaying) {
+            state.delayCounter++;
+            if (state.delayCounter >= 60) state.isDelaying = false;
+            state.img.style.transform = `translateY(${-state.scrollPos}px)`;
+            state.scrollRaf = requestAnimationFrame(() => animateMobileCard(state));
+            return;
+          }
+          const stopTarget = MOBILE_STOPS[state.currentStop] * state.cachedMaxScroll;
+          if (state.isPaused) {
+            state.pauseCounter++;
+            if (state.pauseCounter >= 100) { state.isPaused = false; state.pauseCounter = 0; if (state.currentStop < MOBILE_STOPS.length - 1) state.currentStop++; }
+          } else {
+            state.scrollPos += (stopTarget - state.scrollPos) * 0.04;
+            if (Math.abs(state.scrollPos - stopTarget) < 1) {
+              state.scrollPos = stopTarget;
+              if (state.currentStop < MOBILE_STOPS.length - 1) { state.isPaused = true; state.pauseCounter = 0; }
+            }
+          }
+        } else {
+          state.scrollPos += (0 - state.scrollPos) * 0.05;
+          if (Math.abs(state.scrollPos) < 0.5) {
+            state.scrollPos = 0; state.img.style.transform = ''; state.currentStop = 0;
+            state.isPaused = false; state.pauseCounter = 0; state.scrollRaf = null; return;
+          }
+        }
+        state.img.style.transform = `translateY(${-state.scrollPos}px)`;
+        state.scrollRaf = requestAnimationFrame(() => animateMobileCard(state));
+      }
+
       document.querySelectorAll('.project-card-v').forEach((card) => {
         const img = card.querySelector('.card-work-img img') as HTMLImageElement;
         const container = card.querySelector('.project-image') as HTMLElement;
         if (!img || !container) return;
-
-        let scrollPos = 0;
-        let scrollRaf: number | null = null;
-        let active = false;
-        let currentStop = 0;
-        const stops = [0, 0.25, 0.5, 0.75, 1];
-        const pauseDuration = 100;
-        const initialDelay = 60;
-        let pauseCounter = 0;
-        let isPaused = false;
-        let delayCounter = 0;
-        let isDelaying = false;
-        let cachedMaxScroll = 0;
-
-        function cacheMaxScroll() {
-          cachedMaxScroll = img.offsetHeight - container.offsetHeight;
-        }
-
-        function animateScroll() {
-          if (cachedMaxScroll <= 0) { scrollRaf = null; return; }
-
-          if (active) {
-            if (isDelaying) {
-              delayCounter++;
-              if (delayCounter >= initialDelay) isDelaying = false;
-              img.style.transform = `translateY(${-scrollPos}px)`;
-              scrollRaf = requestAnimationFrame(animateScroll);
-              return;
-            }
-            const stopTarget = stops[currentStop] * cachedMaxScroll;
-            if (isPaused) {
-              pauseCounter++;
-              if (pauseCounter >= pauseDuration) {
-                isPaused = false;
-                pauseCounter = 0;
-                if (currentStop < stops.length - 1) currentStop++;
-              }
-            } else {
-              scrollPos += (stopTarget - scrollPos) * 0.04;
-              if (Math.abs(scrollPos - stopTarget) < 1) {
-                scrollPos = stopTarget;
-                if (currentStop < stops.length - 1) {
-                  isPaused = true;
-                  pauseCounter = 0;
-                }
-              }
-            }
-          } else {
-            scrollPos += (0 - scrollPos) * 0.05;
-            if (Math.abs(scrollPos) < 0.5) {
-              scrollPos = 0;
-              img.style.transform = '';
-              currentStop = 0;
-              isPaused = false;
-              pauseCounter = 0;
-              scrollRaf = null;
-              return;
-            }
-          }
-          img.style.transform = `translateY(${-scrollPos}px)`;
-          scrollRaf = requestAnimationFrame(animateScroll);
-        }
-
-        // Activate when card is centered in viewport
-        const mobileCardObs = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !active) {
-              active = true;
-              (card as HTMLElement).classList.add('scroll-active');
-              currentStop = 1;
-              isPaused = false;
-              pauseCounter = 0;
-              isDelaying = true;
-              delayCounter = 0;
-              if (img.naturalHeight > 0) {
-                cacheMaxScroll();
-                if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
-              } else {
-                img.addEventListener('load', () => {
-                  cacheMaxScroll();
-                  if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
-                }, { once: true });
-              }
-            } else if (!entry.isIntersecting && active) {
-              active = false;
-              (card as HTMLElement).classList.remove('scroll-active');
-              currentStop = 0;
-              if (!scrollRaf) scrollRaf = requestAnimationFrame(animateScroll);
-            }
-          });
-        }, { threshold: 0.5 });
-        mobileCardObs.observe(card);
+        mobileCards.push({
+          card: card as HTMLElement, img, container,
+          scrollPos: 0, scrollRaf: null, active: false, currentStop: 0,
+          pauseCounter: 0, isPaused: false, delayCounter: 0, isDelaying: false, cachedMaxScroll: 0,
+        });
       });
+
+      // Single observer for all mobile cards (replaces N per-card observers)
+      const mobileCardObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const state = mobileCards.find(s => s.card === entry.target);
+          if (!state) return;
+          if (entry.isIntersecting && !state.active) {
+            state.active = true; state.card.classList.add('scroll-active');
+            state.currentStop = 1; state.isPaused = false; state.pauseCounter = 0;
+            state.isDelaying = true; state.delayCounter = 0;
+            const startAnim = () => { state.cachedMaxScroll = state.img.offsetHeight - state.container.offsetHeight; if (!state.scrollRaf) state.scrollRaf = requestAnimationFrame(() => animateMobileCard(state)); };
+            if (state.img.naturalHeight > 0) startAnim();
+            else state.img.addEventListener('load', startAnim, { once: true });
+          } else if (!entry.isIntersecting && state.active) {
+            state.active = false; state.card.classList.remove('scroll-active'); state.currentStop = 0;
+            if (!state.scrollRaf) state.scrollRaf = requestAnimationFrame(() => animateMobileCard(state));
+          }
+        });
+      }, { threshold: 0.5 });
+      mobileCards.forEach(s => mobileCardObs.observe(s.card));
     }
 
     // ── Card-work layer parallax — each layer moves independently on hover ──
-    if (window.matchMedia('(pointer: fine)').matches) {
+    if (hasFineCursor) {
       document.querySelectorAll('[data-card-parallax]').forEach((container) => {
         const layers = container.querySelectorAll('[data-card-depth]');
         if (!layers.length) return;
@@ -2388,7 +2394,7 @@ const steps = [
     }
 
     // ── 3D tilt on project cards (state only — animation runs in main rAF) ──
-    if (window.matchMedia('(pointer: fine)').matches) {
+    if (hasFineCursor) {
       document.querySelectorAll('[data-tilt]').forEach((card) => {
         const el = card as HTMLElement;
         const f = floatItems.find(item => item.el === el);
@@ -2410,58 +2416,58 @@ const steps = [
       });
     }
 
-    // ── Magnetic effect — REMOVED (duplicate of lines 1996-2014) ──
+    // ── Text scramble on project name — shared observer + hover ──
+    if (hasFineCursor) {
+      const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&0123456789';
+      const scrambleMap = new Map<Element, { original: string; intervalId: number | null }>();
 
-    // ── Text scramble on project name — on scroll + hover ──
-    if (window.matchMedia('(pointer: fine)').matches) {
+      function runScramble(element: HTMLElement, data: { original: string; intervalId: number | null }) {
+        if (data.intervalId) clearInterval(data.intervalId);
+        let step = 0;
+        const totalSteps = 14;
+        data.intervalId = window.setInterval(() => {
+          step++;
+          let result = '';
+          for (let i = 0; i < data.original.length; i++) {
+            if (data.original[i] === ' ' || data.original[i] === '&') result += data.original[i];
+            else if (step / totalSteps > i / data.original.length) result += data.original[i];
+            else result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          }
+          element.textContent = result;
+          if (step >= totalSteps) {
+            clearInterval(data.intervalId!);
+            data.intervalId = null;
+            element.textContent = data.original;
+          }
+        }, 40);
+      }
+
       document.querySelectorAll('[data-scramble]').forEach((el) => {
         const element = el as HTMLElement;
-        const originalText = element.textContent?.trim() || '';
-        let intervalId: number | null = null;
-
-        function runScramble() {
-          if (intervalId) clearInterval(intervalId);
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&0123456789';
-          let step = 0;
-          const totalSteps = 14;
-          intervalId = window.setInterval(() => {
-            step++;
-            let result = '';
-            for (let i = 0; i < originalText.length; i++) {
-              if (originalText[i] === ' ' || originalText[i] === '&') result += originalText[i];
-              else if (step / totalSteps > i / originalText.length) result += originalText[i];
-              else result += chars[Math.floor(Math.random() * chars.length)];
-            }
-            element.textContent = result;
-            if (step >= totalSteps) {
-              clearInterval(intervalId!);
-              intervalId = null;
-              element.textContent = originalText;
-            }
-          }, 40);
-        }
-
-        // Scramble on scroll reveal
-        const scrambleObs = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              runScramble();
-              scrambleObs.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.5 });
-        scrambleObs.observe(element);
-
-        // Also on hover
-        element.addEventListener('mouseenter', runScramble);
+        const data = { original: element.textContent?.trim() || '', intervalId: null as number | null };
+        scrambleMap.set(element, data);
+        element.addEventListener('mouseenter', () => runScramble(element, data));
         element.addEventListener('mouseleave', () => {
-          if (intervalId) { clearInterval(intervalId); intervalId = null; }
-          element.textContent = originalText;
+          if (data.intervalId) { clearInterval(data.intervalId); data.intervalId = null; }
+          element.textContent = data.original;
         });
       });
+
+      // Single observer for scroll-triggered scramble (replaces N per-element observers)
+      const scrambleObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const data = scrambleMap.get(entry.target);
+          if (data) runScramble(entry.target as HTMLElement, data);
+          scrambleObs.unobserve(entry.target);
+        });
+      }, { threshold: 0.5 });
+      scrambleMap.forEach((_, el) => scrambleObs.observe(el));
     }
 
-    // ── Contact section — velocity-reactive marquee ──
+    // ── 8. CONTACT — marquee, split reveal, form ──
+
+    // Contact section — velocity-reactive marquee
     const marqueeSection = document.querySelector('[data-contact-marquee]');
     const leftTrack = document.querySelector('[data-marquee-track="left"]') as HTMLElement;
     const rightTrack = document.querySelector('[data-marquee-track="right"]') as HTMLElement;
@@ -2471,13 +2477,13 @@ const steps = [
       let rightPos = 0;
       const baseSpeed = 0.8;
       let marqueeActive = false;
-      let lenisVelocity = 0;
+      let marqueeVelocity = 0;
 
       // Track scroll velocity for marquee speed
       let lastMarqueeScroll = window.scrollY;
       window.addEventListener('scroll', () => {
         const now = window.scrollY;
-        lenisVelocity = (now - lastMarqueeScroll) * 0.5;
+        marqueeVelocity = (now - lastMarqueeScroll) * 0.5;
         lastMarqueeScroll = now;
       }, { passive: true });
 
@@ -2490,9 +2496,9 @@ const steps = [
         if (!marqueeActive) return;
 
         // Decay velocity smoothly and clamp to prevent jumps from anchor-link scrolls
-        lenisVelocity *= 0.92;
-        if (Math.abs(lenisVelocity) < 0.01) lenisVelocity = 0;
-        const clampedVel = Math.min(Math.abs(lenisVelocity), 20);
+        marqueeVelocity *= 0.92;
+        if (Math.abs(marqueeVelocity) < 0.01) marqueeVelocity = 0;
+        const clampedVel = Math.min(Math.abs(marqueeVelocity), 20);
         const speedMultiplier = 1 + clampedVel * 0.05;
         const speed = baseSpeed * speedMultiplier;
 
@@ -2544,10 +2550,8 @@ const steps = [
     if (contactLeftFloat) { contactLeftFloat.revealOpacity = 0; contactLeftFloat.revealX = -12; contactLeftFloat.revealY = 20; }
     if (contactRightFloat) { contactRightFloat.revealOpacity = 0; contactRightFloat.revealX = 12; contactRightFloat.revealY = 20; }
 
-    function contactSmooth(t: number, delay: number, dur = 1800) {
-      const r = Math.min(1, Math.max(0, (t - delay) / dur));
-      return r * r * (3 - 2 * r);
-    }
+    /** Contact reveal uses the shared easing with 1800ms default duration */
+    const contactSmooth = (t: number, delay: number, dur = 1800) => easedReveal(t, delay, dur);
 
     if (contactDivider) {
       let contactRevealStart = 0;
@@ -2645,62 +2649,56 @@ const steps = [
 
     // ── About section scroll animations ──
 
-    // About blocks — fade up on scroll
-    document.querySelectorAll('[data-about-block]').forEach((el) => {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.2 });
-      obs.observe(el);
-    });
+    // ── About section reveals (shared observers — replaces N per-element observers) ──
 
-    // Rolling digit counters — odometer effect on scroll
-    // Stat counters — count up on scroll
-    document.querySelectorAll('[data-stat]').forEach((el) => {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            const target = parseInt((entry.target as HTMLElement).dataset.statTarget || '0');
-            const suffix = (entry.target as HTMLElement).dataset.statSuffix || '';
-            const numEl = entry.target.querySelector('[data-stat-number]') as HTMLElement;
-            if (numEl) {
-              let current = 0;
-              const duration = 1200;
-              const start = performance.now();
-              function countUp(now: number) {
-                const elapsed = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                current = Math.round(eased * target);
-                numEl.textContent = `${current}${suffix}`;
-                if (progress < 1) requestAnimationFrame(countUp);
-              }
-              requestAnimationFrame(countUp);
-            }
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.3 });
-      obs.observe(el);
-    });
+    // About blocks — single observer for all blocks
+    const aboutBlockObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          aboutBlockObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('[data-about-block]').forEach((el) => aboutBlockObs.observe(el));
 
-    // Approach items — staggered slide-in
-    document.querySelectorAll('[data-approach]').forEach((el, i) => {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add('revealed'), i * 120);
-            obs.unobserve(entry.target);
+    // Stat counters — single observer triggers count-up animation
+    const statObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('revealed');
+        const target = parseInt((entry.target as HTMLElement).dataset.statTarget || '0');
+        const suffix = (entry.target as HTMLElement).dataset.statSuffix || '';
+        const numEl = entry.target.querySelector('[data-stat-number]') as HTMLElement;
+        if (numEl) {
+          const duration = 1200;
+          const start = performance.now();
+          function countUp(now: number) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            numEl.textContent = `${Math.round(eased * target)}${suffix}`;
+            if (progress < 1) requestAnimationFrame(countUp);
           }
-        });
-      }, { threshold: 0.2 });
-      obs.observe(el);
-    });
+          requestAnimationFrame(countUp);
+        }
+        statObs.unobserve(entry.target);
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('[data-stat]').forEach((el) => statObs.observe(el));
+
+    // Approach items — single observer with stagger index stored as data attribute
+    const approachEls = document.querySelectorAll('[data-approach]');
+    const approachObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = Array.prototype.indexOf.call(approachEls, entry.target);
+          setTimeout(() => entry.target.classList.add('revealed'), idx * 120);
+          approachObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    approachEls.forEach((el) => approachObs.observe(el));
 
     // Skill pills — staggered pop-in
     const pillContainer = document.querySelector('[data-skill-pills]');
@@ -2719,8 +2717,7 @@ const steps = [
       pillObs.observe(pillContainer);
     }
 
-    // ── Dark mode toggle ──
-    // ── Theme switcher (3-way: light / system / dark) ──
+    // ── 9. THEME — 3-way switcher (light / system / dark) with blob transition ──
     function getEffectiveTheme(mode: string): string {
       if (mode === 'system') {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -2815,7 +2812,7 @@ const steps = [
       });
     });
 
-    // ── JS-driven pill expand/collapse with smoothstep easing ──
+    // ── JS-driven pill expand/collapse (uses shared smoothstep) ──
     const pillEl = document.querySelector('.theme-switcher-options') as HTMLElement | null;
     const labelEls = document.querySelectorAll('.theme-option-label') as NodeListOf<HTMLElement>;
     const themeSwitcherEl = document.getElementById('theme-switcher');
@@ -2826,10 +2823,6 @@ const steps = [
       let pillAnim: number | null = null;
       let pillOpen = false;
       let introHolding = false;
-
-      function smoothstep(t: number): number {
-        return t * t * (3 - 2 * t);
-      }
 
       function animatePill(open: boolean, duration = 550) {
         if (pillAnim) cancelAnimationFrame(pillAnim);
@@ -2965,7 +2958,7 @@ const steps = [
       }
     }
 
-    // ── Live Sydney time + analog clock ──
+    // ── 10. CLOCK — live Sydney time + analog clock (only ticks when footer visible) ──
     const clockHour = document.getElementById('clock-hour');
     const clockMinute = document.getElementById('clock-minute');
     const clockSecond = document.getElementById('clock-second');

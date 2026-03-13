@@ -217,14 +217,20 @@ h1, h2, h3, h4 { text-wrap: balance; }
 /* Body text — eliminate orphan words */
 p { text-wrap: pretty; }
 
-/* Global light typography — match dark mode's refined visual weight */
 body {
   font-variation-settings: 'wght' 370;
-}
-
-body {
   cursor: none;
   overflow-x: hidden;
+}
+
+/*
+ * Content-visibility: auto — browser skips rendering off-screen sections entirely.
+ * contain-intrinsic-size provides estimated height so scroll position stays correct.
+ * This is the single biggest paint performance optimization for long pages.
+ */
+section[id] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
 }
 
 /* Site-wide dot paper texture — canvas-driven for per-dot shimmer */
