@@ -2046,24 +2046,45 @@ const steps = [
         }
       }
 
-      // Single unified animation loop for dot + circle + trail
-      function animateCursor() {
-        dotX += (mouseX - dotX) * 0.85;
-        dotY += (mouseY - dotY) * 0.85;
-        cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+      // Sub-pixel rounding helper — snap to half-pixels to avoid rendering jitter
+      const r = (v: number) => Math.round(v * 2) / 2;
 
-        circleX += (mouseX - circleX) * 0.12;
-        circleY += (mouseY - circleY) * 0.12;
-        const isHover = cursorCircle.classList.contains('hover');
-        cursorCircle.style.transform = isHover
-          ? `translate(${circleX}px, ${circleY}px) scale(1.5)`
-          : `translate(${circleX}px, ${circleY}px)`;
+      // Single unified animation loop for dot + circle + trail
+      let prevDotX = -100, prevDotY = -100;
+      let prevCircleX = -100, prevCircleY = -100;
+
+      function animateCursor() {
+        // Dot: fast follow with adaptive lerp — snappier at speed, settled when still
+        const ddx = mouseX - dotX;
+        const ddy = mouseY - dotY;
+        const dotDist = Math.abs(ddx) + Math.abs(ddy);
+        const dotLerp = dotDist < 1 ? 1 : 0.45 + Math.min(dotDist / 60, 0.45);
+        dotX += ddx * dotLerp;
+        dotY += ddy * dotLerp;
+
+        const rdx = r(dotX), rdy = r(dotY);
+        if (rdx !== prevDotX || rdy !== prevDotY) {
+          cursorDot.style.transform = `translate3d(${rdx}px,${rdy}px,0)`;
+          prevDotX = rdx;
+          prevDotY = rdy;
+        }
+
+        // Circle: smooth lag
+        circleX += (mouseX - circleX) * 0.14;
+        circleY += (mouseY - circleY) * 0.14;
+
+        const rcx = r(circleX), rcy = r(circleY);
+        if (rcx !== prevCircleX || rcy !== prevCircleY) {
+          const isHover = cursorCircle.classList.contains('hover');
+          cursorCircle.style.transform = isHover
+            ? `translate3d(${rcx}px,${rcy}px,0) scale(1.5)`
+            : `translate3d(${rcx}px,${rcy}px,0)`;
+          prevCircleX = rcx;
+          prevCircleY = rcy;
+        }
 
         if (trailDots.length && mouseOnPage) {
-          // Velocity-based trail visibility — faster = more visible
-          const dx = mouseX - dotX;
-          const dy = mouseY - dotY;
-          const velocity = Math.sqrt(dx * dx + dy * dy);
+          const velocity = Math.sqrt(ddx * ddx + ddy * ddy);
           const trailIntensity = Math.min(1, velocity / 30);
 
           trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
@@ -2073,7 +2094,7 @@ const steps = [
             trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.25;
           }
           trailDots.forEach((dot, i) => {
-            dot.style.transform = `translate(${trailPositions[i].x - 2}px, ${trailPositions[i].y - 2}px)`;
+            dot.style.transform = `translate3d(${r(trailPositions[i].x - 2)}px,${r(trailPositions[i].y - 2)}px,0)`;
             dot.style.opacity = `${(0.3 - i * 0.035) * trailIntensity}`;
           });
         }
