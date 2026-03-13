@@ -1946,12 +1946,50 @@ body.loaded #nav-rail {
   will-change: transform;
 }
 
-/* Mid: Horizontal accent line behind card — always visible */
+/* Mid: Horizontal accent line behind card */
+.project-accent-line {
+  position: absolute;
+  top: 35%;
+  left: -24px;
+  right: -24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--card-color) 20%, var(--card-color) 80%, transparent);
+  opacity: var(--depth-4);
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Deep: Monospace project label */
+.project-label {
+  position: absolute;
+  top: -1.5em;
+  left: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--card-color);
+  opacity: var(--depth-4);
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
 @media (max-width: 768px) {
   .project-index-stroke {
     font-size: clamp(6rem, 24vw, 10rem);
     right: -0.05em;
     top: -0.4em;
+  }
+  .project-accent-line {
+    left: -10px;
+    right: -10px;
+  }
+  .project-label {
+    font-size: 0.5rem;
+    top: -1.25em;
   }
 }
 

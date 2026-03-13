@@ -366,7 +366,9 @@ const steps = [
             >
               <span class="project-index-stroke" data-card-layer="stroke" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div class="project-accent-line" data-card-layer="line" aria-hidden="true"></div>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
+              <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
               <div class="card-work" data-skew data-card-parallax>
                 <div class="card-work-topbar" data-card-depth="0.012">
                   <div class="card-work-urlbar">
@@ -1157,7 +1159,7 @@ const steps = [
         }
       }
 
-      // ── Card layer parallax (3 layers: index, block, stroke) ──
+      // ── Card layer parallax (5 layers: index, block, stroke, line, label) ──
       // Each card only updates when scroll changed OR that specific card is animating hover
       if (scrollChanged || _cardLayerActive) {
         let anyActive = false;
@@ -1182,6 +1184,12 @@ const steps = [
           cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12}px, 0)`;
           if (cl.strokeEl) {
             cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28}px, 0)`;
+          }
+          if (cl.lineEl) {
+            cl.lineEl.style.transform = `translate3d(${offset * (mob ? 6 : 4) + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px, 0)`;
+          }
+          if (cl.labelEl) {
+            cl.labelEl.style.transform = `translate3d(${cl.currentHoverX * -12}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10}px, 0)`;
           }
         }
         _cardLayerActive = anyActive;
@@ -1348,6 +1356,8 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       indexEl: HTMLElement;
       blockEl: HTMLElement;
       strokeEl: HTMLElement | null;
+      lineEl: HTMLElement | null;
+      labelEl: HTMLElement | null;
       visible: boolean;
       hoverX: number;
       hoverY: number;
@@ -1360,9 +1370,11 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       const indexEl = card.querySelector('[data-card-layer="index"]') as HTMLElement;
       const blockEl = card.querySelector('[data-card-layer="block"]') as HTMLElement;
       const strokeEl = card.querySelector('[data-card-layer="stroke"]') as HTMLElement | null;
+      const lineEl = card.querySelector('[data-card-layer="line"]') as HTMLElement | null;
+      const labelEl = card.querySelector('[data-card-layer="label"]') as HTMLElement | null;
       if (!indexEl || !blockEl) return;
       const cl: CardLayer = {
-        card: card as HTMLElement, indexEl, blockEl, strokeEl, visible: false,
+        card: card as HTMLElement, indexEl, blockEl, strokeEl, lineEl, labelEl, visible: false,
         hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
       };
       cardLayers.push(cl);
