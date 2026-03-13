@@ -1677,6 +1677,8 @@ body.loaded #nav-rail {
   display: block;
   text-decoration: none;
   contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 /* ─── Work section depth layers ─── */
@@ -2003,7 +2005,6 @@ body.loaded #nav-rail {
 
   .project-card-v.scroll-active .project-color-block {
     opacity: 0.25;
-    transform: translate(-4px, 4px);
   }
 
   .project-card-v.scroll-active .project-tag {
@@ -2056,7 +2057,6 @@ body.loaded #nav-rail {
 
 .project-card-v:hover .project-color-block {
   opacity: 0.25;
-  transform: translate(-4px, 4px);
 }
 
 @media (max-width: 768px) {

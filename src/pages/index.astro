@@ -800,6 +800,7 @@ const steps = [
       touchMultiplier: 1.8,   // amplified for mobile swipes
       syncTouch: true,
     });
+    (window as any).__lenis = lenis;
 
     let scrollVelocity = 0;
     let _scrollingTimeout = 0;
@@ -947,7 +948,8 @@ const steps = [
       const isMobileDevice = !hasFineCursor;
 
       // Only do scroll-dependent work when scroll moved enough to matter
-      const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 2;
+      // Also force scroll work when visibility state changed (IO fires async)
+      const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 2 || processVisibleChanged;
       if (scrollChanged) {
         const scrollDelta = currentScrollY - _lastRenderedScroll;
         _lastRenderedScroll = currentScrollY;
@@ -2616,7 +2618,7 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
             splitObs.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.25 });
+      }, { threshold: 0 });
       splitObs.observe(contactDivider);
     }
 

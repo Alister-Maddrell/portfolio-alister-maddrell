@@ -34,6 +34,7 @@ const { title, description } = Astro.props;
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_AU" />
     <meta property="og:site_name" content="Alister Maddrell — Web Design Sydney" />
+    <meta property="og:image" content="https://portfolio-alister-maddrell.vercel.app/og-image.png" />
 
     <!-- Schema: LocalBusiness -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -53,9 +54,17 @@ const { title, description } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
-      rel="stylesheet"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
+      />
+    </noscript>
 
     <!-- Preload project thumbnails so they're ready before scroll -->
     <link rel="preload" as="image" type="image/webp" href="/thumbnails/hartley.webp" />
