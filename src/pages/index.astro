@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
-import 'lenis/dist/lenis.css';
 
 const projects = [
   {
@@ -770,7 +769,7 @@ const steps = [
      * Performance notes:
      * - All getBoundingClientRect() reads are batched before any style writes
      * - Expensive reads gated behind scroll-change threshold (0.5px)
-     * - Lenis smooth scroll driven from single rAF (no autoRaf overhead)
+     * - CSS scroll-behavior: smooth for native anchor scrolling
      * - IntersectionObservers gate all per-element work to visible elements only
      * - content-visibility: auto in CSS skips paint for off-screen sections
      * ═══════════════════════════════════════════════════════════════════════════ */
@@ -790,24 +789,14 @@ const steps = [
 
     // ── 2. STATE ──
 
-    // Lenis smooth scroll — lerp mode for that glassy, lightweight feel.
-    // We drive Lenis manually from our single rAF loop (no autoRaf)
-    // so it shares the same frame budget as all other animations.
-    import Lenis from 'lenis';
-    const lenis = new Lenis({
-      lerp: 0.12,             // snappy response, light feel
-      wheelMultiplier: 1.0,   // native wheel speed
-      touchMultiplier: 2.0,   // responsive mobile swipes
-      syncTouch: true,
-    });
-    (window as any).__lenis = lenis;
-
+    // Scroll velocity tracking — toggle .scrolling class to disable hover during scroll
     let scrollVelocity = 0;
+    let _lastScrollY = window.scrollY;
     let _scrollingTimeout = 0;
-    lenis.on('scroll', ({ velocity }: { velocity: number }) => {
-      scrollVelocity = velocity;
-      // Toggle .scrolling class on body — disables hover effects during scroll
-      if (Math.abs(velocity) > 0.1) {
+    window.addEventListener('scroll', () => {
+      scrollVelocity = Math.abs(window.scrollY - _lastScrollY);
+      _lastScrollY = window.scrollY;
+      if (scrollVelocity > 2) {
         if (!document.body.classList.contains('scrolling')) {
           document.body.classList.add('scrolling');
         }
@@ -816,7 +805,7 @@ const steps = [
           document.body.classList.remove('scrolling');
         }, 150);
       }
-    });
+    }, { passive: true });
 
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
     const dotGrid = document.getElementById('dot-grid');
@@ -935,8 +924,6 @@ const steps = [
     let _contactVisible = false;
 
     function raf(time: number) {
-      // Drive Lenis from our single rAF — no separate autoRaf loop
-      lenis.raf(time);
       frameCount++;
 
       const t = time - animStart;
@@ -1461,7 +1448,7 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       depthLayers.forEach(dl => depthVis.observe(dl.container));
     }
 
-    // Handle anchor clicks via Lenis smooth scroll
+    // Handle anchor clicks — native smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1469,7 +1456,7 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
         if (!href) return;
         const target = document.querySelector(href);
         if (target) {
-          lenis.scrollTo(target as HTMLElement);
+          target.scrollIntoView({ behavior: 'smooth' });
           const mobileMenu = document.getElementById('mobile-menu');
           if (mobileMenu?.classList.contains('open')) {
             mobileMenu.classList.remove('open');
