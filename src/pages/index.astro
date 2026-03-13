@@ -795,9 +795,9 @@ const steps = [
     // so it shares the same frame budget as all other animations.
     import Lenis from 'lenis';
     const lenis = new Lenis({
-      lerp: 0.06,             // lower = longer coast, more momentum
-      wheelMultiplier: 1.2,   // slightly amplified wheel for faster scrolling
-      touchMultiplier: 1.8,   // amplified for mobile swipes
+      lerp: 0.12,             // snappy response, light feel
+      wheelMultiplier: 1.0,   // native wheel speed
+      touchMultiplier: 2.0,   // responsive mobile swipes
       syncTouch: true,
     });
     (window as any).__lenis = lenis;
