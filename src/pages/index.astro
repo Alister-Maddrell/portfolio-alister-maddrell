@@ -241,8 +241,7 @@ const steps = [
     <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 md:px-10 overflow-hidden">
       <!-- Deep depth layers -->
       <span class="hero-watermark" data-hero-layer="watermark" aria-hidden="true">AM</span>
-      <span class="hero-grid-overlay" data-hero-layer="grid" aria-hidden="true"></span>
-      <span class="hero-year" data-hero-layer="year" aria-hidden="true">&rsquo;26</span>
+<span class="hero-year" data-hero-layer="year" aria-hidden="true">&rsquo;26</span>
 
       <!-- Mid depth layers -->
       <div class="hero-accent-bar" data-hero-layer="bar" aria-hidden="true"></div>
@@ -806,6 +805,7 @@ const steps = [
     });
 
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
+    const dotGrid = document.getElementById('dot-grid');
     const skewElements = document.querySelectorAll('[data-skew]');
 
     // ── 3. DATA STRUCTURES — parsed element collections ──
@@ -1155,8 +1155,7 @@ const steps = [
         if (heroLayerWatermark) {
           heroLayerWatermark.style.transform = `translate3d(${hSinA * 6}px, ${heroProgress * -30 + hSinB * 4}px, 0)`;
         }
-        if (heroLayerGrid) heroLayerGrid.style.transform = `translate3d(0, ${heroProgress * -15}px, 0)`;
-        if (heroLayerYear) {
+if (heroLayerYear) {
           heroLayerYear.style.transform = `translate3d(${hSinB * 8}px, ${heroProgress * -45 + hSinA * 5}px, 0)`;
         }
         if (heroLayerBar) heroLayerBar.style.transform = `translate3d(${hSinA * 4}px, ${heroProgress * 25}px, 0)`;
@@ -1199,6 +1198,11 @@ const steps = [
         }
       }
 
+      // ── Dot grid subtle parallax ──
+      if (dotGrid) {
+        dotGrid.style.transform = `translate3d(0, ${currentScrollY * -0.03}px, 0)`;
+      }
+
       // ── Merged sub-loops (hero float, magnetic, cursor) ──
       if ((window as any).__heroFloatTick) (window as any).__heroFloatTick(time);
       if ((window as any).__magneticTick) (window as any).__magneticTick();
@@ -1216,8 +1220,7 @@ const steps = [
     // ── Hero layer parallax setup ──
     const heroLayerOrb = document.querySelector('[data-hero-layer="orb"]') as HTMLElement | null;
     const heroLayerWatermark = document.querySelector('[data-hero-layer="watermark"]') as HTMLElement | null;
-    const heroLayerGrid = document.querySelector('[data-hero-layer="grid"]') as HTMLElement | null;
-    const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTMLElement | null;
+const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTMLElement | null;
     const heroLayerBar = document.querySelector('[data-hero-layer="bar"]') as HTMLElement | null;
     const heroLayerRing = document.querySelector('[data-hero-layer="ring"]') as HTMLElement | null;
     const heroLayerCorners = Array.from(document.querySelectorAll('[data-hero-layer="corner"]')) as HTMLElement[];
@@ -1448,7 +1451,6 @@ const steps = [
           const heroYearEl = document.querySelector('.hero-year') as HTMLElement | null;
           const heroBarEl = document.querySelector('.hero-accent-bar') as HTMLElement | null;
           const heroRingEl = document.querySelector('.hero-accent-ring') as HTMLElement | null;
-          const heroGridEl = document.querySelector('.hero-grid-overlay') as HTMLElement | null;
           const heroSectionIndex = document.querySelector('.hero-section-index') as HTMLElement | null;
           const heroTitleBlock = document.querySelector('.hero-title-block') as HTMLElement | null;
           const heroTitleLine = document.querySelector('.hero-title-line') as HTMLElement | null;
@@ -1573,11 +1575,6 @@ const steps = [
               heroRingEl.style.transform = `scale(${0.8 + e * 0.2})`;
             }
 
-            // Reveal grid overlay (deep layer)
-            if (heroGridEl) {
-              const e = smoothReveal(t, 200, 3000);
-              heroGridEl.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
-            }
 
             // Reveal hero title depth layers (timed with typewriter)
             if (heroSectionIndex) {

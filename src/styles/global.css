@@ -232,19 +232,22 @@ section[id] {
   contain-intrinsic-size: auto 800px;
 }
 
-/* Site-wide dot paper texture — pure CSS, zero JS overhead */
+/* Site-wide dot grid — single element, slight scroll parallax via JS */
 #dot-grid {
   position: fixed;
-  inset: 0;
+  inset: -5%;
+  width: 110%;
+  height: 110%;
   pointer-events: none;
   z-index: 0;
   background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
   background-size: 28px 28px;
-  opacity: 0.06;
+  opacity: 0.05;
+  will-change: transform;
 }
 
 [data-theme="dark"] #dot-grid {
-  opacity: 0.04;
+  opacity: 0.035;
 }
 
 @media (pointer: fine) {
@@ -766,17 +769,6 @@ body.loaded .hero-corner {
   .hero-status-dot::after { animation: none; }
 }
 
-/* Hero grid overlay — subtle dot grid at deep layer, JS drives opacity */
-.hero-grid-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
-  background-size: 40px 40px;
-
-}
 
 /* Hero year marker — deep layer */
 .hero-year {
@@ -917,8 +909,7 @@ body.loaded .hero-corner {
 }
 
 @media (max-width: 768px) {
-  .hero-grid-overlay { background-size: 30px 30px; }
-  .hero-year { font-size: clamp(3rem, 18vw, 6rem); top: 5%; right: 5%; }
+.hero-year { font-size: clamp(3rem, 18vw, 6rem); top: 5%; right: 5%; }
   .hero-accent-bar { display: none; }
   .hero-accent-ring { width: 100px; height: 100px; right: 8%; bottom: 15%; }
   .hero-coord { display: none; }
