@@ -851,6 +851,7 @@ const steps = [
       tiltTargetY: number;
       tiltCurrentX: number;
       tiltCurrentY: number;
+      tiltWasActive: boolean;
       // Zero-G: horizontal drift + subtle rotation
       xPhase: number;
       rotPhase: number;
@@ -885,6 +886,7 @@ const steps = [
         tiltTargetY: 0,
         tiltCurrentX: 0,
         tiltCurrentY: 0,
+        tiltWasActive: false,
         // Zero-G: each element drifts on its own orbit
         xPhase: seed * 2.3 + 0.5,
         rotPhase: seed * 3.1 + 1.2,
@@ -953,7 +955,8 @@ const steps = [
         // ═══ RECT CACHE: offset by scroll delta instead of re-reading ═══
         // getBoundingClientRect().top shifts by exactly -scrollDelta on scroll.
         // Full re-reads only on first frame or every 30th scroll frame to prevent drift.
-        const needsFullRead = _cr.length === 0 || frameCount % 30 === 0;
+        const needsFullRead = _cr.length === 0 || frameCount % 30 === 0 || processVisibleChanged;
+        if (processVisibleChanged) processVisibleChanged = false;
 
         if (needsFullRead) {
           _cr = [];
@@ -1040,12 +1043,6 @@ const steps = [
 
         if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
 
-        if (currentSection !== lastActiveSection) {
-          lastActiveSection = currentSection;
-          navNodes.forEach(node => { node.classList.toggle('active', (node as HTMLElement).dataset.navSection === currentSection); });
-          navMobileLinks.forEach(link => { link.classList.toggle('active', (link as HTMLElement).dataset.navSection === currentSection); });
-        }
-
         // Manifesto word reveal
         for (let mi = 0; mi < manifestoData.length; mi++) {
           if (!manifestoVisible.get(manifestoData[mi].el)) continue;
@@ -1086,6 +1083,13 @@ const steps = [
           });
         }
       } // end scrollChanged
+
+      // Nav active section — runs every frame (IO sets currentSection asynchronously)
+      if (currentSection !== lastActiveSection) {
+        lastActiveSection = currentSection;
+        navNodes.forEach(node => { node.classList.toggle('active', (node as HTMLElement).dataset.navSection === currentSection); });
+        navMobileLinks.forEach(link => { link.classList.toggle('active', (link as HTMLElement).dataset.navSection === currentSection); });
+      }
 
       // ── Skew — only write when value actually changes ──
       const roundedSkew = Math.round(skewVal * 100) / 100;
@@ -1137,6 +1141,7 @@ const steps = [
 
         // Tilt lerp runs every frame (interactive, needs responsiveness)
         let tiltActive = false;
+        let tiltJustDeactivated = false;
         if (f.hasTilt) {
           f.tiltCurrentX += (f.tiltTargetX - f.tiltCurrentX) * 0.08;
           f.tiltCurrentY += (f.tiltTargetY - f.tiltCurrentY) * 0.08;
@@ -1144,11 +1149,13 @@ const steps = [
             f.tiltCurrentX = 0; f.tiltCurrentY = 0;
           }
           tiltActive = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
+          tiltJustDeactivated = f.tiltWasActive && !tiltActive;
+          f.tiltWasActive = tiltActive;
         }
 
         // Skip DOM write if nothing changed this frame
         const skewChanged = f.hasSkew && skewDidChange;
-        if (!shouldComputeSin && !tiltActive && !skewChanged) continue;
+        if (!shouldComputeSin && !tiltActive && !tiltJustDeactivated && !skewChanged) continue;
 
         if (tiltActive) {
           f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
@@ -1160,15 +1167,16 @@ const steps = [
       }
 
       // ── Card layer parallax (5 layers: index, block, stroke, line, label) ──
-      // Each card only updates when scroll changed OR that specific card is animating hover
+      // Throttled: non-hovering cards update every 2nd frame, with cached transform strings
       if (scrollChanged || _cardLayerActive) {
         let anyActive = false;
         for (let i = 0; i < cardLayers.length; i++) {
           const cl = cardLayers[i];
           if (!cl.visible) continue;
-          // Skip this card if scroll didn't change and it has no hover animation
           const cardAnimating = cl.hovering || cl.currentHoverX !== 0 || cl.currentHoverY !== 0;
           if (!scrollChanged && !cardAnimating) continue;
+          // Throttle non-hovering cards: only update every 2nd frame
+          if (!cardAnimating && (frameCount + i) % 2 !== 0) continue;
           if (cardAnimating) anyActive = true;
 
           const progress = 1 - (_cr[i].t + _cr[i].h / 2) / (viewH + _cr[i].h);
@@ -1180,16 +1188,24 @@ const steps = [
           if (Math.abs(cl.currentHoverX) < 0.001 && !cl.hovering) cl.currentHoverX = 0;
           if (Math.abs(cl.currentHoverY) < 0.001 && !cl.hovering) cl.currentHoverY = 0;
           const mob = isMobileDevice;
-          cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20}px, 0)`;
-          cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12}px, 0)`;
+          // Round to 1 decimal to reduce unique transform strings and skip unchanged writes
+          const r = (v: number) => Math.round(v * 10) / 10;
+          const hx = cl.currentHoverX, hy = cl.currentHoverY;
+          const idxT = `translate3d(${r((mob ? offset * 8 : 0) + hx * -25)}px,${r(offset * (mob ? -50 : -35) + hy * -20)}px,0)`;
+          if (idxT !== cl._lastIdx) { cl.indexEl.style.transform = idxT; cl._lastIdx = idxT; }
+          const blkT = `translate3d(${r(offset * (mob ? -10 : -6) + hx * 15)}px,${r(offset * (mob ? 25 : 18) + hy * 12)}px,0)`;
+          if (blkT !== cl._lastBlock) { cl.blockEl.style.transform = blkT; cl._lastBlock = blkT; }
           if (cl.strokeEl) {
-            cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28}px, 0)`;
+            const strT = `translate3d(${r((mob ? offset * 12 : 0) + hx * -35)}px,${r(offset * (mob ? -65 : -48) + hy * -28)}px,0)`;
+            if (strT !== cl._lastStroke) { cl.strokeEl.style.transform = strT; cl._lastStroke = strT; }
           }
           if (cl.lineEl) {
-            cl.lineEl.style.transform = `translate3d(${offset * (mob ? 6 : 4) + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px, 0)`;
+            const lnT = `translate3d(${r(offset * (mob ? 6 : 4) + hx * 8)}px,${r(offset * (mob ? 12 : 8))}px,0)`;
+            if (lnT !== cl._lastLine) { cl.lineEl.style.transform = lnT; cl._lastLine = lnT; }
           }
           if (cl.labelEl) {
-            cl.labelEl.style.transform = `translate3d(${cl.currentHoverX * -12}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10}px, 0)`;
+            const lbT = `translate3d(${r(hx * -12)}px,${r(offset * (mob ? -28 : -20) + hy * -10)}px,0)`;
+            if (lbT !== cl._lastLabel) { cl.labelEl.style.transform = lbT; cl._lastLabel = lbT; }
           }
         }
         _cardLayerActive = anyActive;
@@ -1364,6 +1380,11 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       currentHoverX: number;
       currentHoverY: number;
       hovering: boolean;
+      _lastIdx: string;
+      _lastBlock: string;
+      _lastStroke: string;
+      _lastLine: string;
+      _lastLabel: string;
     }
     const cardLayers: CardLayer[] = [];
     document.querySelectorAll('.project-card-v').forEach((card) => {
@@ -1376,6 +1397,7 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       const cl: CardLayer = {
         card: card as HTMLElement, indexEl, blockEl, strokeEl, lineEl, labelEl, visible: false,
         hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
+        _lastIdx: '', _lastBlock: '', _lastStroke: '', _lastLine: '', _lastLabel: '',
       };
       cardLayers.push(cl);
 
@@ -1897,10 +1919,14 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
 
     // ── IntersectionObserver for process timeline visibility ──
     let processVisible = false;
+    let processVisibleChanged = false;
     if (processTimeline) {
       const processObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          processVisible = entry.isIntersecting;
+          if (processVisible !== entry.isIntersecting) {
+            processVisible = entry.isIntersecting;
+            processVisibleChanged = true;
+          }
         });
       }, { threshold: 0.05 });
       processObs.observe(processTimeline);
@@ -2573,6 +2599,11 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
         // Stop once fully revealed
         if (t > contactTotalDuration + 100) {
           contactRevealing = false;
+          // Add revealed classes for test hooks and CSS transitions
+          const formCard = document.querySelector('.contact-form-card');
+          if (formCard) formCard.classList.add('revealed');
+          contactFields.forEach(f => f.classList.add('revealed'));
+          if (contactSend) contactSend.classList.add('revealed');
         }
       };
 
@@ -2581,6 +2612,7 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
           if (entry.isIntersecting && !contactRevealing) {
             contactRevealing = true;
             contactRevealStart = performance.now();
+            if (contactDivider) contactDivider.classList.add('revealed');
             splitObs.unobserve(entry.target);
           }
         });
