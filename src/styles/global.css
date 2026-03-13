@@ -240,11 +240,11 @@ section[id] {
   z-index: 0;
   background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
   background-size: 28px 28px;
-  opacity: 0.12;
+  opacity: 0.06;
 }
 
 [data-theme="dark"] #dot-grid {
-  opacity: 0.08;
+  opacity: 0.04;
 }
 
 @media (pointer: fine) {
