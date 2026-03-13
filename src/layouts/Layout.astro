@@ -66,12 +66,8 @@ const { title, description } = Astro.props;
       />
     </noscript>
 
-    <!-- Preload project thumbnails so they're ready before scroll -->
-    <link rel="preload" as="image" type="image/webp" href="/thumbnails/hartley.webp" />
-    <link rel="preload" as="image" type="image/webp" href="/thumbnails/cafe.webp" />
-    <link rel="preload" as="image" type="image/webp" href="/thumbnails/fitness.webp" />
-    <link rel="preload" as="image" type="image/webp" href="/thumbnails/accounting.webp" />
-    <link rel="preload" as="image" type="image/webp" href="/thumbnails/hair.webp" />
+    <!-- Preload only the first (above-fold) thumbnail — rest are lazy-loaded -->
+    <link rel="preload" as="image" type="image/webp" href="/thumbnails/hartley.webp" fetchpriority="high" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
