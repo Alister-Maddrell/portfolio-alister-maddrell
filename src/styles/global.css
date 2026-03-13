@@ -3711,9 +3711,25 @@ a.contact-detail-link:hover .contact-detail-value {
   transform: translate(-50%, -50%);
 }
 
-/* ─── Parallax ─── */
+/* ─── GPU layer promotion for animated elements ─── */
+/* will-change: transform promotes elements to compositor layers so
+   style.transform writes run on the GPU instead of causing CPU repaints.
+   This is the #1 factor in perceived scroll/animation smoothness. */
 
-[data-parallax] {
+[data-parallax],
+[data-float],
+[data-hero-layer],
+[data-card-layer],
+[data-bg-parallax],
+[data-depth-layer],
+[data-card-depth],
+.hero-scroll-fade,
+.marquee-track,
+.card-work-img img,
+#scroll-progress,
+#cursor-circle,
+.cursor-trail-dot,
+.nav-rail-nodes {
   will-change: transform;
 }
 
