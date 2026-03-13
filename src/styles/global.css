@@ -2283,9 +2283,15 @@ body.loaded #nav-rail {
 }
 
 .project-card-v:hover .card-work-capsule {
-  background: var(--color-ink);
-  color: var(--color-surface);
-  border-color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 85%, transparent);
+  color: #d4d4d4;
+  border-color: color-mix(in srgb, var(--color-ink) 85%, transparent);
+}
+
+[data-theme="dark"] .project-card-v:hover .card-work-capsule {
+  background: color-mix(in srgb, var(--color-surface) 80%, white);
+  color: #333;
+  border-color: color-mix(in srgb, var(--color-surface) 80%, white);
 }
 
 .project-card-v:hover .card-work-capsule svg {
