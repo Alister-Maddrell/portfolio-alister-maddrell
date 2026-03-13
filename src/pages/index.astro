@@ -1523,41 +1523,9 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
           cursor.style.transition = 'opacity 1s ease';
           cursor.style.opacity = '0';
 
-          // Reveal subtitle and scroll indicator via JS opacity/transform
-          // (no CSS transitions — float will handle transforms)
-          const subLines = heroSubtitle?.querySelectorAll('.subtitle-line') as NodeListOf<HTMLElement>;
-
-          // Start float immediately — it handles reveal + drift together
-          const floatEls = [
-            { el: heroName, speed: 0.0008, amp: 12, phase: 0 },
-            { el: heroSubtitle, speed: 0.0006, amp: 10, phase: 2 },
-            { el: scrollIndicator, speed: 0.0005, amp: 8, phase: 4 },
-          ];
+          // Start gentle float drift (no reveals — all hero content is visible from CSS)
           const startTime = performance.now();
           const rampDuration = 2500;
-
-          // Reveal timings (ms after typing ends)
-          const subtitleDelay = 150;
-          const sub2Delay = 400;
-          const scrollDelay = 600;
-          const statusDelay = 100;
-          const servicesDelay = 500;
-          const watermarkDelay = 200;
-
-          // Grab hero detail elements
-          const heroStatusEl = document.querySelector('.hero-status') as HTMLElement | null;
-          const heroServicesEl = document.querySelector('.hero-services') as HTMLElement | null;
-          const heroWatermarkEl = document.querySelector('.hero-watermark') as HTMLElement | null;
-          const heroRuleEl = document.querySelector('.hero-rule') as HTMLElement | null;
-          const heroYearEl = document.querySelector('.hero-year') as HTMLElement | null;
-          const heroBarEl = document.querySelector('.hero-accent-bar') as HTMLElement | null;
-          const heroRingEl = document.querySelector('.hero-accent-ring') as HTMLElement | null;
-          const heroSectionIndex = document.querySelector('.hero-section-index') as HTMLElement | null;
-          const heroTitleBlock = document.querySelector('.hero-title-block') as HTMLElement | null;
-          const heroTitleLine = document.querySelector('.hero-title-line') as HTMLElement | null;
-          const heroCtaEl = document.querySelector('.hero-cta') as HTMLElement | null;
-          const heroDataLine = document.querySelector('.hero-data-line') as HTMLElement | null;
-          const heroCoordsEls = Array.from(document.querySelectorAll('.hero-coord')) as HTMLElement[];
 
           // Gate hero float to only run when hero is in viewport
           let heroInView = true;
@@ -1566,15 +1534,14 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
             const heroVis = new IntersectionObserver((entries) => {
               entries.forEach((entry) => {
                 heroInView = entry.isIntersecting;
-                // Pause/resume CSS animations when hero is off-screen
                 entry.target.classList.toggle('hero-offscreen', !entry.isIntersecting);
               });
             }, { threshold: 0 });
             heroVis.observe(heroSection);
           }
 
-          // Alias shared easing for hero reveals
-          const smoothReveal = easedReveal;
+          // Grab elements that float
+          const subLines = heroSubtitle?.querySelectorAll('.subtitle-line') as NodeListOf<HTMLElement>;
 
           // Register heroFloat as a tick function called from the main rAF
           (window as any).__heroFloatTick = function heroFloat(now: number) {
@@ -1583,125 +1550,24 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
             const ramp = Math.min(1, t / rampDuration);
             const easedRamp = smoothstep(ramp);
 
-            // Cache theme once per frame (avoids repeated DOM reads in reveal blocks below)
-            const isDark = document.documentElement.dataset.theme === 'dark';
-
-            // Shared sin for hero float (~10 sin calls → 2)
+            // Shared sin for hero float
             const heroSinA = Math.sin(t * 0.0008) * easedRamp;
             const heroSinB = Math.sin(t * 0.0006 + 2) * easedRamp;
 
             // Float the title
             heroName.style.transform = `translate3d(0, ${heroSinA * 14}px, 0)`;
 
-            // Reveal + float subtitle
-            if (heroSubtitle) {
-              heroSubtitle.style.opacity = '1';
-              if (subLines) {
-                subLines.forEach((line, i) => {
-                  const delay = i === 0 ? subtitleDelay : sub2Delay;
-                  const eased = smoothReveal(t, delay);
-                  const revealY = (1 - eased) * 24;
-                  line.style.opacity = `${eased}`;
-                  line.style.transform = `translate3d(0, ${revealY + heroSinB * 12}px, 0)`;
-                });
-              }
+            // Float subtitle lines
+            if (subLines) {
+              subLines.forEach((line) => {
+                line.style.transform = `translate3d(0, ${heroSinB * 12}px, 0)`;
+              });
             }
 
-            // Reveal + float scroll indicator
+            // Float scroll indicator
             if (scrollIndicator) {
-              const sEased = smoothReveal(t, scrollDelay);
-              const sRevealY = (1 - sEased) * 20;
-              scrollIndicator.style.opacity = `${sEased}`;
-              scrollIndicator.style.transform = `translate3d(0, ${sRevealY + heroSinA * 8}px, 0)`;
+              scrollIndicator.style.transform = `translate3d(0, ${heroSinA * 8}px, 0)`;
             }
-
-            // Reveal status line
-            if (heroStatusEl) {
-              const e = smoothReveal(t, statusDelay);
-              heroStatusEl.style.opacity = `${e * 0.7}`;
-              heroStatusEl.style.transform = `translate3d(0, ${(1 - e) * 16}px, 0)`;
-            }
-
-            // Reveal services
-            if (heroServicesEl) {
-              const e = smoothReveal(t, servicesDelay);
-              heroServicesEl.style.opacity = `${e * 0.5}`;
-              heroServicesEl.style.transform = `translate3d(0, ${(1 - e) * 16}px, 0)`;
-            }
-
-            // Reveal CTA (after services)
-            if (heroCtaEl) {
-              const e = smoothReveal(t, 650, 2000);
-              heroCtaEl.style.opacity = `${e}`;
-              heroCtaEl.style.transform = `translate3d(0, ${(1 - e) * 12}px, 0)`;
-            }
-
-            // Reveal data line (mid-depth horizontal accent)
-            if (heroDataLine) {
-              const e = smoothReveal(t, 300, 3000);
-              heroDataLine.style.opacity = `${e}`;
-            }
-
-            // Reveal watermark
-            if (heroWatermarkEl) {
-              const e = smoothReveal(t, watermarkDelay, 3000);
-              heroWatermarkEl.style.opacity = `${e * (isDark ? 0.03 : 0.018)}`;
-              heroWatermarkEl.style.transform = `translate3d(0, ${(1 - e) * 30}px, 0)`;
-            }
-
-            // Reveal accent rule
-            if (heroRuleEl) {
-              const e = smoothReveal(t, subtitleDelay);
-              heroRuleEl.style.opacity = `${e}`;
-              heroRuleEl.style.transform = `scaleX(${e})`;
-            }
-
-            // Reveal year marker (deep layer)
-            if (heroYearEl) {
-              const e = smoothReveal(t, 300, 2500);
-              heroYearEl.style.opacity = `${e * (isDark ? 0.06 : 0.04)}`;
-              heroYearEl.style.transform = `translate3d(0, ${(1 - e) * 20}px, 0)`;
-            }
-
-            // Reveal accent bar (mid layer)
-            if (heroBarEl) {
-              const e = smoothReveal(t, 400, 2500);
-              heroBarEl.style.opacity = `${e * (isDark ? 0.12 : 0.08)}`;
-            }
-
-            // Reveal accent ring (mid layer)
-            if (heroRingEl) {
-              const e = smoothReveal(t, 350, 2500);
-              heroRingEl.style.opacity = `${e * (isDark ? 0.08 : 0.05)}`;
-              heroRingEl.style.transform = `scale(${0.8 + e * 0.2})`;
-            }
-
-
-            // Reveal hero title depth layers (timed with typewriter)
-            if (heroSectionIndex) {
-              const e = smoothReveal(t, watermarkDelay, 2500);
-              heroSectionIndex.style.opacity = `${e * (isDark ? 0.05 : 0.03)}`;
-              heroSectionIndex.style.transform = `translate3d(0, ${(1 - e) * 25}px, 0)`;
-            }
-            if (heroTitleBlock) {
-              const e = smoothReveal(t, 100, 2500);
-              heroTitleBlock.style.opacity = `${e * (isDark ? 0.04 : 0.025)}`;
-              heroTitleBlock.style.transform = `translate3d(${(1 - e) * 20}px, 0, 0)`;
-            }
-            if (heroTitleLine) {
-              const e = smoothReveal(t, subtitleDelay, 2000);
-              heroTitleLine.style.opacity = `${e * (isDark ? 0.15 : 0.1)}`;
-              heroTitleLine.style.transform = `scaleX(${e})`;
-              heroTitleLine.style.transformOrigin = 'left';
-            }
-
-            // Reveal coordinates
-            heroCoordsEls.forEach((c, i) => {
-              const e = smoothReveal(t, 600 + i * 200, 2000);
-              c.style.opacity = `${e * 0.3}`;
-              c.style.transform = `translate3d(0, ${(1 - e) * 10}px, 0)`;
-            });
-
           };
           return;
         }
