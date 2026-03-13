@@ -366,9 +366,7 @@ const steps = [
             >
               <span class="project-index-stroke" data-card-layer="stroke" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <span class="project-index" data-card-layer="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <div class="project-accent-line" data-card-layer="line" aria-hidden="true"></div>
               <div class="project-color-block" data-card-layer="block" aria-hidden="true"></div>
-              <span class="project-label" data-card-layer="label" aria-hidden="true">PROJ.{String(i + 1).padStart(2, '0')}</span>
               <div class="card-work" data-skew data-card-parallax>
                 <div class="card-work-topbar" data-card-depth="0.012">
                   <div class="card-work-urlbar">
@@ -1092,7 +1090,7 @@ const steps = [
         }
       }
 
-      // ── Card layer parallax (translate3d for GPU compositing) ──
+      // ── Card layer parallax (3 layers: index, block, stroke) ──
       for (let i = 0; i < cardLayers.length; i++) {
         const cl = cardLayers[i];
         if (!cl.visible) continue;
@@ -1102,19 +1100,15 @@ const steps = [
         const targetHY = cl.hovering ? cl.hoverY : 0;
         cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
         cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
+        // Skip transform writes when hover is idle (already at 0)
+        if (Math.abs(cl.currentHoverX) < 0.001 && !cl.hovering) cl.currentHoverX = 0;
+        if (Math.abs(cl.currentHoverY) < 0.001 && !cl.hovering) cl.currentHoverY = 0;
         const mob = isMobileDevice;
-        // One sin per card, reused across layers
         const cardSin = Math.sin(t * 0.00013 + i * 3.7);
         cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + cardSin * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + cardSin * 4}px, 0)`;
         cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + cardSin * -4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + cardSin * 3}px, 0)`;
         if (cl.strokeEl) {
           cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + cardSin * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + cardSin * -5}px, 0)`;
-        }
-        if (cl.lineEl) {
-          cl.lineEl.style.transform = `translate3d(${offset * (mob ? 6 : 4) + cardSin * 3 + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px, 0)`;
-        }
-        if (cl.labelEl) {
-          cl.labelEl.style.transform = `translate3d(${cl.currentHoverX * -12 + cardSin * -4}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10 + cardSin * 3}px, 0)`;
         }
       }
 
@@ -1203,10 +1197,12 @@ if (heroLayerYear) {
         dotGrid.style.transform = `translate3d(0, ${currentScrollY * -0.03}px, 0)`;
       }
 
-      // ── Merged sub-loops (hero float, magnetic, cursor) ──
+      // ── Merged sub-loops (hero float, magnetic, cursor, marquee) ──
       if ((window as any).__heroFloatTick) (window as any).__heroFloatTick(time);
       if ((window as any).__magneticTick) (window as any).__magneticTick();
       if ((window as any).__cursorTick) (window as any).__cursorTick();
+      if ((window as any).__marqueeTick) (window as any).__marqueeTick();
+      if ((window as any).__contactRevealTick) (window as any).__contactRevealTick(time);
 
       requestAnimationFrame(raf);
     }
@@ -1278,8 +1274,6 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       indexEl: HTMLElement;
       blockEl: HTMLElement;
       strokeEl: HTMLElement | null;
-      lineEl: HTMLElement | null;
-      labelEl: HTMLElement | null;
       visible: boolean;
       hoverX: number;
       hoverY: number;
@@ -1292,11 +1286,9 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       const indexEl = card.querySelector('[data-card-layer="index"]') as HTMLElement;
       const blockEl = card.querySelector('[data-card-layer="block"]') as HTMLElement;
       const strokeEl = card.querySelector('[data-card-layer="stroke"]') as HTMLElement | null;
-      const lineEl = card.querySelector('[data-card-layer="line"]') as HTMLElement | null;
-      const labelEl = card.querySelector('[data-card-layer="label"]') as HTMLElement | null;
       if (!indexEl || !blockEl) return;
       const cl: CardLayer = {
-        card: card as HTMLElement, indexEl, blockEl, strokeEl, lineEl, labelEl, visible: false,
+        card: card as HTMLElement, indexEl, blockEl, strokeEl, visible: false,
         hoverX: 0, hoverY: 0, currentHoverX: 0, currentHoverY: 0, hovering: false,
       };
       cardLayers.push(cl);
@@ -2379,23 +2371,21 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       const baseSpeed = 0.8;
       let marqueeActive = false;
 
-      // Get the width of one full repeat unit (half the track since we duplicated content)
-      function getResetWidth(track: HTMLElement) {
-        return track.scrollWidth / 2;
-      }
+      // Cache scrollWidth once (avoids per-frame layout query)
+      let leftReset = leftTrack.scrollWidth / 2;
+      let rightReset = rightTrack.scrollWidth / 2;
+      window.addEventListener('resize', () => {
+        leftReset = leftTrack.scrollWidth / 2;
+        rightReset = rightTrack.scrollWidth / 2;
+      }, { passive: true });
 
-      function animateMarquee() {
+      // Marquee tick — called from main rAF (no separate loop)
+      (window as any).__marqueeTick = function() {
         if (!marqueeActive) return;
 
-        // Use Lenis scroll velocity to boost marquee speed while scrolling
         const clampedVel = Math.min(Math.abs(scrollVelocity), 20);
-        const speedMultiplier = 1 + clampedVel * 0.02;
-        const speed = baseSpeed * speedMultiplier;
+        const speed = baseSpeed * (1 + clampedVel * 0.02);
 
-        const leftReset = getResetWidth(leftTrack);
-        const rightReset = getResetWidth(rightTrack);
-
-        // Left track moves left, right track moves right
         leftPos -= speed;
         rightPos += speed;
 
@@ -2404,18 +2394,13 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
 
         leftTrack.style.transform = `translate3d(${leftPos}px, 0, 0)`;
         rightTrack.style.transform = `translate3d(${rightPos - rightReset}px, 0, 0)`;
+      };
 
-        requestAnimationFrame(animateMarquee);
-      }
-
-      // Start marquee when section enters viewport
+      // Toggle marquee when section enters/leaves viewport
       const marqueeObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (!marqueeActive) {
-              marqueeActive = true;
-              requestAnimationFrame(animateMarquee);
-            }
+            marqueeActive = true;
             marqueeSection?.classList.add('revealed');
           } else {
             marqueeActive = false;
@@ -2452,17 +2437,18 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
         if (el) el.style.transition = 'none';
       });
 
-      function contactRevealLoop(now: number) {
+      const contactTotalDuration = 1000 + contactFields.length * 250 + 150 + 1500;
+
+      // Contact reveal tick — called from main rAF (no separate loop)
+      (window as any).__contactRevealTick = function(now: number) {
         if (!contactRevealing) return;
         const t = now - contactRevealStart;
 
-        // Divider line draws over 1.5s
         if (contactDivider) {
           const e = contactSmooth(t, 0, 1500);
           (contactDivider as HTMLElement).style.width = `${e * 100}%`;
         }
 
-        // Left panel — update FloatItem reveal state (float loop composes the transform)
         if (contactLeftFloat) {
           const e = contactSmooth(t, 400, 1800);
           contactLeftFloat.revealOpacity = e;
@@ -2470,7 +2456,6 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
           contactLeftFloat.revealY = (1 - e) * 20;
         }
 
-        // Right panel — update FloatItem reveal state
         if (contactRightFloat) {
           const e = contactSmooth(t, 700, 1800);
           contactRightFloat.revealOpacity = e;
@@ -2478,33 +2463,29 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
           contactRightFloat.revealY = (1 - e) * 20;
         }
 
-        // Form fields — staggered fade up (no float conflict, direct write OK)
         contactFields.forEach((field, i) => {
           const e = contactSmooth(t, 1000 + i * 250, 1500);
           field.style.opacity = `${e}`;
           field.style.transform = `translate3d(0, ${(1 - e) * 14}px, 0)`;
         });
 
-        // Send button — last to appear
         if (contactSend) {
           const e = contactSmooth(t, 1000 + contactFields.length * 250 + 150, 1500);
           contactSend.style.opacity = `${e}`;
           contactSend.style.transform = `translate3d(0, ${(1 - e) * 14}px, 0)`;
         }
 
-        // Keep running until everything is fully revealed
-        const totalDuration = 1000 + contactFields.length * 250 + 150 + 1500;
-        if (t < totalDuration + 100) {
-          requestAnimationFrame(contactRevealLoop);
+        // Stop once fully revealed
+        if (t > contactTotalDuration + 100) {
+          contactRevealing = false;
         }
-      }
+      };
 
       const splitObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !contactRevealing) {
             contactRevealing = true;
             contactRevealStart = performance.now();
-            requestAnimationFrame(contactRevealLoop);
             splitObs.unobserve(entry.target);
           }
         });
