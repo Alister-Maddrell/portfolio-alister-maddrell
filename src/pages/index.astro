@@ -791,10 +791,10 @@ const steps = [
     // so it shares the same frame budget as all other animations.
     import Lenis from 'lenis';
     const lenis = new Lenis({
-      lerp: 0.1,              // interpolation factor — lower = smoother, higher = snappier
-      wheelMultiplier: 1,     // 1:1 wheel mapping, no acceleration
-      touchMultiplier: 1.5,   // slightly amplified for mobile swipes
-      syncTouch: true,        // smooth touch scrolling too
+      lerp: 0.06,             // lower = longer coast, more momentum
+      wheelMultiplier: 1.2,   // slightly amplified wheel for faster scrolling
+      touchMultiplier: 1.8,   // amplified for mobile swipes
+      syncTouch: true,
     });
 
     let scrollVelocity = 0;
@@ -1116,11 +1116,10 @@ const steps = [
           if (Math.abs(cl.currentHoverX) < 0.001 && !cl.hovering) cl.currentHoverX = 0;
           if (Math.abs(cl.currentHoverY) < 0.001 && !cl.hovering) cl.currentHoverY = 0;
           const mob = isMobileDevice;
-          const cardSin = Math.sin(t * 0.00013 + i * 3.7);
-          cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + cardSin * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + cardSin * 4}px, 0)`;
-          cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + cardSin * -4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + cardSin * 3}px, 0)`;
+          cl.indexEl.style.transform = `translate3d(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20}px, 0)`;
+          cl.blockEl.style.transform = `translate3d(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12}px, 0)`;
           if (cl.strokeEl) {
-            cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + cardSin * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + cardSin * -5}px, 0)`;
+            cl.strokeEl.style.transform = `translate3d(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28}px, 0)`;
           }
         }
       }
