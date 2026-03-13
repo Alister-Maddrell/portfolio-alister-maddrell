@@ -789,14 +789,16 @@ const steps = [
 
     // ── 2. STATE ──
 
-    // Scroll velocity tracking — toggle .scrolling class to disable hover during scroll
+    // Scroll velocity tracking — decays each frame, matches Lenis-style values
     let scrollVelocity = 0;
-    let _lastScrollY = window.scrollY;
+    let _prevScrollY = window.scrollY;
     let _scrollingTimeout = 0;
     window.addEventListener('scroll', () => {
-      scrollVelocity = Math.abs(window.scrollY - _lastScrollY);
-      _lastScrollY = window.scrollY;
-      if (scrollVelocity > 2) {
+      const delta = window.scrollY - _prevScrollY;
+      _prevScrollY = window.scrollY;
+      // Convert pixel delta to Lenis-scale velocity (~0-50 range)
+      scrollVelocity = delta;
+      if (Math.abs(delta) > 2) {
         if (!document.body.classList.contains('scrolling')) {
           document.body.classList.add('scrolling');
         }
@@ -929,6 +931,9 @@ const steps = [
       const t = time - animStart;
       const viewH = window.innerHeight;
       const currentScrollY = window.scrollY;
+      // Decay velocity each frame so hover/parallax resume after scrolling stops
+      scrollVelocity *= 0.9;
+      if (Math.abs(scrollVelocity) < 0.1) scrollVelocity = 0;
       const docHeight = document.documentElement.scrollHeight - viewH;
       const scrollPct = docHeight > 0 ? currentScrollY / docHeight : 0;
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.04));
