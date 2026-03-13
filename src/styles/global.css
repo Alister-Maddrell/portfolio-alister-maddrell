@@ -1747,9 +1747,7 @@ body.loaded #nav-rail {
   position: relative;
   display: block;
   text-decoration: none;
-  contain: layout style;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
+  overflow: visible;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
 }
 
@@ -2285,9 +2283,9 @@ body.loaded #nav-rail {
 }
 
 .project-card-v:hover .card-work-capsule {
-  border-color: var(--card-color);
-  color: var(--card-color);
-  background: color-mix(in srgb, var(--card-color) 8%, transparent);
+  background: var(--color-ink);
+  color: var(--color-surface);
+  border-color: var(--color-ink);
 }
 
 .project-card-v:hover .card-work-capsule svg {

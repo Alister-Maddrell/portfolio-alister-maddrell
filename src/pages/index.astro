@@ -1185,20 +1185,20 @@ const steps = [
           // Round to 1 decimal to reduce unique transform strings and skip unchanged writes
           const r = (v: number) => Math.round(v * 10) / 10;
           const hx = cl.currentHoverX, hy = cl.currentHoverY;
-          const idxT = `translate3d(${r((mob ? offset * 8 : 0) + hx * -25)}px,${r(offset * (mob ? -50 : -35) + hy * -20)}px,0)`;
+          const idxT = `translate3d(${r((mob ? offset * 4 : 0) + hx * -10)}px,${r(offset * (mob ? -18 : -12) + hy * -8)}px,0)`;
           if (idxT !== cl._lastIdx) { cl.indexEl.style.transform = idxT; cl._lastIdx = idxT; }
-          const blkT = `translate3d(${r(offset * (mob ? -10 : -6) + hx * 15)}px,${r(offset * (mob ? 25 : 18) + hy * 12)}px,0)`;
+          const blkT = `translate3d(${r(offset * (mob ? -4 : -3) + hx * 6)}px,${r(offset * (mob ? 10 : 7) + hy * 5)}px,0)`;
           if (blkT !== cl._lastBlock) { cl.blockEl.style.transform = blkT; cl._lastBlock = blkT; }
           if (cl.strokeEl) {
-            const strT = `translate3d(${r((mob ? offset * 12 : 0) + hx * -35)}px,${r(offset * (mob ? -65 : -48) + hy * -28)}px,0)`;
+            const strT = `translate3d(${r((mob ? offset * 5 : 0) + hx * -14)}px,${r(offset * (mob ? -22 : -16) + hy * -10)}px,0)`;
             if (strT !== cl._lastStroke) { cl.strokeEl.style.transform = strT; cl._lastStroke = strT; }
           }
           if (cl.lineEl) {
-            const lnT = `translate3d(${r(offset * (mob ? 6 : 4) + hx * 8)}px,${r(offset * (mob ? 12 : 8))}px,0)`;
+            const lnT = `translate3d(${r(offset * (mob ? 3 : 2) + hx * 4)}px,${r(offset * (mob ? 5 : 4))}px,0)`;
             if (lnT !== cl._lastLine) { cl.lineEl.style.transform = lnT; cl._lastLine = lnT; }
           }
           if (cl.labelEl) {
-            const lbT = `translate3d(${r(hx * -12)}px,${r(offset * (mob ? -28 : -20) + hy * -10)}px,0)`;
+            const lbT = `translate3d(${r(hx * -5)}px,${r(offset * (mob ? -10 : -8) + hy * -4)}px,0)`;
             if (lbT !== cl._lastLabel) { cl.labelEl.style.transform = lbT; cl._lastLabel = lbT; }
           }
         }
