@@ -755,9 +755,9 @@ const steps = [
     // ── Lenis smooth scroll ──
     const lenis = new Lenis({
       autoRaf: true,
-      duration: 1.0,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3),
-      wheelMultiplier: 1.2,
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      wheelMultiplier: 1,
       touchMultiplier: 2,
     });
 
@@ -861,13 +861,154 @@ const steps = [
 
     const animStart = performance.now();
 
-    // ── Animation loop ──
+    // ── Unified animation loop (batched reads → writes to prevent layout thrashing) ──
     function raf(time: number) {
       const t = time - animStart;
       const viewH = window.innerHeight;
+      const currentScrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - viewH;
+      const scrollPct = docHeight > 0 ? currentScrollY / docHeight : 0;
       const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
+      const isMobileDevice = !hasFineCursor;
 
-      // ── Apply skew to skew-only elements (skip when velocity is zero) ──
+      // ═══ PHASE 1: BATCH ALL READS (no layout thrashing) ═══
+
+      // Card layer rects
+      const _cr: { t: number; h: number }[] = [];
+      for (let i = 0; i < cardLayers.length; i++) {
+        if (cardLayers[i].visible) {
+          const r = cardLayers[i].card.getBoundingClientRect();
+          _cr.push({ t: r.top, h: r.height });
+        } else { _cr.push({ t: 0, h: 0 }); }
+      }
+
+      // Bg parallax parent rects
+      const _br: { t: number; b: number; h: number }[] = [];
+      for (let i = 0; i < bgParallaxEls.length; i++) {
+        const r = bgParallaxEls[i].parentElement!.getBoundingClientRect();
+        _br.push({ t: r.top, b: r.bottom, h: r.height });
+      }
+
+      // Depth layer container rects
+      const _dr: { t: number; h: number }[] = [];
+      for (let i = 0; i < depthLayers.length; i++) {
+        if (depthLayers[i].visible) {
+          const r = depthLayers[i].container.getBoundingClientRect();
+          _dr.push({ t: r.top, h: r.height });
+        } else { _dr.push({ t: 0, h: 0 }); }
+      }
+
+      // Section depth rects
+      const _sr: { t: number; b: number; h: number }[] = [];
+      for (let i = 0; i < sectionDepthEls.length; i++) {
+        if (sectionDepthEls[i].section) {
+          const r = sectionDepthEls[i].section!.getBoundingClientRect();
+          _sr.push({ t: r.top, b: r.bottom, h: r.height });
+        } else { _sr.push({ t: 0, b: 0, h: 0 }); }
+      }
+
+      // Contact rect (only near hero)
+      let _contactTop = 0;
+      let _contactVisible = false;
+      if (contactSection) {
+        const r = contactSection.getBoundingClientRect();
+        _contactTop = r.top;
+        _contactVisible = r.top < viewH;
+      }
+
+      // Manifesto rects (merged from onScrollFrame)
+      const _mr: { t: number }[] = [];
+      for (let i = 0; i < manifestoData.length; i++) {
+        if (manifestoVisible.get(manifestoData[i].el)) {
+          const r = (manifestoData[i].el as HTMLElement).getBoundingClientRect();
+          _mr.push({ t: r.top });
+        } else { _mr.push({ t: 0 }); }
+      }
+
+      // Process step rects
+      const _pr: { t: number; b: number; h: number }[] = [];
+      if (processSteps.length > 0 && processTimeline && processVisible) {
+        for (let i = 0; i < processSteps.length; i++) {
+          const r = (processSteps[i] as HTMLElement).getBoundingClientRect();
+          _pr.push({ t: r.top, b: r.bottom, h: r.height });
+        }
+      }
+
+      // Parallax element rects
+      const _pxr = new Map<Element, { t: number; h: number }>();
+      if (hasPointer) {
+        parallaxVisible.forEach(el => {
+          const r = el.getBoundingClientRect();
+          _pxr.set(el, { t: r.top, h: r.height });
+        });
+      }
+
+      // ═══ PHASE 2: ALL WRITES (no more reads after this point) ═══
+
+      // ── Scroll UI (merged from onScrollFrame) ──
+      if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
+
+      if (heroScrollFade) {
+        const fadeEnd = viewH * 0.6;
+        const fadeProg = Math.min(1, Math.max(0, currentScrollY / fadeEnd));
+        heroScrollFade.style.opacity = String(1 - fadeProg);
+        heroScrollFade.style.transform = `translateY(${fadeProg * -40}px)`;
+      }
+
+      const shouldScrollNav = currentScrollY > 80;
+      if (shouldScrollNav !== navTop?.classList.contains('scrolled')) {
+        navTop?.classList.toggle('scrolled', shouldScrollNav);
+      }
+
+      if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
+
+      if (currentSection !== lastActiveSection) {
+        lastActiveSection = currentSection;
+        navNodes.forEach(node => { node.classList.toggle('active', (node as HTMLElement).dataset.navSection === currentSection); });
+        navMobileLinks.forEach(link => { link.classList.toggle('active', (link as HTMLElement).dataset.navSection === currentSection); });
+      }
+
+      // Manifesto word reveal
+      for (let mi = 0; mi < manifestoData.length; mi++) {
+        if (!manifestoVisible.get(manifestoData[mi].el)) continue;
+        const mrt = _mr[mi].t;
+        const mStart = viewH * 0.85;
+        const mEnd = viewH * 0.15;
+        const mProg = Math.max(0, Math.min(1, (mStart - mrt) / (mStart - mEnd)));
+        const litCount = Math.floor(mProg * manifestoData[mi].totalWords);
+        manifestoData[mi].wordSpans.forEach((w, j) => { w.classList.toggle('lit', j < litCount); });
+      }
+
+      // Process step highlighting
+      if (_pr.length > 0) {
+        const viewCenter = viewH * 0.5;
+        let closestStep: Element | null = null;
+        let closestDist = Infinity;
+        let activeIndex = 0;
+        processSteps.forEach((step, si) => {
+          const sr = _pr[si];
+          const stepCenter = sr.t + sr.h / 2;
+          const dist = Math.abs(stepCenter - viewCenter);
+          if (dist < closestDist && sr.t < viewH && sr.b > 0) {
+            closestDist = dist; closestStep = step; activeIndex = si;
+          }
+        });
+        processSteps.forEach(step => step.classList.toggle('active', step === closestStep));
+        if (processRailFill) processRailFill.style.transform = `scaleY(${(activeIndex + 1) / processSteps.length})`;
+      }
+
+      // Parallax depth layers
+      if (hasPointer) {
+        _pxr.forEach((pr, el) => {
+          const htmlEl = el as HTMLElement;
+          if (htmlEl.id === 'hero-name') return;
+          const speed = parseFloat(htmlEl.dataset.parallax || '0');
+          const offset = (pr.t + pr.h / 2 - viewH / 2) * speed;
+          htmlEl.style.transform = `translateY(${offset}px)`;
+        });
+      }
+
+      // ── Skew ──
       if (skewVal !== 0) {
         for (let i = 0; i < skewElements.length; i++) {
           const el = skewElements[i] as HTMLElement;
@@ -877,46 +1018,32 @@ const steps = [
         }
       }
 
-      // ── Grain reactivity — opacity pulses with scroll velocity ──
+      // ── Grain ──
       if (grainOverlay) {
-        const absVel = Math.abs(scrollVelocity);
-        const grainBoost = Math.min(0.06, absVel * 0.004);
-        grainOverlay.style.opacity = String(grainBase + grainBoost);
+        grainOverlay.style.opacity = String(grainBase + Math.min(0.06, Math.abs(scrollVelocity) * 0.004));
       }
 
-      // ── Float + zero-G drift + compose with skew + tilt + reveal (single writer) ──
+      // ── Float items ──
       for (let i = 0; i < floatItems.length; i++) {
         const f = floatItems[i];
         if (!f.visible) continue;
-        // Vertical float (existing)
         const y = Math.sin(t * f.speed + f.phase) * f.amp
                 + Math.sin(t * f.speed * 0.7 + f.phase + 1.5) * (f.amp * 0.35);
         f.currentY = y;
-        // Zero-G: horizontal drift + rotation (different frequencies = organic orbits)
         const x = Math.sin(t * f.xSpeed + f.xPhase) * f.xAmp
                 + Math.sin(t * f.xSpeed * 1.3 + f.xPhase + 2.0) * (f.xAmp * 0.25);
         const rot = Math.sin(t * f.rotSpeed + f.rotPhase) * f.rotAmp
                   + Math.sin(t * f.rotSpeed * 0.6 + f.rotPhase + 1.0) * (f.rotAmp * 0.4);
-
-        // Compose reveal offsets (set by contact reveal or other external systems)
         const tx = x + f.revealX;
         const ty = y + f.revealY;
-
-        // Apply reveal opacity (1 = fully visible default, <1 during reveal animation)
-        if (f.revealOpacity < 1) {
-          f.el.style.opacity = `${f.revealOpacity}`;
-        }
-
-        // Tilt interpolation (runs in this loop, no separate rAF)
+        if (f.revealOpacity < 1) f.el.style.opacity = `${f.revealOpacity}`;
         if (f.hasTilt) {
           f.tiltCurrentX += (f.tiltTargetX - f.tiltCurrentX) * 0.08;
           f.tiltCurrentY += (f.tiltTargetY - f.tiltCurrentY) * 0.08;
           if (!f.tiltHovering && Math.abs(f.tiltCurrentX) < 0.01 && Math.abs(f.tiltCurrentY) < 0.01) {
-            f.tiltCurrentX = 0;
-            f.tiltCurrentY = 0;
+            f.tiltCurrentX = 0; f.tiltCurrentY = 0;
           }
-          const hasTiltValues = f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0;
-          if (hasTiltValues) {
+          if (f.tiltCurrentX !== 0 || f.tiltCurrentY !== 0) {
             f.el.style.transform = `perspective(1000px) rotateX(${f.tiltCurrentX}deg) rotateY(${f.tiltCurrentY}deg) translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
           } else if (f.hasSkew) {
             f.el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg) skewY(${skewVal}deg)`;
@@ -930,198 +1057,102 @@ const steps = [
         }
       }
 
-      // ── Card layer parallax (index number + color block at different rates) ──
+      // ── Card layer parallax (using pre-read rects) ──
       for (let i = 0; i < cardLayers.length; i++) {
         const cl = cardLayers[i];
         if (!cl.visible) continue;
-        const rect = cl.card.getBoundingClientRect();
-        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
-        const offset = (progress - 0.5) * 2; // -1 to 1
-
-        // Smooth hover interpolation
+        const progress = 1 - (_cr[i].t + _cr[i].h / 2) / (viewH + _cr[i].h);
+        const offset = (progress - 0.5) * 2;
         const targetHX = cl.hovering ? cl.hoverX : 0;
         const targetHY = cl.hovering ? cl.hoverY : 0;
         cl.currentHoverX += (targetHX - cl.currentHoverX) * 0.06;
         cl.currentHoverY += (targetHY - cl.currentHoverY) * 0.06;
-
-        // On mobile, amplify scroll multipliers to compensate for no hover
-        const isMobile = !hasFineCursor;
-
-        // Index: floats higher, moves opposite on hover + zero-G orbit
-        const idxScrollY = offset * (isMobile ? -50 : -35);
-        const idxScrollX = isMobile ? offset * 8 : 0;
-        const idxHoverX = cl.currentHoverX * -25;
-        const idxHoverY = cl.currentHoverY * -20;
-        const idxDriftX = Math.sin(t * 0.00013 + i * 3.7) * 5;
-        const idxDriftY = Math.sin(t * 0.00018 + i * 2.1) * 4;
-        const idxRot = Math.sin(t * 0.00009 + i * 5.4) * 0.6;
-        cl.indexEl.style.transform = `translate(${idxScrollX + idxHoverX + idxDriftX}px, ${idxScrollY + idxHoverY + idxDriftY}px) rotate(${idxRot}deg)`;
-
-        // Color block: drifts subtly, moves with cursor + zero-G orbit
-        const blkScrollX = offset * (isMobile ? -10 : -6);
-        const blkScrollY = offset * (isMobile ? 25 : 18);
-        const blkHoverX = cl.currentHoverX * 15;
-        const blkHoverY = cl.currentHoverY * 12;
-        const blkDriftX = Math.sin(t * 0.00016 + i * 4.3 + 1.0) * 4;
-        const blkDriftY = Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3;
-        const blkRot = Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35;
-        cl.blockEl.style.transform = `translate(${blkScrollX + blkHoverX + blkDriftX}px, ${blkScrollY + blkHoverY + blkDriftY}px) rotate(${blkRot}deg)`;
-
-        // Stroke index: deepest plane — moves opposite, slower orbit, larger amplitude
+        const mob = isMobileDevice;
+        cl.indexEl.style.transform = `translate(${(mob ? offset * 8 : 0) + cl.currentHoverX * -25 + Math.sin(t * 0.00013 + i * 3.7) * 5}px, ${offset * (mob ? -50 : -35) + cl.currentHoverY * -20 + Math.sin(t * 0.00018 + i * 2.1) * 4}px) rotate(${Math.sin(t * 0.00009 + i * 5.4) * 0.6}deg)`;
+        cl.blockEl.style.transform = `translate(${offset * (mob ? -10 : -6) + cl.currentHoverX * 15 + Math.sin(t * 0.00016 + i * 4.3 + 1.0) * 4}px, ${offset * (mob ? 25 : 18) + cl.currentHoverY * 12 + Math.sin(t * 0.00021 + i * 1.6 + 2.0) * 3}px) rotate(${Math.sin(t * 0.00011 + i * 6.8 + 0.5) * 0.35}deg)`;
         if (cl.strokeEl) {
-          const stkScrollY = offset * (isMobile ? -65 : -48);
-          const stkScrollX = isMobile ? offset * 12 : 0;
-          const stkHoverX = cl.currentHoverX * -35;
-          const stkHoverY = cl.currentHoverY * -28;
-          const stkDriftX = Math.sin(t * 0.0001 + i * 2.9) * 7;
-          const stkDriftY = Math.sin(t * 0.00014 + i * 1.5) * 5;
-          const stkRot = Math.sin(t * 0.00007 + i * 4.8) * 0.8;
-          cl.strokeEl.style.transform = `translate(${stkScrollX + stkHoverX + stkDriftX}px, ${stkScrollY + stkHoverY + stkDriftY}px) rotate(${stkRot}deg)`;
+          cl.strokeEl.style.transform = `translate(${(mob ? offset * 12 : 0) + cl.currentHoverX * -35 + Math.sin(t * 0.0001 + i * 2.9) * 7}px, ${offset * (mob ? -65 : -48) + cl.currentHoverY * -28 + Math.sin(t * 0.00014 + i * 1.5) * 5}px) rotate(${Math.sin(t * 0.00007 + i * 4.8) * 0.8}deg)`;
         }
-
-        // Accent line: mid-plane, subtle horizontal drift
         if (cl.lineEl) {
-          const lnScrollX = offset * (isMobile ? 6 : 4);
-          const lnScrollY = offset * (isMobile ? 12 : 8);
-          const lnDriftX = Math.sin(t * 0.00019 + i * 5.2 + 1.5) * 3;
-          const lnHoverX = cl.currentHoverX * 8;
-          cl.lineEl.style.transform = `translate(${lnScrollX + lnDriftX + lnHoverX}px, ${lnScrollY}px)`;
+          cl.lineEl.style.transform = `translate(${offset * (mob ? 6 : 4) + Math.sin(t * 0.00019 + i * 5.2 + 1.5) * 3 + cl.currentHoverX * 8}px, ${offset * (mob ? 12 : 8)}px)`;
         }
-
-        // Project label: deep plane, moves opposite like index
         if (cl.labelEl) {
-          const lblScrollY = offset * (isMobile ? -28 : -20);
-          const lblHoverX = cl.currentHoverX * -12;
-          const lblHoverY = cl.currentHoverY * -10;
-          const lblDriftX = Math.sin(t * 0.00015 + i * 3.1 + 2.5) * 4;
-          const lblDriftY = Math.sin(t * 0.0002 + i * 2.4 + 1.8) * 3;
-          cl.labelEl.style.transform = `translate(${lblHoverX + lblDriftX}px, ${lblScrollY + lblHoverY + lblDriftY}px)`;
+          cl.labelEl.style.transform = `translate(${cl.currentHoverX * -12 + Math.sin(t * 0.00015 + i * 3.1 + 2.5) * 4}px, ${offset * (mob ? -28 : -20) + cl.currentHoverY * -10 + Math.sin(t * 0.0002 + i * 2.4 + 1.8) * 3}px)`;
         }
       }
 
-      // ── Section bg text parallax + zero-G drift (visibility-gated) ──
+      // ── Bg text parallax (using pre-read rects) ──
       for (let i = 0; i < bgParallaxEls.length; i++) {
-        const bp = bgParallaxEls[i];
-        const parent = bp.parentElement!;
-        const rect = parent.getBoundingClientRect();
-        // Skip off-screen sections
-        if (rect.bottom < -50 || rect.top > viewH + 50) continue;
-        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
+        if (_br[i].b < -50 || _br[i].t > viewH + 50) continue;
+        const progress = 1 - (_br[i].t + _br[i].h / 2) / (viewH + _br[i].h);
         const offset = (progress - 0.5) * 2;
-        const bgDriftX = Math.sin(t * 0.00015 + i * 2.5) * 8;
-        const bgDriftY = Math.sin(t * 0.0002 + i * 1.8) * 5;
-        const bgRot = Math.sin(t * 0.0001 + i * 3.2) * 0.4;
-        bp.style.transform = `translate(${bgDriftX}px, ${offset * -40 + bgDriftY}px) rotate(${bgRot}deg)`;
+        bgParallaxEls[i].style.transform = `translate(${Math.sin(t * 0.00015 + i * 2.5) * 8}px, ${offset * -40 + Math.sin(t * 0.0002 + i * 1.8) * 5}px) rotate(${Math.sin(t * 0.0001 + i * 3.2) * 0.4}deg)`;
       }
 
-      // ── Section depth layer parallax + zero-G drift ──
+      // ── Depth layer parallax (using pre-read rects) ──
       for (let i = 0; i < depthLayers.length; i++) {
         const dl = depthLayers[i];
         if (!dl.visible) continue;
-        const rect = dl.container.getBoundingClientRect();
-        const progress = 1 - (rect.top + rect.height / 2) / (viewH + rect.height);
-        const offset = (progress - 0.5) * 2; // -1 to 1
-        const m = hasFineCursor ? 1 : 1.4; // amplify on mobile
-
-        // Deep layer: moves opposite + ambient zero-G orbit
+        const progress = 1 - (_dr[i].t + _dr[i].h / 2) / (viewH + _dr[i].h);
+        const offset = (progress - 0.5) * 2;
+        const m = hasFineCursor ? 1 : 1.4;
         if (dl.deepEl) {
-          const driftX = Math.sin(t * 0.00018 + i * 4.1) * 6;
-          const driftY = Math.sin(t * 0.00025 + i * 2.7) * 4;
-          const driftRot = Math.sin(t * 0.00012 + i * 5.3) * 0.5;
-          dl.deepEl.style.transform = `translate(${driftX}px, ${offset * -30 * m + driftY}px) rotate(${driftRot}deg)`;
+          dl.deepEl.style.transform = `translate(${Math.sin(t * 0.00018 + i * 4.1) * 6}px, ${offset * -30 * m + Math.sin(t * 0.00025 + i * 2.7) * 4}px) rotate(${Math.sin(t * 0.00012 + i * 5.3) * 0.5}deg)`;
         }
-        // Mid layer: drifts subtly + ambient zero-G orbit (different phase)
         if (dl.midEl) {
-          const driftX = Math.sin(t * 0.00022 + i * 3.4 + 1.0) * 5;
-          const driftY = Math.sin(t * 0.00016 + i * 1.9 + 2.0) * 3;
-          const driftRot = Math.sin(t * 0.00014 + i * 6.1 + 0.5) * 0.35;
-          dl.midEl.style.transform = `translate(${offset * -5 * m + driftX}px, ${offset * 15 * m + driftY}px) rotate(${driftRot}deg)`;
+          dl.midEl.style.transform = `translate(${offset * -5 * m + Math.sin(t * 0.00022 + i * 3.4 + 1.0) * 5}px, ${offset * 15 * m + Math.sin(t * 0.00016 + i * 1.9 + 2.0) * 3}px) rotate(${Math.sin(t * 0.00014 + i * 6.1 + 0.5) * 0.35}deg)`;
         }
       }
 
-      // ── Hero layer parallax + zero-G drift (skip when hero is off-screen) ──
+      // ── Hero layer parallax (skip when hero off-screen) ──
       if (currentScrollY < viewH * 1.5) {
         const heroProgress = Math.min(1, currentScrollY / viewH);
-        // Deep layers — slow scroll parallax + ambient zero-G orbit
         if (heroLayerOrb) {
-          const dx = Math.sin(t * 0.00008 + 1.0) * 12;
-          const dy = Math.sin(t * 0.00012 + 2.5) * 8;
-          heroLayerOrb.style.transform = `translateX(calc(10% + ${dx}px)) translateY(${heroProgress * 60 + dy}px)`;
+          heroLayerOrb.style.transform = `translateX(calc(10% + ${Math.sin(t * 0.00008 + 1.0) * 12}px)) translateY(${heroProgress * 60 + Math.sin(t * 0.00012 + 2.5) * 8}px)`;
         }
         if (heroLayerWatermark) {
-          const dx = Math.sin(t * 0.00010 + 3.0) * 6;
-          const dy = Math.sin(t * 0.00014 + 0.7) * 4;
-          const dr = Math.sin(t * 0.00007 + 5.0) * 0.3;
-          heroLayerWatermark.style.transform = `translate(${dx}px, ${heroProgress * -30 + dy}px) rotate(${dr}deg)`;
+          heroLayerWatermark.style.transform = `translate(${Math.sin(t * 0.00010 + 3.0) * 6}px, ${heroProgress * -30 + Math.sin(t * 0.00014 + 0.7) * 4}px) rotate(${Math.sin(t * 0.00007 + 5.0) * 0.3}deg)`;
         }
-        if (heroLayerGrid) {
-          heroLayerGrid.style.transform = `translateY(${heroProgress * -15}px)`;
-        }
+        if (heroLayerGrid) heroLayerGrid.style.transform = `translateY(${heroProgress * -15}px)`;
         if (heroLayerYear) {
-          const dx = Math.sin(t * 0.00013 + 4.2) * 8;
-          const dy = Math.sin(t * 0.00018 + 1.3) * 5;
-          const dr = Math.sin(t * 0.00009 + 6.7) * 0.6;
-          heroLayerYear.style.transform = `translate(${dx}px, ${heroProgress * -45 + dy}px) rotate(${dr}deg)`;
+          heroLayerYear.style.transform = `translate(${Math.sin(t * 0.00013 + 4.2) * 8}px, ${heroProgress * -45 + Math.sin(t * 0.00018 + 1.3) * 5}px) rotate(${Math.sin(t * 0.00009 + 6.7) * 0.6}deg)`;
         }
-        // Mid layers — subtle drift + zero-G orbit
-        if (heroLayerBar) {
-          const dx = Math.sin(t * 0.00015 + 2.1) * 4;
-          heroLayerBar.style.transform = `translate(${dx}px, ${heroProgress * 25}px)`;
-        }
+        if (heroLayerBar) heroLayerBar.style.transform = `translate(${Math.sin(t * 0.00015 + 2.1) * 4}px, ${heroProgress * 25}px)`;
         if (heroLayerRing) {
-          const dx = Math.sin(t * 0.00011 + 5.5) * 10;
-          const dy = Math.sin(t * 0.00016 + 3.8) * 7;
-          const dr = Math.sin(t * 0.00008 + 1.6) * 0.8;
-          heroLayerRing.style.transform = `translate(${heroProgress * -10 + dx}px, ${heroProgress * 35 + dy}px) rotate(${dr}deg)`;
+          heroLayerRing.style.transform = `translate(${heroProgress * -10 + Math.sin(t * 0.00011 + 5.5) * 10}px, ${heroProgress * 35 + Math.sin(t * 0.00016 + 3.8) * 7}px) rotate(${Math.sin(t * 0.00008 + 1.6) * 0.8}deg)`;
         }
-        // Title depth layers — zero-G orbit behind the name
         if (heroLayerIndex) {
-          const dx = Math.sin(t * 0.00012 + 7.0) * 5;
-          const dy = Math.sin(t * 0.00017 + 4.4) * 4;
-          const dr = Math.sin(t * 0.00010 + 2.9) * 0.4;
-          heroLayerIndex.style.transform = `translate(${dx}px, ${heroProgress * -40 + dy}px) rotate(${dr}deg)`;
+          heroLayerIndex.style.transform = `translate(${Math.sin(t * 0.00012 + 7.0) * 5}px, ${heroProgress * -40 + Math.sin(t * 0.00017 + 4.4) * 4}px) rotate(${Math.sin(t * 0.00010 + 2.9) * 0.4}deg)`;
         }
         if (heroLayerTitleBlock) {
-          const dx = Math.sin(t * 0.00014 + 8.2) * 4;
-          const dy = Math.sin(t * 0.00019 + 5.6) * 3;
-          const dr = Math.sin(t * 0.00011 + 3.3) * 0.25;
-          heroLayerTitleBlock.style.transform = `translate(${heroProgress * 15 + dx}px, ${heroProgress * 20 + dy}px) rotate(${dr}deg)`;
+          heroLayerTitleBlock.style.transform = `translate(${heroProgress * 15 + Math.sin(t * 0.00014 + 8.2) * 4}px, ${heroProgress * 20 + Math.sin(t * 0.00019 + 5.6) * 3}px) rotate(${Math.sin(t * 0.00011 + 3.3) * 0.25}deg)`;
         }
         if (heroLayerTitleLine) {
           heroLayerTitleLine.style.transform = `scaleX(1) translateY(${heroProgress * 8}px)`;
           heroLayerTitleLine.style.transformOrigin = 'left';
         }
         if (heroLayerDataLine) {
-          const dx = Math.sin(t * 0.00009 + 9.1) * 3;
-          heroLayerDataLine.style.transform = `translateY(${heroProgress * 12 + dx}px)`;
+          heroLayerDataLine.style.transform = `translateY(${heroProgress * 12 + Math.sin(t * 0.00009 + 9.1) * 3}px)`;
         }
-        // Foreground details
-        heroLayerCorners.forEach((c) => {
-          c.style.transform = `translateY(${heroProgress * 20}px)`;
-        });
-        heroLayerCoords.forEach((c) => {
-          c.style.transform = `translateY(${heroProgress * -12}px)`;
-        });
-        // Contact section bg layers
-        if (contactBgNum) {
-          const contactRect = contactSection?.getBoundingClientRect();
-          if (contactRect && contactRect.top < viewH) {
-            const cp = 1 - contactRect.top / viewH;
-            contactBgNum.style.transform = `translateY(${cp * -40}px)`;
-            if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
-          }
+        heroLayerCorners.forEach(c => { c.style.transform = `translateY(${heroProgress * 20}px)`; });
+        heroLayerCoords.forEach(c => { c.style.transform = `translateY(${heroProgress * -12}px)`; });
+
+        // Contact bg layers (using pre-read rect)
+        if (contactBgNum && _contactVisible) {
+          const cp = 1 - _contactTop / viewH;
+          contactBgNum.style.transform = `translateY(${cp * -40}px)`;
+          if (contactBgRing) contactBgRing.style.transform = `translate(${cp * 15}px, ${cp * -25}px)`;
         }
-        // Section-level depth layers (work, process, about — off-screen culled)
+
+        // Section depth layers (using pre-read rects)
         for (let si = 0; si < sectionDepthEls.length; si++) {
           const sd = sectionDepthEls[si];
           if (!sd.section) continue;
-          const sr = sd.section.getBoundingClientRect();
-          if (sr.bottom < -100 || sr.top > viewH + 100) continue;
-          const sp = 1 - (sr.top + sr.height / 2) / (viewH + sr.height);
+          if (_sr[si].b < -100 || _sr[si].t > viewH + 100) continue;
+          const sp = 1 - (_sr[si].t + _sr[si].h / 2) / (viewH + _sr[si].h);
           const so = (sp - 0.5) * 2;
           for (let ei = 0; ei < sd.els.length; ei++) {
-            const e = sd.els[ei];
-            e.el.style.transform = `translate(${so * e.tx}px, ${so * e.ty}px)`;
+            sd.els[ei].el.style.transform = `translate(${so * sd.els[ei].tx}px, ${so * sd.els[ei].ty}px)`;
           }
         }
       }
@@ -1442,6 +1473,8 @@ const steps = [
 
           let smoothScrollY = window.scrollY || 0;
 
+          let dotFrameSkip = 0;
+
           function heroFloat(now: number) {
             if (dotCanvas && dotCtx) {
               const t0 = now - startTime;
@@ -1450,12 +1483,17 @@ const steps = [
               const baseAlpha = isDark ? 0.10 : 0.18;
               const masterAlpha = revealEase * baseAlpha;
 
-              // Smooth scroll lerp — runs every frame (60fps)
+              // Smooth scroll lerp
               const targetScrollY = window.scrollY || 0;
               smoothScrollY += (targetScrollY - smoothScrollY) * 0.06;
               dotCanvas.style.opacity = `${revealEase}`;
 
-              // Full redraw every frame — fillRect is fast, no anti-alias jitter
+              // Throttle canvas redraw to ~30fps (skip every other frame)
+              dotFrameSkip++;
+              if (dotFrameSkip % 2 !== 0) {
+                // Skip canvas draw but still run hero reveals below
+              } else {
+              // Full redraw
               dotCtx.setTransform(dotDpr, 0, 0, dotDpr, 0, 0);
               dotCtx.clearRect(0, 0, dotW, dotH);
 
@@ -1489,6 +1527,7 @@ const steps = [
                 }
               }
               dotCtx.globalAlpha = 1;
+              } // end 30fps throttle
             }
 
             if (!heroInView) {
@@ -1877,113 +1916,8 @@ const steps = [
       parallaxElements.forEach((el) => parObs.observe(el));
     }
 
-    // ── Unified scroll handler (one rAF per frame) ──
-    let scrollTicking = false;
+    // (Scroll handler merged into main raf() loop — batched reads eliminate layout thrashing)
     const heroScrollFade = document.querySelector('.hero-scroll-fade') as HTMLElement | null;
-
-    function onScrollFrame() {
-      const scrollTop = window.scrollY;
-      const viewH = window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight - viewH;
-      const scrollPct = docHeight > 0 ? scrollTop / docHeight : 0;
-
-      // Scroll progress bar
-      if (scrollProgress) scrollProgress.style.width = `${scrollPct * 100}%`;
-
-      // Hero scroll-fade — content fades and lifts as user scrolls
-      if (heroScrollFade) {
-        const fadeEnd = viewH * 0.6;
-        const fadeProg = Math.min(1, Math.max(0, scrollTop / fadeEnd));
-        heroScrollFade.style.opacity = String(1 - fadeProg);
-        heroScrollFade.style.transform = `translateY(${fadeProg * -40}px)`;
-      }
-
-      // Nav top background
-      const shouldScroll = scrollTop > 80;
-      if (shouldScroll !== navTop?.classList.contains('scrolled')) {
-        navTop?.classList.toggle('scrolled', shouldScroll);
-      }
-
-      // Nav rail progress line
-      if (navRailProgress) navRailProgress.style.height = `${scrollPct * 100}%`;
-
-      // Active section detection (driven by IntersectionObserver, only update on change)
-      if (currentSection !== lastActiveSection) {
-        lastActiveSection = currentSection;
-        navNodes.forEach((node) => {
-          const section = (node as HTMLElement).dataset.navSection;
-          node.classList.toggle('active', section === currentSection);
-        });
-        navMobileLinks.forEach((link) => {
-          const section = (link as HTMLElement).dataset.navSection;
-          link.classList.toggle('active', section === currentSection);
-        });
-      }
-
-      // Manifesto word-by-word reveal (only when visible)
-      manifestoData.forEach(({ el, wordSpans, totalWords }) => {
-        if (!manifestoVisible.get(el)) return;
-        const rect = el.getBoundingClientRect();
-        const start = viewH * 0.85;
-        const end = viewH * 0.15;
-        const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
-        const litCount = Math.floor(progress * totalWords);
-        wordSpans.forEach((w, i) => {
-          w.classList.toggle('lit', i < litCount);
-        });
-      });
-
-      // Process step highlighting + rail fill (only when visible)
-      if (processSteps.length > 0 && processTimeline && processVisible) {
-        const viewCenter = viewH * 0.5;
-        let closestStep: Element | null = null;
-        let closestDist = Infinity;
-        let activeIndex = 0;
-        processSteps.forEach((step, i) => {
-          const rect = step.getBoundingClientRect();
-          const stepCenter = rect.top + rect.height / 2;
-          const dist = Math.abs(stepCenter - viewCenter);
-          if (dist < closestDist && rect.top < viewH && rect.bottom > 0) {
-            closestDist = dist;
-            closestStep = step;
-            activeIndex = i;
-          }
-        });
-        processSteps.forEach((step) => step.classList.toggle('active', step === closestStep));
-
-        // Fill the rail based on active step
-        if (processRailFill) {
-          const fillPct = (activeIndex + 1) / processSteps.length;
-          processRailFill.style.transform = `scaleY(${fillPct})`;
-        }
-      }
-
-      // (Skew moved to Lenis rAF loop for continuous decay)
-
-      // Parallax depth layers (only visible elements)
-      if (hasPointer) {
-        parallaxVisible.forEach((el) => {
-          const htmlEl = el as HTMLElement;
-          if (htmlEl.id === 'hero-name') return;
-          const speed = parseFloat(htmlEl.dataset.parallax || '0');
-          const rect = el.getBoundingClientRect();
-          const offset = (rect.top + rect.height / 2 - viewH / 2) * speed;
-          htmlEl.style.transform = `translateY(${offset}px)`;
-        });
-      }
-
-      scrollTicking = false;
-    }
-
-    window.addEventListener('scroll', () => {
-      if (!scrollTicking) {
-        scrollTicking = true;
-        requestAnimationFrame(onScrollFrame);
-      }
-    }, { passive: true });
-
-    // Run once on load
-    onScrollFrame();
 
     // ── Mobile menu ──
     const menuToggle = document.getElementById('menu-toggle');
