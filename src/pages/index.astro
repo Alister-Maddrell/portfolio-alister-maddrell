@@ -1213,6 +1213,7 @@ const steps = [
       if ((window as any).__cursorTick) (window as any).__cursorTick();
       if ((window as any).__marqueeTick) (window as any).__marqueeTick();
       if ((window as any).__contactRevealTick) (window as any).__contactRevealTick(time);
+      if ((window as any).__cardDepthTick) (window as any).__cardDepthTick();
 
       requestAnimationFrame(raf);
     }
@@ -2213,87 +2214,96 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       mobileCards.forEach(s => mobileCardObs.observe(s.card));
     }
 
-    // ── Card-work layer parallax — each layer moves independently on hover ──
+    // ── Card-work layer parallax — consolidated into single tick on main rAF ──
     if (hasFineCursor) {
+      interface CardParallaxState {
+        layers: HTMLElement[];
+        depths: number[];
+        parentIndex: (number | null)[];
+        current: { x: number; y: number }[];
+        targetX: number;
+        targetY: number;
+        isHovering: boolean;
+        needsUpdate: boolean;
+        cachedRect: DOMRect | null;
+      }
+      const cardStates: CardParallaxState[] = [];
+
       document.querySelectorAll('[data-card-parallax]').forEach((container) => {
-        const layers = container.querySelectorAll('[data-card-depth]');
-        if (!layers.length) return;
+        const layerEls = container.querySelectorAll('[data-card-depth]');
+        if (!layerEls.length) return;
 
-        let targetX = 0, targetY = 0;
-        const current = Array.from(layers, () => ({ x: 0, y: 0 }));
-        let isHovering = false;
-        let rafId: number | null = null;
+        const layers = Array.from(layerEls) as HTMLElement[];
+        const depths = layers.map(el => parseFloat(el.dataset.cardDepth || '0.02'));
+        const current = layers.map(() => ({ x: 0, y: 0 }));
 
-        // Track which layers are nested inside other layers
-        // so we can subtract the parent's movement
-        const parentIndex: (number | null)[] = Array.from(layers, (el, i) => {
-          for (let j = 0; j < layers.length; j++) {
-            if (j !== i && layers[j].contains(el)) {
-              // Find the closest ancestor layer
-              let closest: number | null = null;
-              for (let k = 0; k < layers.length; k++) {
-                if (k !== i && layers[k].contains(el)) {
-                  if (closest === null || layers[closest].contains(layers[k])) {
-                    closest = k;
-                  }
-                }
-              }
-              return closest;
+        // Track nested layers to subtract parent movement
+        const parentIndex: (number | null)[] = layers.map((el, i) => {
+          let closest: number | null = null;
+          for (let k = 0; k < layers.length; k++) {
+            if (k !== i && layers[k].contains(el)) {
+              if (closest === null || layers[closest].contains(layers[k])) closest = k;
             }
           }
-          return null;
+          return closest;
         });
 
-        function animateLayers() {
-          layers.forEach((el, i) => {
-            const depth = parseFloat((el as HTMLElement).dataset.cardDepth || '0.02');
-            const goalX = isHovering ? targetX * depth * 800 : 0;
-            const goalY = isHovering ? targetY * depth * 800 : 0;
-            current[i].x += (goalX - current[i].x) * 0.06;
-            current[i].y += (goalY - current[i].y) * 0.06;
-
-            // Subtract parent movement so transforms don't compound
-            let tx = current[i].x;
-            let ty = current[i].y;
-            if (parentIndex[i] !== null) {
-              tx -= current[parentIndex[i]!].x;
-              ty -= current[parentIndex[i]!].y;
-            }
-
-            (el as HTMLElement).style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
-          });
-
-          if (!isHovering) {
-            const settled = current.every(p => Math.abs(p.x) < 0.1 && Math.abs(p.y) < 0.1);
-            if (settled) {
-              layers.forEach((el) => { (el as HTMLElement).style.transform = 'translate3d(0, 0, 0)'; });
-              rafId = null;
-              return;
-            }
-          }
-          rafId = requestAnimationFrame(animateLayers);
-        }
+        const state: CardParallaxState = { layers, depths, parentIndex, current, targetX: 0, targetY: 0, isHovering: false, needsUpdate: false, cachedRect: null };
+        cardStates.push(state);
 
         container.addEventListener('mouseenter', () => {
-          isHovering = true;
-          if (!rafId) rafId = requestAnimationFrame(animateLayers);
+          state.isHovering = true;
+          state.needsUpdate = true;
+          state.cachedRect = (container as HTMLElement).getBoundingClientRect();
         }, { passive: true });
 
         container.addEventListener('mousemove', (e: Event) => {
-          if (Math.abs(scrollVelocity) > 0.5) return;
+          if (Math.abs(scrollVelocity) > 0.5 || !state.cachedRect) return;
           const me = e as MouseEvent;
-          const rect = (container as HTMLElement).getBoundingClientRect();
-          targetX = (me.clientX - rect.left - rect.width / 2) / rect.width;
-          targetY = (me.clientY - rect.top - rect.height / 2) / rect.height;
+          const r = state.cachedRect;
+          state.targetX = (me.clientX - r.left - r.width / 2) / r.width;
+          state.targetY = (me.clientY - r.top - r.height / 2) / r.height;
         }, { passive: true });
 
         container.addEventListener('mouseleave', () => {
-          isHovering = false;
-          targetX = 0;
-          targetY = 0;
-          if (!rafId) rafId = requestAnimationFrame(animateLayers);
+          state.isHovering = false;
+          state.targetX = 0;
+          state.targetY = 0;
+          state.cachedRect = null;
         }, { passive: true });
       });
+
+      (window as any).__cardDepthTick = function() {
+        for (let s = 0; s < cardStates.length; s++) {
+          const st = cardStates[s];
+          if (!st.needsUpdate && !st.isHovering) continue;
+
+          let allSettled = true;
+          for (let i = 0; i < st.layers.length; i++) {
+            const goalX = st.isHovering ? st.targetX * st.depths[i] * 800 : 0;
+            const goalY = st.isHovering ? st.targetY * st.depths[i] * 800 : 0;
+            st.current[i].x += (goalX - st.current[i].x) * 0.12;
+            st.current[i].y += (goalY - st.current[i].y) * 0.12;
+
+            let tx = st.current[i].x, ty = st.current[i].y;
+            if (st.parentIndex[i] !== null) {
+              tx -= st.current[st.parentIndex[i]!].x;
+              ty -= st.current[st.parentIndex[i]!].y;
+            }
+
+            if (Math.abs(st.current[i].x) > 0.1 || Math.abs(st.current[i].y) > 0.1) allSettled = false;
+            st.layers[i].style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+          }
+
+          if (!st.isHovering && allSettled) {
+            for (let i = 0; i < st.layers.length; i++) {
+              st.current[i].x = 0; st.current[i].y = 0;
+              st.layers[i].style.transform = 'translate3d(0, 0, 0)';
+            }
+            st.needsUpdate = false;
+          }
+        }
+      };
     }
 
     // ── 3D tilt on project cards (state only — animation runs in main rAF) ──
