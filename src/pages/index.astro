@@ -755,9 +755,10 @@ const steps = [
     // ── Lenis smooth scroll ──
     const lenis = new Lenis({
       autoRaf: true,
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      touchMultiplier: 2,
+      duration: 1.8,
+      easing: (t: number) => 1 - Math.pow(1 - t, 4),
+      wheelMultiplier: 0.8,
+      touchMultiplier: 1.5,
     });
 
     // Feed Lenis velocity into scroll effects
