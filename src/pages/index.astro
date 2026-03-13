@@ -2069,11 +2069,18 @@ const steps = [
           prevDotY = rdy;
         }
 
-        // Circle: smooth lag
-        circleX += (mouseX - circleX) * 0.14;
-        circleY += (mouseY - circleY) * 0.14;
+        // Circle: smooth lag with dead-zone snap
+        const cdx = mouseX - circleX;
+        const cdy = mouseY - circleY;
+        if (Math.abs(cdx) < 0.5 && Math.abs(cdy) < 0.5) {
+          circleX = mouseX;
+          circleY = mouseY;
+        } else {
+          circleX += cdx * 0.14;
+          circleY += cdy * 0.14;
+        }
 
-        const rcx = r(circleX), rcy = r(circleY);
+        const rcx = Math.round(circleX), rcy = Math.round(circleY);
         if (rcx !== prevCircleX || rcy !== prevCircleY) {
           const isHover = cursorCircle.classList.contains('hover');
           cursorCircle.style.transform = isHover
