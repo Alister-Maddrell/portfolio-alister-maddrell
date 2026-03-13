@@ -233,12 +233,19 @@ section[id] {
   contain-intrinsic-size: auto 800px;
 }
 
-/* Site-wide dot paper texture — canvas-driven for per-dot shimmer */
+/* Site-wide dot paper texture — pure CSS, zero JS overhead */
 #dot-grid {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.06;
+}
+
+[data-theme="dark"] #dot-grid {
+  opacity: 0.04;
 }
 
 @media (pointer: fine) {
