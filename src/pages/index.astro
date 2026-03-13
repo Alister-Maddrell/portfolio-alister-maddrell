@@ -278,7 +278,7 @@ const steps = [
           <span class="hero-section-index" data-hero-layer="index" aria-hidden="true">/01</span>
           <div class="hero-title-block" data-hero-layer="title-block" aria-hidden="true"></div>
           <div class="hero-title-line" data-hero-layer="title-line" aria-hidden="true"></div>
-          <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter style="visibility: hidden;">
+          <h1 id="hero-name" class="hero-name text-ink" data-hero-typewriter>
             Alister Maddrell
           </h1>
         </div>
@@ -1510,7 +1510,6 @@ const heroLayerYear = document.querySelector('[data-hero-layer="year"]') as HTML
       const text = heroName.textContent?.trim() || '';
       heroName.textContent = '';
       heroName.style.minHeight = '1em';
-      heroName.style.visibility = 'visible';
 
       const cursor = document.createElement('span');
       cursor.classList.add('tw-cursor');

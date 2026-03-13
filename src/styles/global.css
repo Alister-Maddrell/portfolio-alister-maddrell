@@ -232,6 +232,11 @@ section[id] {
   contain-intrinsic-size: auto 800px;
 }
 
+/* Hero is always above-fold — skip content-visibility to avoid delaying LCP */
+#hero {
+  content-visibility: visible;
+}
+
 /* Site-wide dot grid — single element, slight scroll parallax via JS */
 #dot-grid {
   position: fixed;
@@ -1060,14 +1065,17 @@ body.loaded .hero-corner {
 }
 
 /* ─── Hero subtitle reveal ─── */
+/* Subtitle is visible by default for fast LCP — JS adds .loaded to body
+   which then triggers the entrance animation only if loader was shown */
 
 #hero-subtitle {
-  opacity: 0;
+  opacity: 1;
 }
 
 #hero-subtitle .subtitle-line {
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 /* ─── Scroll indicator ─── */
