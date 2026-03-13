@@ -451,49 +451,37 @@ body {
 
 /* ─── Custom cursor ─── */
 
-#cursor-dot,
-#cursor-circle {
+#cursor-dot {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background: var(--color-ink);
   pointer-events: none;
   z-index: 9998;
   will-change: transform;
-  backface-visibility: hidden;
-  contain: layout style;
-}
-
-#cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--color-ink);
-  margin-left: -4px;
-  margin-top: -4px;
   transform: translate3d(-100px, -100px, 0);
 }
 
 #cursor-circle {
+  position: fixed;
+  top: -22px;
+  left: -22px;
   width: 44px;
   height: 44px;
-  border: none;
-  box-shadow: inset 0 0 0 1px var(--color-ink);
-  opacity: 0.3;
-  margin-left: -22px;
-  margin-top: -22px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 30%, transparent);
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform;
   transform: translate3d(-100px, -100px, 0);
-  transition: box-shadow 0.3s ease,
-              opacity 0.3s ease,
-              background 0.3s ease;
+  transition: border-color 0.3s ease;
 }
 
 #cursor-circle.hover {
-  width: 44px;
-  height: 44px;
-  opacity: 0.5;
-  box-shadow: inset 0 0 0 1px var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
-  transform: translate3d(-100px, -100px, 0) scale(1.5);
+  border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
 }
 
 /* ─── Cursor trail ─── */
