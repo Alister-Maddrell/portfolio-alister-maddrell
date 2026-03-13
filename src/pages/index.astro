@@ -755,9 +755,8 @@ const steps = [
     // ── Lenis smooth scroll ──
     const lenis = new Lenis({
       autoRaf: true,
-      duration: 0.8,
-      easing: (t: number) => 1 - Math.pow(1 - t, 2),
-      wheelMultiplier: 1.4,
+      lerp: 0.1,
+      wheelMultiplier: 1,
       touchMultiplier: 2,
     });
 
