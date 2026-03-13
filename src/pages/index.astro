@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
+import 'lenis/dist/lenis.css';
 
 const projects = [
   {
@@ -759,7 +760,7 @@ const steps = [
      * 3. DATA STRUCTURES   — Parsed element collections (floats, cards, depths)
      * 4. OBSERVERS         — Consolidated IntersectionObservers (visibility + reveal)
      * 5. MAIN RAF LOOP     — Single requestAnimationFrame driving all scroll animations
-     * 6. HERO              — Typewriter, dot grid canvas, hero float/reveal
+     * 6. HERO              — Typewriter, hero float/reveal
      * 7. INTERACTIONS      — Cursor, magnetic, tilt, scramble, card hover scroll
      * 8. CONTACT           — Marquee, split reveal, form submit
      * 9. THEME             — 3-way theme switcher with blob transition
@@ -768,7 +769,7 @@ const steps = [
      * Performance notes:
      * - All getBoundingClientRect() reads are batched before any style writes
      * - Expensive reads gated behind scroll-change threshold (0.5px)
-     * - Canvas dot grid throttled to ~30fps via frame skipping
+     * - Lenis smooth scroll driven from single rAF (no autoRaf overhead)
      * - IntersectionObservers gate all per-element work to visible elements only
      * - content-visibility: auto in CSS skips paint for off-screen sections
      * ═══════════════════════════════════════════════════════════════════════════ */
@@ -788,8 +789,22 @@ const steps = [
 
     // ── 2. STATE ──
 
-    let lastScrollY = window.scrollY;
+    // Lenis smooth scroll — lerp mode for that glassy, lightweight feel.
+    // We drive Lenis manually from our single rAF loop (no autoRaf)
+    // so it shares the same frame budget as all other animations.
+    import Lenis from 'lenis';
+    const lenis = new Lenis({
+      lerp: 0.1,              // interpolation factor — lower = smoother, higher = snappier
+      wheelMultiplier: 1,     // 1:1 wheel mapping, no acceleration
+      touchMultiplier: 1.5,   // slightly amplified for mobile swipes
+      syncTouch: true,        // smooth touch scrolling too
+    });
+
     let scrollVelocity = 0;
+    lenis.on('scroll', ({ velocity }: { velocity: number }) => {
+      scrollVelocity = velocity;
+    });
+
     const hasFineCursor = window.matchMedia('(pointer: fine)').matches;
     const grainOverlay = document.querySelector('.grain-overlay') as HTMLElement | null;
     const grainBase = document.documentElement.dataset.theme === 'dark' ? 0.1 : 0.06;
@@ -896,19 +911,16 @@ const steps = [
     let _contactVisible = false;
 
     function raf(time: number) {
+      // Drive Lenis from our single rAF — no separate autoRaf loop
+      lenis.raf(time);
+
       const t = time - animStart;
       const viewH = window.innerHeight;
       const currentScrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - viewH;
       const scrollPct = docHeight > 0 ? currentScrollY / docHeight : 0;
-      const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.12));
+      const skewVal = Math.max(-3, Math.min(3, scrollVelocity * 0.04));
       const isMobileDevice = !hasFineCursor;
-
-      // Track scroll velocity
-      const delta = currentScrollY - lastScrollY;
-      lastScrollY = currentScrollY;
-      scrollVelocity += (delta - scrollVelocity) * 0.15;
-      if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
 
       // Only do expensive reads when scroll position actually changed
       const scrollChanged = Math.abs(currentScrollY - _lastRenderedScroll) > 0.5;
@@ -1342,7 +1354,7 @@ const steps = [
       depthLayers.forEach(dl => depthVis.observe(dl.container));
     }
 
-    // Handle anchor clicks with native smooth scroll
+    // Handle anchor clicks via Lenis smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1350,7 +1362,7 @@ const steps = [
         if (!href) return;
         const target = document.querySelector(href);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+          lenis.scrollTo(target as HTMLElement);
           const mobileMenu = document.getElementById('mobile-menu');
           if (mobileMenu?.classList.contains('open')) {
             mobileMenu.classList.remove('open');
@@ -2372,15 +2384,6 @@ const steps = [
       let rightPos = 0;
       const baseSpeed = 0.8;
       let marqueeActive = false;
-      let marqueeVelocity = 0;
-
-      // Track scroll velocity for marquee speed
-      let lastMarqueeScroll = window.scrollY;
-      window.addEventListener('scroll', () => {
-        const now = window.scrollY;
-        marqueeVelocity = (now - lastMarqueeScroll) * 0.5;
-        lastMarqueeScroll = now;
-      }, { passive: true });
 
       // Get the width of one full repeat unit (half the track since we duplicated content)
       function getResetWidth(track: HTMLElement) {
@@ -2390,11 +2393,9 @@ const steps = [
       function animateMarquee() {
         if (!marqueeActive) return;
 
-        // Decay velocity smoothly and clamp to prevent jumps from anchor-link scrolls
-        marqueeVelocity *= 0.92;
-        if (Math.abs(marqueeVelocity) < 0.01) marqueeVelocity = 0;
-        const clampedVel = Math.min(Math.abs(marqueeVelocity), 20);
-        const speedMultiplier = 1 + clampedVel * 0.05;
+        // Use Lenis scroll velocity to boost marquee speed while scrolling
+        const clampedVel = Math.min(Math.abs(scrollVelocity), 20);
+        const speedMultiplier = 1 + clampedVel * 0.02;
         const speed = baseSpeed * speedMultiplier;
 
         const leftReset = getResetWidth(leftTrack);

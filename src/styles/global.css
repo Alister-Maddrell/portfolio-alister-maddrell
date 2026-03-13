@@ -201,7 +201,6 @@
 /* ─── Base ─── */
 
 html {
-  scroll-behavior: smooth;
   background-color: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
